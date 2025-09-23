@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://kehadiranteamnaufal.netlify.app/</loc>
-    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://kehadiranteamnaufal.netlify.app/dashboard.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kehadiranteamnaufal.netlify.app/forgot.html</loc>
+    <priority>0.5</priority>
   </url>
 </urlset>
