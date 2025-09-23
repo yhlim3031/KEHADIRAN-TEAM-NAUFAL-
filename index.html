@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Attendance – KV Seberang Perai</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  <style>
+    body { 
+      margin: 0; 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f5f5f5; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .login-logo {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      margin-bottom: 15px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 0.4s;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #1a73e8;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    .login-box button:hover {
+      background-color: #1669c1;
+    }
+
+    .link-group {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .link-group .link {
+      color: #1a73e8;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 5px 0;
+      display: inline-block;
+    }
+
+    #authMessage {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+      min-height: 18px;
+    }
+
+    .hidden { display: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .login-container { padding: 30px 20px; }
+      .login-logo { width: 140px; height: 140px; }
+      .login-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" 
+         alt="Logo KV Seberang Perai" class="login-logo" style="width:430px; height:250px;">
+
+    <div class="login-title">Smart Attendance – KV Seberang Perai</div>
+
+    <div class="login-box" id="authForm">
+      <input type="email" id="email" placeholder="Email">
+
+      <div class="input-wrapper">
+        <input type="password" id="password" placeholder="Password">
+        <span class="toggle-password" onclick="togglePassword('password', this)">👁️</span>
+      </div>
+
+      <div class="input-wrapper hidden" id="confirmWrapper">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
+      </div>
+
+      <button onclick="submitAuth()" id="authBtn">Sign In</button>
+
+      <div class="link-group">
+        <a href="forgot.html" class="link">Forgot password?</a>
+        <div class="link" onclick="toggleAuth()" id="toggleText">Don't have an account? Sign Up</div>
+      </div>
+
+      <p id="authMessage"></p>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+      authDomain: "drive-thru-smartattendance.firebaseapp.com",
+      databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "drive-thru-smartattendance",
+      storageBucket: "drive-thru-smartattendance.appspot.com",
+      messagingSenderId: "235048051665",
+      appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+    let isSignUp = false;
+    let currentUser = null;
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) window.location.href = "dashboard.html";
+    });
+
+    function toggleAuth() {
+      isSignUp = !isSignUp;
+      document.getElementById("formTitle").textContent = isSignUp ? "Sign Up" : "Sign In";
+      document.getElementById("authBtn").textContent = isSignUp ? "Sign Up" : "Sign In";
+      document.getElementById("toggleText").textContent = isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
+      document.getElementById("confirmWrapper").classList.toggle("hidden", !isSignUp);
+      document.getElementById("authMessage").textContent = "";
+    }
+
+    function togglePassword(fieldId, iconEl) {
+      const field = document.getElementById(fieldId);
+      if (field.type === "password") {
+        field.type = "text";
+        iconEl.textContent = "🙈";
+      } else {
+        field.type = "password";
+        iconEl.textContent = "👁️";
+      }
+    }
+
+    function submitAuth() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const message = document.getElementById("authMessage");
+
+      if (isSignUp) {
+        if (email === "yhlim3031@gmail.com") {
+          message.textContent = "❌ Admin account cannot be created here.";
+          return;
+        }
+        if (password !== confirmPassword) {
+          message.textContent = "❌ Passwords do not match.";
+          return;
+        }
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            currentUser = userCredential.user;
+            window.location.href = "dashboard.html";
+          })
+          .catch(err => message.textContent = "❌ " + err.message);
+      } else {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            currentUser = userCredential.user;
+            window.location.href = "dashboard.html";
+          })
+          .catch(err => message.textContent = "❌ " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

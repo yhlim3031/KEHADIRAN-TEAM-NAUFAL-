@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forget Password</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .reset-box {
+      background: white;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .reset-box h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1669c1;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    a.back {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: #1a73e8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="reset-box">
+    <h2>Forget Password</h2>
+    <input type="email" id="resetEmail" placeholder="Enter your registered email">
+    <button onclick="sendResetEmail()">Send Reset Email</button>
+    <div class="message" id="resetMessage"></div>
+    <a class="back" href="index.html">← Back to Login</a>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+      authDomain: "drive-thru-smartattendance.firebaseapp.com",
+      databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "drive-thru-smartattendance",
+      storageBucket: "drive-thru-smartattendance.appspot.com",
+      messagingSenderId: "235048051665",
+      appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    function sendResetEmail() {
+      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
+      const msg = document.getElementById('resetMessage');
+      msg.textContent = '';
+      msg.className = 'message';
+
+      if (!email) {
+        msg.textContent = "❌ Please enter your email.";
+        msg.classList.add('error');
+        return;
+      }
+
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          msg.textContent = "✅ Reset link sent to your email.";
+          msg.classList.add('success');
+        })
+        .catch(err => {
+          if (err.code === "auth/user-not-found") {
+            msg.textContent = "❌ No user found with this email. (Only works for Email/Password accounts)";
+          } else if (err.code === "auth/invalid-email") {
+            msg.textContent = "❌ Invalid email address.";
+          } else {
+            msg.textContent = "❌ " + err.message;
+          }
+          msg.classList.add('error');
+        });
+    }
+  </script>
+</body>
+</html>
