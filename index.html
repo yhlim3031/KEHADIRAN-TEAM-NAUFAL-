@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sistem Kehadiran Pintar oleh Team Naufal KV Seberang Perai">
-  <meta name="keywords" content="Kehadiran, KV Seberang Perai, Smart Attendance, Team Naufal">
-  <meta name="author" content="Team Naufal">
-  <meta name="google-site-verification" content="h7BWqsKhivn4Hsw7XRq_pf7YIvCW51k7w85sLEi6GyE" />
-  <title>Smart Attendance – KV Seberang Perai</title>
+  <meta name="description" content="Sistem Kehadiran Pintar oleh Team Naufal KV Seberang Perai" />
+  <title>Smart Attendance – Sign In</title>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
   <style>
-    body { 
-      margin: 0; 
-      font-family: 'Segoe UI', sans-serif; 
-      background: #f5f5f5; 
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e8f0fe, #f5f5f5);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -23,141 +20,179 @@
     }
 
     .login-container {
+      background: #ffffff;
       width: 100%;
-      max-width: 420px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      padding: 40px 30px;
+      max-width: 440px;
+      padding: 50px 35px;
+      border-radius: 18px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
       text-align: center;
-      position: relative;
-      animation: fadeIn 1s ease forwards;
+      animation: fadeIn 1s ease;
     }
 
     .login-logo {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-      animation-delay: 0.2s;
+      width: 340px;
+      height: auto;
+      margin-bottom: 20px;
     }
 
     .login-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: #202124;
+      font-size: 26px;
+      font-weight: bold;
       margin-bottom: 30px;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-      animation-delay: 0.4s;
+      color: #202124;
     }
 
-    .login-box input {
+    input {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
     }
 
-    .input-wrapper {
-      position: relative;
+    input:focus {
+      border-color: #1a73e8;
     }
 
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+    .show-password-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: -5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    .show-password-container input {
+      width: auto;
+      margin: 0 8px 0 0;
+      transform: scale(1.2);
       cursor: pointer;
-      font-size: 18px;
-      color: #1a73e8;
     }
 
-    .login-box button {
+    button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background-color: #1a73e8;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      border-radius: 8px;
+      font-size: 17px;
       margin-top: 15px;
-      font-size: 16px;
+      cursor: pointer;
       transition: background 0.3s;
     }
 
-    .login-box button:hover {
-      background-color: #1669c1;
+    button:hover {
+      background-color: #155fc0;
     }
 
-    .link-group {
-      margin-top: 15px;
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
       font-size: 14px;
-      text-align: center;
     }
 
-    .link-group .link {
+    .link-row a {
       color: #1a73e8;
-      cursor: pointer;
       text-decoration: none;
-      margin: 5px 0;
-      display: inline-block;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .link-row a:hover {
+      color: #0f5bb5;
+      text-decoration: underline;
     }
 
     #authMessage {
-      margin-top: 10px;
-      color: red;
+      margin-top: 15px;
       font-size: 14px;
-      min-height: 18px;
+      color: red;
+      min-height: 20px;
     }
 
-    .hidden { display: none; }
-
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
+      from { opacity: 0; transform: translateY(-15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 500px) {
-      .login-container { padding: 30px 20px; }
-      .login-logo { width: 140px; height: 140px; }
-      .login-title { font-size: 20px; }
+    /* 📱 Mobile Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 0 10px;
+      }
+
+      .login-container {
+        padding: 35px 20px;
+        max-width: 95%;
+        border-radius: 16px;
+      }
+
+      .login-logo {
+        width: 220px;
+        margin-bottom: 18px;
+      }
+
+      .login-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+      }
+
+      input {
+        font-size: 15px;
+        padding: 13px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 13px;
+      }
+
+      .show-password-container {
+        font-size: 13px;
+      }
+
+      .link-row {
+        font-size: 13px;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" 
-         alt="Logo KV Seberang Perai" class="login-logo" style="width:430px; height:250px;">
+    <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" class="login-logo" alt="KV Logo" />
 
-    <div class="login-title">Smart Attendance – KV Seberang Perai</div>
+    <div class="login-title">Smart Attendance – Sign In</div>
 
-    <div class="login-box" id="authForm">
-      <input type="email" id="email" placeholder="Email">
+    <input type="email" id="email" placeholder="Enter your email" />
 
-      <div class="input-wrapper">
-        <input type="password" id="password" placeholder="Password">
-        <span class="toggle-password" onclick="togglePassword('password', this)">👁️</span>
-      </div>
-
-      <div class="input-wrapper hidden" id="confirmWrapper">
-        <input type="password" id="confirmPassword" placeholder="Confirm Password">
-        <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
-      </div>
-
-      <button onclick="submitAuth()" id="authBtn">Sign In</button>
-
-      <div class="link-group">
-        <a href="forgot.html" class="link">Forgot password?</a>
-        <div class="link" onclick="toggleAuth()" id="toggleText">Don't have an account? Sign Up</div>
-      </div>
-
-      <p id="authMessage"></p>
+    <div class="input-wrapper">
+      <input type="password" id="password" placeholder="Enter your password" />
     </div>
+
+    <div class="show-password-container">
+      <input type="checkbox" id="showPassword" onclick="togglePassword()" />
+      <label for="showPassword">Show password</label>
+    </div>
+
+    <button onclick="signIn()">Sign In</button>
+
+    <div class="link-row">
+      <a href="forgot.html">Forgot password?</a>
+      <a href="signup.html">Don't have an account? Sign up</a>
+    </div>
+
+    <div id="authMessage"></div>
   </div>
 
   <script>
@@ -170,65 +205,37 @@
       messagingSenderId: "235048051665",
       appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
     };
+
     firebase.initializeApp(firebaseConfig);
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-
-    let isSignUp = false;
-    let currentUser = null;
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) window.location.href = "dashboard.html";
     });
 
-    function toggleAuth() {
-      isSignUp = !isSignUp;
-      document.getElementById("formTitle").textContent = isSignUp ? "Sign Up" : "Sign In";
-      document.getElementById("authBtn").textContent = isSignUp ? "Sign Up" : "Sign In";
-      document.getElementById("toggleText").textContent = isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
-      document.getElementById("confirmWrapper").classList.toggle("hidden", !isSignUp);
-      document.getElementById("authMessage").textContent = "";
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const showPass = document.getElementById("showPassword").checked;
+      passwordInput.type = showPass ? "text" : "password";
     }
 
-    function togglePassword(fieldId, iconEl) {
-      const field = document.getElementById(fieldId);
-      if (field.type === "password") {
-        field.type = "text";
-        iconEl.textContent = "🙈";
-      } else {
-        field.type = "password";
-        iconEl.textContent = "👁️";
-      }
-    }
-
-    function submitAuth() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+    function signIn() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
       const message = document.getElementById("authMessage");
 
-      if (isSignUp) {
-        if (email === "yhlim3031@gmail.com") {
-          message.textContent = "❌ Admin account cannot be created here.";
-          return;
-        }
-        if (password !== confirmPassword) {
-          message.textContent = "❌ Passwords do not match.";
-          return;
-        }
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(userCredential => {
-            currentUser = userCredential.user;
-            window.location.href = "dashboard.html";
-          })
-          .catch(err => message.textContent = "❌ " + err.message);
-      } else {
-        firebase.auth().signInWithEmailAndPassword(email, password)
-          .then(userCredential => {
-            currentUser = userCredential.user;
-            window.location.href = "dashboard.html";
-          })
-          .catch(err => message.textContent = "❌ " + err.message);
+      if (!email || !password) {
+        message.textContent = "❌ Please fill in all fields.";
+        return;
       }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(err => {
+          message.textContent = "❌ " + err.message;
+        });
     }
   </script>
 </body>

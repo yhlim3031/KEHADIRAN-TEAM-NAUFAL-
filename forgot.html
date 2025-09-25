@@ -7,45 +7,66 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1669c1;
+      --bg: #f2f2f2;
+      --text: #333;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f2f2f2;
+      background-color: var(--bg);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
+
     .reset-box {
       background: white;
       padding: 40px;
       max-width: 400px;
       width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s ease-in-out;
     }
+
     .reset-box h2 {
       margin-bottom: 20px;
       text-align: center;
+      color: var(--text);
+      font-size: 1.8rem;
     }
+
     input[type="email"] {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 1rem;
     }
+
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #1a73e8;
+      padding: 14px;
+      background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
     }
+
     button:hover {
-      background-color: #1669c1;
+      background-color: var(--primary-hover);
     }
+
     .message {
       margin-top: 15px;
       font-size: 14px;
@@ -53,12 +74,43 @@
     }
     .success { color: green; }
     .error { color: red; }
-    a.back {
-      display: block;
-      margin-top: 20px;
-      text-align: center;
-      color: #1a73e8;
+
+    .links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 25px;
+      font-size: 0.95rem;
+    }
+
+    .links a {
+      color: var(--primary);
       text-decoration: none;
+      font-weight: 500;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    /* 📱 Responsif untuk telefon */
+    @media (max-width: 480px) {
+      .reset-box {
+        padding: 30px 20px;
+        border-radius: 12px;
+      }
+      .reset-box h2 {
+        font-size: 1.5rem;
+      }
+      input[type="email"], button {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+      .links {
+        flex-direction: column;
+        gap: 4px;
+      }
     }
   </style>
 </head>
@@ -68,7 +120,12 @@
     <input type="email" id="resetEmail" placeholder="Enter your registered email">
     <button onclick="sendResetEmail()">Send Reset Email</button>
     <div class="message" id="resetMessage"></div>
-    <a class="back" href="index.html">← Back to Login</a>
+
+    <!-- ✅ Letak dalam baris sama -->
+    <div class="links">
+      <span>Remember your password?</span>
+      <a href="index.html">Sign In</a>
+    </div>
   </div>
 
   <script>
