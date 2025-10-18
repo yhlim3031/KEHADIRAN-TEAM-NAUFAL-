@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Kalendar Hari Kerja</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  h1 { text-align: center; }
+  #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; max-width: 700px; margin: 20px auto; }
+  .day { padding: 15px; text-align: center; cursor: pointer; border-radius: 5px; }
+  .weekend { background-color: #ccc; cursor: not-allowed; }
+  .workday { background-color: #4CAF50; color: white; }
+  .holiday { background-color: #f44336; color: white; }
+  #saveBtn { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+</style>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+</head>
+<body>
+
+<h1>Kalendar Hari Kerja / Cuti Khas</h1>
+<div id="calendar"></div>
+<button id="saveBtn">💾 Save to Firebase</button>
+
+<script>
+  const firebaseConfig = {
+   apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+   authDomain: "drive-thru-smartattendance.firebaseapp.com",
+   databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+   projectId: "drive-thru-smartattendance",
+   storageBucket: "drive-thru-smartattendance.appspot.com",
+   messagingSenderId: "235048051665",
+   appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+ };
+ firebase.initializeApp(firebaseConfig);
+ const db = firebase.database();
+
+  // ================== Calendar Setup ==================
+  const calendar = document.getElementById('calendar');
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0 = Jan
+
+  let workdays = {}; // { "2025-09-16": true/false }
+
+  function loadWorkdaysFromFirebase() {
+    db.ref('settings/workdays').once('value').then(snapshot => {
+      workdays = snapshot.val() || {};
+      renderCalendar();
+    });
+  }
+
+  function renderCalendar() {
+    calendar.innerHTML = '';
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startWeekDay = firstDay.getDay(); // 0 = Sunday
+
+    // Padding for first week
+    for (let i = 0; i < startWeekDay; i++) {
+      const empty = document.createElement('div');
+      calendar.appendChild(empty);
+    }
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const date = new Date(year, month, d);
+      const dayDiv = document.createElement('div');
+      dayDiv.classList.add('day');
+
+      const dateStr = date.toISOString().split('T')[0];
+
+      // Default colors
+      if (date.getDay() === 0 || date.getDay() === 6) {
+        dayDiv.classList.add('weekend'); // hujung minggu
+      } else if (workdays[dateStr] === false) {
+        dayDiv.classList.add('holiday'); // cuti khas
+      } else {
+        dayDiv.classList.add('workday'); // hari kerja
+      }
+
+      dayDiv.textContent = d;
+
+      // Toggle click (hanya bukan hujung minggu)
+      if (!dayDiv.classList.contains('weekend')) {
+        dayDiv.addEventListener('click', () => {
+          if (dayDiv.classList.contains('workday')) {
+            dayDiv.classList.remove('workday');
+            dayDiv.classList.add('holiday');
+            workdays[dateStr] = false;
+          } else if (dayDiv.classList.contains('holiday')) {
+            dayDiv.classList.remove('holiday');
+            dayDiv.classList.add('workday');
+            workdays[dateStr] = true;
+          } else {
+            dayDiv.classList.add('workday');
+            workdays[dateStr] = true;
+          }
+        });
+      }
+
+      calendar.appendChild(dayDiv);
+    }
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    db.ref('settings/workdays').set(workdays)
+      .then(() => alert('✅ Data berjaya disimpan ke Firebase'))
+      .catch(err => alert('❌ Gagal simpan: ' + err));
+  });
+
+  loadWorkdaysFromFirebase();
+</script>
+</body>
+</html>

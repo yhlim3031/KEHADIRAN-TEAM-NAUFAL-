@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sistem Kehadiran Pintar oleh Team Naufal KV Seberang Perai" />
+  <title>Smart Attendance – Sign In</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e8f0fe, #f5f5f5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      padding: 50px 35px;
+      border-radius: 18px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .login-logo {
+      width: 340px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .login-title {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #202124;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      border-color: #1a73e8;
+    }
+
+    .show-password-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: -5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    .show-password-container input {
+      width: auto;
+      margin: 0 8px 0 0;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #155fc0;
+    }
+
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .link-row a {
+      color: #1a73e8;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .link-row a:hover {
+      color: #0f5bb5;
+      text-decoration: underline;
+    }
+
+    #authMessage {
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+      min-height: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 📱 Mobile Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 0 10px;
+      }
+
+      .login-container {
+        padding: 35px 20px;
+        max-width: 95%;
+        border-radius: 16px;
+      }
+
+      .login-logo {
+        width: 220px;
+        margin-bottom: 18px;
+      }
+
+      .login-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+      }
+
+      input {
+        font-size: 15px;
+        padding: 13px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 13px;
+      }
+
+      .show-password-container {
+        font-size: 13px;
+      }
+
+      .link-row {
+        font-size: 13px;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" class="login-logo" alt="KV Logo" />
+
+    <div class="login-title">Smart Attendance – Sign In</div>
+
+    <input type="email" id="email" placeholder="Enter your email" />
+
+    <div class="input-wrapper">
+      <input type="password" id="password" placeholder="Enter your password" />
+    </div>
+
+    <div class="show-password-container">
+      <input type="checkbox" id="showPassword" onclick="togglePassword()" />
+      <label for="showPassword">Show password</label>
+    </div>
+
+    <button onclick="signIn()">Sign In</button>
+
+    <div class="link-row">
+      <a href="forgot.html">Forgot password?</a>
+      <a href="signup.html">Don't have an account? Sign up</a>
+    </div>
+
+    <div id="authMessage"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+      authDomain: "drive-thru-smartattendance.firebaseapp.com",
+      databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "drive-thru-smartattendance",
+      storageBucket: "drive-thru-smartattendance.appspot.com",
+      messagingSenderId: "235048051665",
+      appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) window.location.href = "dashboard.html";
+    });
+
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const showPass = document.getElementById("showPassword").checked;
+      passwordInput.type = showPass ? "text" : "password";
+    }
+
+    function signIn() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const message = document.getElementById("authMessage");
+
+      if (!email || !password) {
+        message.textContent = "❌ Please fill in all fields.";
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(err => {
+          message.textContent = "❌ " + err.message;
+        });
+    }
+  </script>
+</body>
+</html>

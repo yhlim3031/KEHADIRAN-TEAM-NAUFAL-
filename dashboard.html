@@ -1,0 +1,3693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Smart Attendance Dashboard</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f8fafc;display:flex;min-height:100vh;font-size:14px;}
+
+/* Sidebar */
+.sidebar{width:220px;background:#1e293b;color:#fff;padding:16px;position:fixed;height:100vh;transition:width 0.3s;overflow:hidden;z-index:1000;}
+.sidebar.collapsed{width:60px}
+.sidebar h2{font-size:18px;margin-bottom:16px;transition:opacity 0.3s,visibility 0.3s}
+.sidebar.collapsed h2{opacity:0;visibility:hidden;display:none}
+.sidebar a{display:flex;align-items:center;color:#cbd5e1;padding:10px;border-radius:6px;text-decoration:none;margin-bottom:6px;transition:0.3s;position:relative;font-size:14px;}
+.sidebar a i{margin-right:10px;min-width:18px;text-align:center;font-style:normal}
+.sidebar a.active,.sidebar a:hover{background:#3b82f6;color:#fff}
+.sidebar a span{transition:opacity 0.3s,visibility 0.3s}
+.sidebar.collapsed a span{opacity:0;visibility:hidden;display:none}
+.sidebar .toggle-btn{display:block;margin-top:16px;text-align:center;cursor:pointer;color:#fff;transition: transform 0.3s}
+
+/* Tooltip for collapsed sidebar */
+.sidebar.collapsed a:hover::after{
+  content: attr(data-tooltip);
+  position:absolute;left:70px;top:50%;transform:translateY(-50%);
+  background:#334155;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap;z-index:100;opacity:0;animation: fadeIn 0.25s forwards;font-size:12px;
+}
+@keyframes fadeIn{to{opacity:1}}
+.sidebar:not(.collapsed) a:hover::after{display:none}
+
+/* Main */
+.main{margin-left:220px;padding:20px;flex:1;transition:margin-left 0.3s}
+.sidebar.collapsed + .main{margin-left:60px}
+
+/* Cards */
+.card{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.1);border:1px solid #e2e8f0;}
+
+/* Professional Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+.data-table th {
+  background: #f8fafc;
+  color: #475569;
+  padding: 12px 10px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+.data-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+.data-table tr:hover {
+  background: #f8fafc;
+}
+
+/* Status colors */
+.status-present { 
+  background: #10b981; 
+  color: white; 
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 24px;
+  font-size: 13px;
+}
+
+.status-late { 
+  background: #f59e0b; 
+  color: white; 
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 24px;
+  font-size: 13px;
+}
+
+.status-absent { 
+  background: #ef4444; 
+  color: white; 
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 24px;
+  font-size: 13px;
+}
+
+.status-holiday { 
+  background: #6b7280; 
+  color: white; 
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 24px;
+  font-size: 13px;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.summary-card .number {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.summary-card .label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* small helpers */
+.small{font-size:13px;color:#64748b}
+
+/* Buttons */
+button{
+  background:#3b82f6;
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.15s;
+  font-size:13px;
+  margin: 4px;
+}
+button:hover{background:#2563eb}
+
+/* Inputs */
+input[type=text],input[type=date],select{
+  width:100%;
+  padding:10px;
+  border:1px solid #d1d5db;
+  border-radius:6px;
+  margin-top:8px;
+  font-size:14px;
+}
+
+/* snackbar */
+#snackbar{
+  visibility:hidden;
+  min-width:250px;
+  background:#334155;
+  color:#fff;
+  text-align:center;
+  border-radius:6px;
+  padding:12px;
+  position:fixed;
+  z-index:999;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  font-size:13px;
+  transition:0.5s
+}
+#snackbar.show{visibility:visible;opacity:1}
+
+/* spinner */
+#spinner{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border:4px solid #f3f3f3;border-top:4px solid #3b82f6;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;z-index:1000}
+@keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* calendar grid */
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-cell{background:#fff;border-radius:6px;padding:8px;min-height:60px;display:flex;flex-direction:column;justify-content:flex-start;cursor:pointer;border:1px solid #e2e8f0;user-select:none;font-size:13px;}
+.cal-cell .date{font-weight:600;margin-bottom:4px;font-size:13px;}
+.cal-cell.work{background:linear-gradient(90deg, rgba(59,130,246,0.06), #fff)}
+.cal-cell.holiday{background:linear-gradient(90deg, rgba(239,68,68,0.04), #fff)}
+.cal-cell.today{box-shadow:0 0 0 2px rgba(59,130,246,0.12)}
+.cal-cell.selected{outline:2px solid rgba(59,130,246,0.16)}
+.cal-legend{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:13px;}
+.legend-item{display:flex;align-items:center;gap:6px;}
+.legend-swatch{width:12px;height:12px;border-radius:3px}
+.legend-work{background:#3b82f6}
+.legend-holiday{background:#ef4444}
+
+/* Mini table for summary */
+.mini-table{width:100%;border-collapse:collapse;margin-top:10px;border:1px solid #e2e8f0;font-size:13px;}
+.mini-table th,.mini-table td{padding:8px 10px;text-align:left;border:1px solid #e2e8f0;}
+.mini-table th{font-weight:600;color:#475569;width:40%;background:#f8fafc;}
+.mini-table td{color:#334155;}
+
+/* Filter section */
+.filter-section {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-section label {
+  font-weight: 500;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* Section headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Chart size adjustments */
+#weeklyChart {
+  height: 220px !important;
+}
+
+#monthlyChart {
+  height: 250px !important;
+}
+
+/* Adjust chart container spacing */
+.card canvas {
+  margin-top: 10px;
+}
+
+/* Scroll optimization */
+.scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.scroll-container table {
+  margin-top: 0;
+}
+
+/* Register plate improvements */
+.vehicle-list {
+  margin-top: 15px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 15px;
+}
+
+.vehicle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.vehicle-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Search and filter */
+.search-box {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.search-box input {
+  flex: 1;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 8px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.pagination button.active {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Enhanced pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px 0;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination-buttons button {
+  padding: 6px 12px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-size: 12px;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+  background: #3b82f6;
+  color: white;
+}
+
+.pagination-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  z-index: 1001;
+  font-size: 16px;
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* responsive */
+@media(max-width:900px){
+  .sidebar{position:fixed;left:-220px;z-index:1000;}
+  .sidebar.collapsed{left:0;width:220px}
+  .sidebar.mobile-open{left:0;width:220px}
+  .main{margin-left:0;padding:12px}
+  .filter-section{flex-direction:column;align-items:flex-start;}
+  
+  /* Mobile menu button */
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  /* Mobile overlay */
+  .mobile-overlay.active {
+    display: block;
+  }
+  
+  /* Adjust table for mobile */
+  .data-table {
+    font-size: 12px;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 8px 6px;
+  }
+  
+  /* Stack summary cards on mobile */
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Adjust section header for mobile */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  /* Adjust filter section for mobile */
+  .filter-section {
+    padding: 12px;
+  }
+  
+  /* Adjust form rows for mobile */
+  .form-row {
+    flex-direction: column;
+  }
+  
+  /* Adjust pagination for mobile */
+  .pagination-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Adjust calendar for mobile */
+  .calendar {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  
+  .cal-cell {
+    padding: 4px;
+    min-height: 40px;
+    font-size: 11px;
+  }
+  
+  /* Adjust weekly layout for mobile */
+  #weekly .card {
+    flex-direction: column;
+  }
+  
+  /* Adjust chart sizes for mobile */
+  #weeklyChart, #monthlyChart {
+    height: 200px !important;
+  }
+  
+  /* Hide some columns on mobile tables */
+  .mobile-hidden {
+    display: none;
+  }
+  
+  /* Make buttons more touch-friendly */
+  button {
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+  
+  /* Adjust input sizes for mobile */
+  input[type=text], input[type=date], select {
+    padding: 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@media(max-width:600px){
+  .data-table {
+    font-size: 11px;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 6px 4px;
+  }
+  
+  .calendar {
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .cal-cell {
+    min-height: 35px;
+    font-size: 10px;
+  }
+  
+  .cal-cell .date {
+    font-size: 10px;
+  }
+  
+  .section-header h3 {
+    font-size: 16px;
+  }
+  
+  .card {
+    padding: 12px;
+  }
+}
+
+@media(max-width:400px){
+  .data-table {
+    font-size: 10px;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 4px 2px;
+  }
+  
+  .calendar {
+    gap: 1px;
+  }
+  
+  .cal-cell {
+    min-height: 30px;
+    padding: 2px;
+  }
+}
+
+/* small label for set/unset */
+.small-tag{font-size:11px;color:#64748b;margin-top:2px}
+
+/* User-specific styles */
+.user-only {
+  display: none;
+}
+
+.admin-only {
+  display: none;
+}
+
+/* Add vehicle form improvements */
+.add-vehicle-form {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* Settings improvements */
+.settings-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.settings-section h4 {
+  margin: 0 0 12px 0;
+  color: #1e293b;
+  font-size: 16px;
+}
+
+/* Auto-capitalize input */
+.auto-capitalize {
+  text-transform: capitalize;
+}
+
+/* User Management Styles */
+.user-status-active {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.user-status-inactive {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.user-detail-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.user-detail-section h4 {
+  margin: 0 0 12px 0;
+  color: #1e293b;
+  font-size: 16px;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.user-actions button {
+  margin: 0;
+}
+
+.rfid-input {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.user-list-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.user-list-item:hover {
+  background-color: #f8fafc;
+}
+
+/* Improved filter section for monthly view */
+.compact-filter-section {
+  padding: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.compact-filter-section label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  margin-bottom: 0 !important;
+}
+
+.compact-filter-section select,
+.compact-filter-section input {
+  padding: 6px !important;
+  font-size: 13px !important;
+  margin-top: 0 !important;
+}
+
+/* Daily Status Date Info */
+.daily-date-info {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border-radius: 6px;
+  border: 1px solid #bae6fd;
+  font-size: 14px;
+  color: #0369a1;
+}
+</style>
+</head>
+<body>
+
+<div id="spinner"></div>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>📊 Smart Attendance</h2>
+  <a href="#" id="nav-home" onclick="showSection('home')" data-tooltip="Home"><i>🏠</i><span>Home</span></a>
+  <a href="#" id="nav-attendance" onclick="showSection('attendance')" data-tooltip="Attendance"><i>📋</i><span>Attendance</span></a>
+  <a href="#" id="nav-register" onclick="showSection('register')" data-tooltip="Register Plate"><i>📝</i><span>Register Plate</span></a>
+  <a href="#" id="nav-user-management" onclick="showSection('user-management')" style="display:none" data-tooltip="User Management"><i>👥</i><span>User Management</span></a>
+  <a href="#" id="nav-daily" onclick="showSection('daily')" style="display:none" data-tooltip="Daily"><i>📅</i><span>Daily</span></a>
+  <a href="#" id="nav-weekly" onclick="showSection('weekly')" style="display:none" data-tooltip="Weekly"><i>🗓️</i><span>Weekly</span></a>
+  <a href="#" id="nav-monthly" onclick="showSection('monthly')" style="display:none" data-tooltip="Monthly"><i>📆</i><span>Monthly</span></a>
+  <a href="#" id="nav-workday" onclick="showSection('workday')" style="display:none" data-tooltip="Workday Manager"><i>🛠️</i><span>Workday</span></a>
+  <a href="#" id="nav-settings" onclick="showSection('settings')" data-tooltip="Settings"><i>⚙️</i><span>Settings</span></a>
+  <a href="#" onclick="logout()" data-tooltip="Logout"><i>🔓</i><span>Logout</span></a>
+  <span class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">⬅️</span>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+<!-- Home -->
+<div id="home" class="card section">
+  <div class="section-header">
+    <h3>Welcome</h3>
+  </div>
+  <p>Signed in as <strong id="userEmail">-</strong></p>
+  <p id="userRoleInfo" class="small"></p>
+</div>
+
+<!-- Attendance (raw view) - FIXED VERSION -->
+<div id="attendance" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>📋 Attendance Records</h3>
+    <div>
+      <button onclick="loadAttendanceByDate()">🔄 Refresh</button>
+      <button class="admin-only" onclick="exportAttendanceData()">📤 Export</button>
+    </div>
+  </div>
+
+  <div class="filter-section compact-filter-section">
+    <div>
+      <label>Select Date</label>
+      <input type="date" id="datePicker" onchange="loadAttendanceByDate()" />
+    </div>
+    <div class="admin-only">
+      <label>Filter by Department</label>
+      <select id="jabatanFilter" onchange="loadAttendanceByDate()">
+        <option value="">ALL</option>
+        <option>PENGARAH</option>
+        <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+        <option>TIMBALAN PENGARAH AKADEMIK</option>
+        <option>KETUA JAMINAN KUALITI</option>
+        <option>JABATAN TEKNOLOGI AWAM</option>
+        <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+        <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+        <option>JABATAN PERNIAGAAN</option>
+        <option>JABATAN PENDIDIKAN UMUM</option>
+        <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+      </select>
+    </div>
+    <div class="admin-only">
+      <label>Search by Name</label>
+      <input type="text" id="searchAttendance" placeholder="Enter name..." onkeyup="filterAttendanceTable()">
+    </div>
+  </div>
+
+  <div class="scroll-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th class="admin-only mobile-hidden">Department</th>
+          <th>Shift</th>
+          <th>Status</th>
+          <th>Checkin</th>
+          <th class="mobile-hidden">Checkout</th>
+          <th class="mobile-hidden">Worked Hours</th>
+          <th class="mobile-hidden">Punctuality</th>
+        </tr>
+      </thead>
+      <tbody id="attendanceTable"></tbody>
+    </table>
+  </div>
+  
+  <!-- Enhanced Pagination Controls -->
+  <div id="attendancePagination" class="pagination-controls admin-only">
+    <div class="pagination-info" id="paginationInfo">Showing 0-0 of 0 records</div>
+    <div class="pagination-buttons">
+      <button id="firstPageBtn" onclick="goToPage(1)" disabled>⏮️ First</button>
+      <button id="prevPageBtn" onclick="goToPreviousPage()" disabled>◀️ Previous</button>
+      <button id="nextPageBtn" onclick="goToNextPage()" disabled>Next ▶️</button>
+      <button id="lastPageBtn" onclick="goToLastPage()" disabled>Last ⏭️</button>
+    </div>
+  </div>
+</div>
+
+<!-- Register (for regular users) -->
+<div id="register" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>📝 Register Vehicle</h3>
+    <button onclick="loadRegisteredVehicles()">🔄 Refresh</button>
+  </div>
+  
+  <div class="add-vehicle-form">
+    <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">➕ Add New Vehicle</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="regPlate">Plate Number</label>
+        <input type="text" id="regPlate" placeholder="">
+      </div>
+      <div class="form-group">
+        <label for="regJawatan">Department</label>
+        <select id="regJawatan">
+          <option value="">Select Department</option>
+          <option>PENGARAH</option>
+          <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+          <option>TIMBALAN PENGARAH AKADEMIK</option>
+          <option>KETUA JAMINAN KUALITI</option>
+          <option>JABATAN TEKNOLOGI AWAM</option>
+          <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+          <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+          <option>JABATAN PERNIAGAAN</option>
+          <option>JABATAN PENDIDIKAN UMUM</option>
+          <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+        </select>
+      </div>
+    </div>
+    <button onclick="registerPlate()" style="margin-top: 8px;">✅ Register Vehicle</button>
+    <p class="small" style="margin-top: 8px;">Your name <strong id="currentUserName"></strong> will be automatically used for registration.</p>
+  </div>
+  
+  <div class="vehicle-list">
+    <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">🚗 Your Registered Vehicles</h4>
+    <div class="search-box">
+      <input type="text" id="searchVehicles" placeholder="Search your vehicles..." onkeyup="filterVehicles()">
+    </div>
+    <div id="registeredVehicles"></div>
+  </div>
+</div>
+
+<!-- User Management (for admin only) -->
+<div id="user-management" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>👥 User Management</h3>
+    <button onclick="loadUsers()">🔄 Refresh</button>
+  </div>
+  
+  <div class="filter-section">
+    <div class="form-group">
+      <label for="userDepartmentFilter">Filter by Department</label>
+      <select id="userDepartmentFilter" onchange="filterUsers()">
+        <option value="">ALL</option>
+        <option>PENGARAH</option>
+        <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+        <option>TIMBALAN PENGARAH AKADEMIK</option>
+        <option>KETUA JAMINAN KUALITI</option>
+        <option>JABATAN TEKNOLOGI AWAM</option>
+        <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+        <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+        <option>JABATAN PERNIAGAAN</option>
+        <option>JABATAN PENDIDIKAN UMUM</option>
+        <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="searchUser">Search User</label>
+      <input type="text" id="searchUser" placeholder="Search User..." onkeyup="filterUsers()">
+    </div>
+  </div>
+  
+  <div class="pagination-info" id="userPaginationInfo">Showing 1-25 of 0 users</div>
+  
+  <div class="scroll-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Department</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+  
+  <div class="pagination-controls">
+    <div class="pagination-info" id="userPaginationInfoBottom">Showing 1-25 of 0 users</div>
+    <div class="pagination-buttons">
+      <button id="userFirstPageBtn" onclick="goToUserPage(1)" disabled>⏮️ First</button>
+      <button id="userPrevPageBtn" onclick="goToPreviousUserPage()" disabled>◀️ Previous</button>
+      <button id="userNextPageBtn" onclick="goToNextUserPage()" disabled>Next ▶️</button>
+      <button id="userLastPageBtn" onclick="goToLastUserPage()" disabled>Last ⏭️</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Detail Page (for admin only) -->
+<div id="user-detail" class="card section" style="display:none">
+  <div class="section-header">
+    <h3 id="userDetailTitle">User Profile</h3>
+    <button onclick="showSection('user-management')">← Back to User List</button>
+  </div>
+  
+  <div class="user-detail-section">
+    <h4>📋 Basic Information</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="userDetailName">Name</label>
+        <input type="text" id="userDetailName" class="auto-capitalize" readonly>
+      </div>
+      <div class="form-group">
+        <label for="userDetailDepartment">Department</label>
+        <input type="text" id="userDetailDepartment" readonly>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="userDetailEmail">Email</label>
+        <input type="text" id="userDetailEmail" readonly>
+      </div>
+      <div class="form-group">
+        <label for="userDetailRFID">RFID UID</label>
+        <input type="text" id="userDetailRFID" class="rfid-input" placeholder="E4F77C05" oninput="this.value = this.value.toUpperCase()">
+      </div>
+    </div>
+  </div>
+  
+  <div class="user-detail-section">
+    <h4>🚗 Registered Vehicles</h4>
+    <div id="userVehiclesList"></div>
+    <p class="small" style="margin-top: 10px; color: #64748b;">
+    </p>
+  </div>
+  
+  <div class="user-detail-section">
+    <h4>⚙️ Admin Actions</h4>
+    <div class="user-actions">
+      <button onclick="saveUserRFID()">Save RFID UID</button>
+      <button onclick="toggleUserStatus()" id="toggleUserStatusBtn">Deactivate User</button>
+    </div>
+  </div>
+</div>
+
+<!-- Daily - FIXED VERSION -->
+<div id="daily" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>📅 Daily Status</h3>
+    <button onclick="calculateDailyStatus()">🔄 Refresh</button>
+  </div>
+
+  <div class="filter-section admin-only compact-filter-section">
+    <div>
+      <label>Filter by Department</label>
+      <select id="jabatanFilterDaily" onchange="calculateDailyStatus()">
+        <option value="">All</option>
+        <option>PENGARAH</option>
+        <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+        <option>TIMBALAN PENGARAH AKADEMIK</option>
+        <option>KETUA JAMINAN KUALITI</option>
+        <option>JABATAN TEKNOLOGI AWAM</option>
+        <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+        <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+        <option>JABATAN PERNIAGAAN</option>
+        <option>JABATAN PENDIDIKAN UMUM</option>
+        <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+      </select>
+    </div>
+    <div>
+      <label>Search by Name</label>
+      <input type="text" id="searchDaily" placeholder="Search by name..." onkeyup="filterDailyTable()">
+    </div>
+  </div>
+
+  <!-- Date Info Display -->
+  <div id="dailyDateInfo" class="daily-date-info"></div>
+
+  <div class="scroll-container">
+    <div id="dailyStatusTable"></div>
+  </div>
+
+  <!-- Daily Status Pagination Controls Bottom -->
+  <div id="dailyPaginationBottom" class="pagination-controls admin-only">
+    <div class="pagination-info" id="dailyPaginationInfoBottom">Showing 0-0 of 0 records</div>
+    <div class="pagination-buttons">
+      <button id="dailyFirstPageBtnBottom" onclick="goToDailyPage(1)" disabled>⏮️ First</button>
+      <button id="dailyPrevPageBtnBottom" onclick="goToPreviousDailyPage()" disabled>◀️ Previous</button>
+      <button id="dailyNextPageBtnBottom" onclick="goToNextDailyPage()" disabled>Next ▶️</button>
+      <button id="dailyLastPageBtnBottom" onclick="goToLastDailyPage()" disabled>Last ⏭️</button>
+    </div>
+  </div>
+</div>
+
+<!-- Weekly Report -->
+<div id="weekly" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>🗓️ Weekly Attendance Report</h3>
+    <button onclick="calculateWeeklySummary()" title="Refresh Summary">🔄 Refresh</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section admin-only">
+    <div>
+      <label>Week containing date:</label>
+      <input type="date" id="weekPicker" onchange="calculateWeeklySummary()" />
+    </div>
+    <div>
+      <label>Filter Department:</label>
+      <select id="weekJabatanFilter" onchange="calculateWeeklySummary()">
+        <option value="">All Departments</option>
+        <option>PENGARAH</option>
+        <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+        <option>TIMBALAN PENGARAH AKADEMIK</option>
+        <option>KETUA JAMINAN KUALITI</option>
+        <option>JABATAN TEKNOLOGI AWAM</option>
+        <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+        <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+        <option>JABATAN PERNIAGAAN</option>
+        <option>JABATAN PENDIDIKAN UMUM</option>
+        <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+    <div style="flex:1;min-width:280px;">
+      <div class="card admin-only">
+        <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">📊 Weekly Statistics</h4>
+        <div id="weeklySummaryTable"></div>
+      </div>
+      
+      <div class="card admin-only" style="margin-top:12px;">
+        <h4 style="margin:0 0 10px 0;color:#1e293b;font-size:16px;">📈 Attendance Trend</h4>
+        <canvas id="weeklyChart" height="220"></canvas>
+      </div>
+    </div>
+    
+    <div style="flex:2;min-width:500px;">
+      <div class="card">
+        <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">👥 Staff Attendance Details</h4>
+        <div class="search-box admin-only">
+          <input type="text" id="searchWeekly" placeholder="Search by name..." onkeyup="filterWeeklyTable()">
+        </div>
+        <div class="scroll-container">
+          <div id="weeklyDetailGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly - UPDATED VERSION -->
+<div id="monthly" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>📆 Monthly Summary</h3>
+    <button onclick="calculateMonthlySummary()">🔄 Refresh</button>
+  </div>
+
+  <!-- Compact Filter Section -->
+  <div class="filter-section admin-only compact-filter-section">
+    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="margin: 0; font-size: 13px; font-weight: 500;">Month:</label>
+        <select id="monthSelect" style="width: 100px; padding: 6px; font-size: 13px;"></select>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="margin: 0; font-size: 13px; font-weight: 500;">Year:</label>
+        <select id="yearSelect" style="width: 90px; padding: 6px; font-size: 13px;"></select>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="margin: 0; font-size: 13px; font-weight: 500;">Department:</label>
+        <select id="monthJabatanFilter" style="width: 180px; padding: 6px; font-size: 13px;" onchange="calculateMonthlySummary()">
+          <option value="">ALL</option>
+          <option>PENGARAH</option>
+          <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+          <option>TIMBALAN PENGARAH AKADEMIK</option>
+          <option>KETUA JAMINAN KUALITI</option>
+          <option>JABATAN TEKNOLOGI AWAM</option>
+          <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+          <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+          <option>JABATAN PERNIAGAAN</option>
+          <option>JABATAN PENDIDIKAN UMUM</option>
+          <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="margin: 0; font-size: 13px; font-weight: 500;">Search:</label>
+        <input type="text" id="searchMonthly" placeholder="Search by name..." style="width: 180px; padding: 6px; font-size: 13px;" onkeyup="filterMonthlyTable()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Larger Chart -->
+  <div class="card admin-only" style="margin-bottom: 16px;">
+    <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">📊 Monthly Attendance Overview</h4>
+    <canvas id="monthlyChart" height="250"></canvas>
+  </div>
+  
+  <!-- Summary Table -->
+  <div class="card" style="margin-bottom: 16px;">
+    <div id="monthlySummaryTable"></div>
+  </div>
+  
+  <!-- Daily Details -->
+  <div class="card">
+    <h4 style="margin:0 0 12px 0;color:#1e293b;font-size:16px;">📋 Daily Attendance Details</h4>
+    <div class="scroll-container">
+      <div id="monthlyDetailGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Workday Manager (admin only) -->
+<div id="workday" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>🛠️ Workday Manager</h3>
+    <button onclick="renderCalendar(currentCalendarYear,currentCalendarMonth)">🔄 Refresh</button>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+    <button onclick="prevMonth()">◀</button>
+    <div id="calendarTitle" style="font-weight:600;font-size:16px;"></div>
+    <button onclick="nextMonth()">▶</button>
+    <button style="margin-left:8px" onclick="applySelection()">Apply selection</button>
+    <button onclick="clearSelection()">Clear selection</button>
+    <button style="margin-left:8px" onclick="saveVisibleWorkdays()">Save All</button>
+  </div>
+  <div id="calendarGrid" class="calendar" aria-hidden="false"></div>
+  <div class="cal-legend">
+    <div class="legend-item"><div class="legend-swatch legend-work"></div><div>Work Day</div></div>
+    <div class="legend-item"><div class="legend-swatch legend-holiday"></div><div>Holiday</div></div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div id="settings" class="card section" style="display:none">
+  <div class="section-header">
+    <h3>⚙️ Settings</h3>
+  </div>
+  
+  <!-- User Name Settings -->
+  <div class="settings-section">
+    <h4>👤 Your Profile</h4>
+    <div class="form-group">
+      <label for="userNameInput">Your Display Name:</label>
+      <input type="text" id="userNameInput" class="auto-capitalize" placeholder="Enter your name as it appears in attendance records" oninput="autoCapitalize(this)">
+      <button onclick="updateUserName()" style="margin-top: 8px;">💾 Update Name</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="snackbar"></div>
+
+<script>
+// ========== Firebase config ==========
+const firebaseConfig = {
+  apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+  authDomain: "drive-thru-smartattendance.firebaseapp.com",
+  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "drive-thru-smattendance",
+  storageBucket: "drive-thru-smartattendance.appspot.com",
+  messagingSenderId: "235048051665",
+  appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+};
+
+// Initialize Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+} catch (error) {
+  console.log('Firebase already initialized');
+}
+
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+const db = firebase.database();
+
+// ========== Mobile Menu Functionality ==========
+function setupMobileMenu() {
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  
+  if (mobileMenuBtn && sidebar && mobileOverlay) {
+    mobileMenuBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-open');
+      mobileOverlay.classList.toggle('active');
+    });
+    
+    mobileOverlay.addEventListener('click', function() {
+      sidebar.classList.remove('mobile-open');
+      mobileOverlay.classList.remove('active');
+    });
+  }
+}
+
+// ========== Helpers & state ==========
+function showSpinner() {
+  document.getElementById('spinner').style.display = 'block';
+}
+
+function hideSpinner() {
+  document.getElementById('spinner').style.display = 'none';
+}
+
+function showSnackbar(msg) {
+  const sb = document.getElementById('snackbar');
+  sb.textContent = msg;
+  sb.className = "show";
+  setTimeout(() => sb.className = "", 3000);
+}
+
+function normalizePlate(txt) {
+  return (txt || '').trim().toUpperCase().replace(/\s+/g, '');
+}
+
+function pad(n) {
+  return n.toString().padStart(2, '0');
+}
+
+function ymdFromDate(d) {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function isDefaultWorkdayObj(dateObj) {
+  const dow = dateObj.getDay();
+  return (dow >= 1 && dow <= 5);
+}
+
+function isDefaultWorkdayISO(iso) {
+  const parts = iso.split('-').map(x => parseInt(x, 10));
+  return isDefaultWorkdayObj(new Date(parts[0], parts[1] - 1, parts[2]));
+}
+
+function parseTimeToMinutes(t) {
+  if (!t || typeof t !== 'string') return null;
+  const m = t.match(/(\d{1,2}):(\d{2})/);
+  if (!m) return null;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+// ✅ FIXED: Simple todayISO()
+function todayISO() {
+  const now = new Date();
+  
+  // Debug info
+  console.log('🕒 TIME DEBUG:', {
+    UTC: now.toISOString(),
+    Local: now.toString(),
+    Hours: now.getHours(),
+    Date: now.getDate()
+  });
+  
+  // Simple local date (akan auto-adjust untuk timezone Malaysia)
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  
+  const result = `${year}-${month}-${day}`;
+  console.log('📅 todayISO() RESULT:', result);
+  
+  return result;
+}
+
+// ========== AUTO CAPITALIZE FUNCTION ==========
+function autoCapitalize(input) {
+  const start = input.selectionStart;
+  const end = input.selectionEnd;
+  
+  input.value = input.value
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  
+  input.setSelectionRange(start, end);
+}
+
+// Workdays cache
+let workdaysCache = {};
+let selectedDatesSet = new Set();
+
+// Chart instances
+let weeklyChartInstance = null;
+let monthlyChart = null;
+
+// Pagination variables
+let currentAttendancePage = 1;
+const attendancePerPage = 10;
+let totalAttendanceRecords = 0;
+let totalAttendancePages = 0;
+
+// User management
+let currentUser = null;
+let isAdmin = false;
+let userPlates = [];
+let userName = '';
+
+// User Management Variables
+let currentUserPage = 1;
+const usersPerPage = 25;
+let totalUsers = 0;
+let totalUserPages = 0;
+let allUsers = [];
+let currentEditingUser = null;
+
+// Daily Status Pagination Variables
+let currentDailyPage = 1;
+const dailyPerPage = 10;
+let totalDailyRecords = 0;
+let totalDailyPages = 0;
+let allDailyRecords = [];
+
+// Global plates data for department lookup
+let allPlatesData = {};
+
+// ========== USER PROFILE SYSTEM ==========
+function extractNameFromEmail(email) {
+  if (!email) return 'User';
+  const namePart = email.split('@')[0];
+  const cleanName = namePart.replace(/[0-9._-]/g, ' ').trim();
+  if (!cleanName) return 'User';
+  return cleanName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+// ✅ IMPROVED: Better name matching function
+function matchByNameVariations(attendanceName, userName) {
+  if (!attendanceName || !userName) return false;
+  
+  const cleanAttendance = attendanceName.toLowerCase().replace(/\s+/g, ' ').trim();
+  const cleanUser = userName.toLowerCase().replace(/\s+/g, ' ').trim();
+  
+  // Exact match
+  if (cleanAttendance === cleanUser) return true;
+  
+  // First name match
+  const attendanceFirst = cleanAttendance.split(' ')[0];
+  const userFirst = cleanUser.split(' ')[0];
+  if (attendanceFirst && userFirst && attendanceFirst === userFirst) return true;
+  
+  // Contains match
+  if (cleanAttendance.includes(cleanUser) || cleanUser.includes(cleanAttendance)) return true;
+  
+  // Initials match (for cases like "N Shah" vs "Naufal Shah")
+  const attendanceWords = cleanAttendance.split(' ');
+  const userWords = cleanUser.split(' ');
+  
+  if (attendanceWords.length > 0 && userWords.length > 0) {
+    const attendanceInitials = attendanceWords.map(n => n[0]).join('');
+    const userInitials = userWords.map(n => n[0]).join('');
+    if (attendanceInitials === userInitials) return true;
+  }
+  
+  return false;
+}
+
+// ✅ NEW HELPER FUNCTIONS untuk color coding
+function getStatusColor(status) {
+  const lowerS = (status || "").toLowerCase();
+  if (lowerS.includes("present") || lowerS.includes("complete")) {
+    return "color:#10b981;font-weight:500;";
+  } else if (lowerS.includes("incomplete")) {
+    return "color:#f59e0b;font-weight:500;";
+  } else if (lowerS.includes("absent")) {
+    return "color:#ef4444;font-weight:500;";
+  }
+  return "color:#334155;font-weight:500;";
+}
+
+function getPunctualityColor(punctuality) {
+  const lowerP = (punctuality || "").toLowerCase();
+  if (lowerP.includes("late")) {
+    return "color:#ef4444;font-weight:500;";
+  } else if (lowerP.includes("punctual") || lowerP.includes("on time")) {
+    return "color:#10b981;font-weight:500;";
+  }
+  return "color:#334155;font-weight:500;";
+}
+
+// ✅ IMPROVED: Find attendance record dengan better matching
+function findAttendanceRecord(attendanceData, staffName) {
+  if (!attendanceData || !staffName) return null;
+  
+  const cleanStaffName = staffName.toLowerCase().trim();
+  
+  for (const uid in attendanceData) {
+    const record = attendanceData[uid];
+    if (!record.name) continue;
+    
+    const cleanRecordName = record.name.toLowerCase().trim();
+    
+    // Exact match
+    if (cleanRecordName === cleanStaffName) {
+      return record;
+    }
+    
+    // Partial match (first word)
+    const staffFirstWord = cleanStaffName.split(' ')[0];
+    const recordFirstWord = cleanRecordName.split(' ')[0];
+    
+    if (staffFirstWord && recordFirstWord && staffFirstWord === recordFirstWord) {
+      return record;
+    }
+  }
+  
+  return null;
+}
+
+// ✅ NEW FUNCTION: Sync plates dengan nama baru
+async function syncPlatesWithNewName(newName) {
+  try {
+    const platesSnapshot = await db.ref('plates').once('value');
+    const plates = platesSnapshot.val() || {};
+    
+    const updates = {};
+    let updatedPlatesCount = 0;
+    
+    // Cari semua plates yang registered oleh user ini
+    Object.keys(plates).forEach(plate => {
+      const vehicle = plates[plate];
+      
+      // Check jika plate ini belong kepada current user
+      const isUserPlate = (
+        vehicle.registeredBy === currentUser.email || 
+        matchByNameVariations(vehicle.name, userName)
+      );
+      
+      if (isUserPlate) {
+        updates[`plates/${plate}/name`] = newName;
+        updatedPlatesCount++;
+      }
+    });
+    
+    // Apply updates jika ada plates yang perlu diupdate
+    if (updatedPlatesCount > 0) {
+      await db.ref().update(updates);
+      console.log(`✅ Updated ${updatedPlatesCount} plates with new name: ${newName}`);
+    }
+    
+    return updatedPlatesCount;
+    
+  } catch (err) {
+    console.error('Error syncing plates:', err);
+    throw err;
+  }
+}
+
+// ✅ NEW FUNCTION: Check dan sync plates jika out of sync
+async function checkAndSyncPlates(currentUserName) {
+  try {
+    const platesSnapshot = await db.ref('plates').once('value');
+    const plates = platesSnapshot.val() || {};
+    
+    let needsSync = false;
+    const updates = {};
+    
+    Object.keys(plates).forEach(plate => {
+      const vehicle = plates[plate];
+      
+      // Jika plate registered oleh user ini tapi nama tidak match
+      if (vehicle.registeredBy === currentUser.email && 
+          !matchByNameVariations(vehicle.name, currentUserName)) {
+        updates[`plates/${plate}/name`] = currentUserName;
+        needsSync = true;
+      }
+    });
+    
+    if (needsSync) {
+      await db.ref().update(updates);
+      console.log('✅ Auto-synced plates with current profile name');
+    }
+    
+  } catch (err) {
+    console.error('Error checking plate sync:', err);
+  }
+}
+
+async function ensureUserProfile() {
+  const userRef = db.ref('users/' + currentUser.uid);
+  
+  try {
+    const snapshot = await userRef.once('value');
+    
+    if (!snapshot.exists()) {
+      const userNameFromEmail = extractNameFromEmail(currentUser.email);
+      await userRef.set({
+        email: currentUser.email,
+        name: userNameFromEmail,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      });
+      userName = userNameFromEmail;
+      
+      // ✅ Auto-sync existing plates dengan nama baru
+      await syncPlatesWithNewName(userNameFromEmail);
+      
+    } else {
+      const userData = snapshot.val();
+      userName = userData.name;
+      await userRef.update({
+        lastLogin: new Date().toISOString()
+      });
+      
+      // ✅ Check dan sync plates jika perlu
+      await checkAndSyncPlates(userName);
+    }
+    
+    document.getElementById('userRoleInfo').textContent = isAdmin ? 
+      'You are logged in as Administrator' : `You are logged in as ${userName}`;
+      
+    document.getElementById('currentUserName').textContent = userName;
+    
+    const nameInput = document.getElementById('userNameInput');
+    if (nameInput) {
+      nameInput.value = userName;
+    }
+    
+  } catch (err) {
+    console.error('Error ensuring user profile:', err);
+    userName = extractNameFromEmail(currentUser.email);
+  }
+}
+
+async function updateUserName() {
+  const nameInput = document.getElementById('userNameInput');
+  let newName = nameInput.value.trim();
+  
+  if (!newName) {
+    showSnackbar('❌ Please enter a valid name');
+    return;
+  }
+  
+  newName = newName
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  
+  showSpinner();
+  try {
+    const userRef = db.ref('users/' + currentUser.uid);
+    
+    // Update user profile
+    await userRef.update({
+      name: newName,
+      updatedAt: new Date().toISOString()
+    });
+    
+    // ✅ AUTO-SYNC: Update semua plates yang belong kepada user ini
+    const updatedPlatesCount = await syncPlatesWithNewName(newName);
+    
+    userName = newName;
+    
+    if (updatedPlatesCount > 0) {
+      showSnackbar(`✅ Name updated successfully - ${updatedPlatesCount} vehicle(s) updated too!`);
+    } else {
+      showSnackbar('✅ Name updated successfully');
+    }
+    
+    document.getElementById('userRoleInfo').textContent = isAdmin ? 
+      'You are logged in as Administrator' : `You are logged in as ${userName}`;
+    
+    document.getElementById('currentUserName').textContent = userName;
+      
+  } catch (err) {
+    showSnackbar('❌ Failed to update name: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+// ========== Load workdays - CACHE FREE VERSION ==========
+let workdaysFullSnapshot = null;
+
+async function ensureWorkdaysLoadedOnce() {
+  console.log("🔄 Loading FRESH workday data...");
+  showSpinner();
+  try {
+    // ✅ FIX: ALWAYS load fresh data from Firebase
+    const snap = await db.ref('settings/workdays').once('value');
+    workdaysFullSnapshot = snap.exists() ? (snap.val() || {}) : {};
+    
+    console.log("✅ Fresh workday data loaded:", workdaysFullSnapshot);
+    
+    // ✅ FIX: Reset cache completely
+    workdaysCache = {};
+    
+    // Rebuild cache from fresh data
+    Object.keys(workdaysFullSnapshot).forEach(iso => {
+      const key = iso.slice(0, 7);
+      if (!(key in workdaysCache)) workdaysCache[key] = {};
+      workdaysCache[key][iso] = workdaysFullSnapshot[iso];
+    });
+    
+    return workdaysFullSnapshot;
+  } catch (err) {
+    console.error('Failed to load settings/workdays:', err);
+    showSnackbar('❌ Failed to load workday overrides.');
+    workdaysFullSnapshot = {};
+    return workdaysFullSnapshot;
+  } finally {
+    hideSpinner();
+  }
+}
+
+async function loadWorkdaysRange(startISO, endISO) {
+  // ✅ FIX: Always ensure fresh data is loaded
+  await ensureWorkdaysLoadedOnce();
+  
+  // ✅ FIX: Ensure workdaysCache initialized
+  if (!workdaysCache) workdaysCache = {};
+  
+  const s = startISO.split('-').map(x => parseInt(x, 10));
+  const e = endISO.split('-').map(x => parseInt(x, 10));
+  const startMonth = new Date(s[0], s[1] - 1, 1);
+  const endMonth = new Date(e[0], e[1] - 1, 1);
+  const combined = {};
+  const cursor = new Date(startMonth);
+  
+  while (cursor <= endMonth) {
+    const key = `${cursor.getFullYear()}-${pad(cursor.getMonth() + 1)}`;
+    const map = workdaysCache[key] || {};
+    Object.assign(combined, map);
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+  
+  console.log("📅 Workday range data for", startISO, "to", endISO, ":", combined);
+  return combined;
+}
+
+function setWorkdayInCache(iso, val) {
+  const key = iso.slice(0, 7);
+  
+  // ✅ FIX: Ensure workdaysCache initialized
+  if (!workdaysCache) workdaysCache = {};
+  if (!(key in workdaysCache)) workdaysCache[key] = {};
+  
+  if (val === undefined || val === null) {
+    delete workdaysCache[key][iso];
+    if (workdaysFullSnapshot) delete workdaysFullSnapshot[iso];
+  } else {
+    workdaysCache[key][iso] = !!val;
+    if (workdaysFullSnapshot) workdaysFullSnapshot[iso] = !!val;
+  }
+}
+
+// ✅ TAMBAH FUNCTION INI: Reset workday cache untuk semua users
+function resetWorkdayCache() {
+  workdaysFullSnapshot = null;
+  workdaysCache = {};
+  selectedDatesSet.clear();
+  console.log('✅ Workday cache reset for all users');
+}
+
+// ✅ TAMBAH: Auto-reset cache ketika auth state change
+firebase.auth().onAuthStateChanged(async user => {
+  if (!user) return window.location.href = 'index.html';
+  
+  // ✅ RESET CACHE SETIAP KALI USER LOGIN
+  resetWorkdayCache();
+  
+  currentUser = user;
+  isAdmin = (user.email === ADMIN_EMAIL);
+  // ... existing code ...
+});
+
+async function persistWorkdaysMap(map) {
+  if (!map || Object.keys(map).length === 0) return;
+  showSpinner();
+  const updates = {};
+  Object.keys(map).forEach(iso => {
+    const val = map[iso];
+    const path = `settings/workdays/${iso}`;
+    updates[path] = (val === undefined) ? null : (val === null ? null : !!val);
+  });
+  try {
+    await db.ref().update(updates);
+    Object.keys(map).forEach(iso => {
+      const v = map[iso];
+      setWorkdayInCache(iso, (v === null ? undefined : v));
+    });
+    showSnackbar('✅ Workday updates saved.');
+  } catch (err) {
+    console.error('Failed saving workdays:', err);
+    showSnackbar('❌ Failed saving workdays: ' + (err.message || err));
+  } finally {
+    hideSpinner();
+  }
+}
+
+// ========== Sidebar toggle ==========
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  document.getElementById('toggleBtn').textContent = sb.classList.contains('collapsed') ? '➡️' : '⬅️';
+}
+
+// ========== Auth & UI init ==========
+let currentCalendarYear, currentCalendarMonth;
+const ADMIN_EMAIL = 'yhlim3031@gmail.com';
+
+firebase.auth().onAuthStateChanged(async user => {
+  if (!user) return window.location.href = 'index.html';
+  
+  currentUser = user;
+  isAdmin = (user.email === ADMIN_EMAIL);
+  
+  document.getElementById('userEmail').textContent = user.email;
+  
+  await ensureUserProfile();
+  
+  if (!isAdmin) {
+    await loadUserPlates();
+  }
+  
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? 'block' : 'none';
+  });
+  
+  // Show/hide sections based on user role
+  if (isAdmin) {
+    // Admin: Show User Management, hide Register Plate
+    document.getElementById('nav-user-management').style.display = 'block';
+    document.getElementById('nav-register').style.display = 'none';
+    document.getElementById('register').style.display = 'none';
+    
+    // Show other admin sections
+    ['daily', 'weekly', 'monthly', 'workday'].forEach(id => {
+      const nav = document.getElementById('nav-' + id);
+      if (nav) nav.style.display = 'block';
+    });
+  } else {
+    // Regular user: Show Register Plate, hide User Management
+    document.getElementById('nav-register').style.display = 'block';
+    document.getElementById('nav-user-management').style.display = 'none';
+    document.getElementById('user-management').style.display = 'none';
+    
+    // Hide admin sections
+    ['daily', 'weekly', 'monthly', 'workday'].forEach(id => {
+      const nav = document.getElementById('nav-' + id);
+      if (nav) nav.style.display = 'none';
+    });
+  }
+  
+  initPickers();
+  showSection('home');
+});
+
+// Load user's registered plates
+async function loadUserPlates() {
+  try {
+    const snapshot = await db.ref('plates').once('value');
+    const plates = snapshot.val() || {};
+    
+    userPlates = [];
+    Object.keys(plates).forEach(plate => {
+      const vehicle = plates[plate];
+      if (vehicle.registeredBy === currentUser.email || 
+          (vehicle.name && matchByNameVariations(vehicle.name, userName))) {
+        userPlates.push({
+          plate: plate,
+          name: vehicle.name,
+          jabatan: vehicle.jabatan,
+          registeredBy: vehicle.registeredBy
+        });
+      }
+    });
+  } catch (err) {
+    console.error('Error loading user plates:', err);
+  }
+}
+
+function calculateWorkedHours(record) {
+  let rawWorked = record.workedHours || record.workedhours || "";
+  
+  if (rawWorked) {
+    rawWorked = String(rawWorked).replace(/\s*(hours?\s*)+$/i, "").trim();
+    const m = rawWorked.match(/(\d+)\s*(?:hour|hours|h)?(?:[:\s,-]+)?\s*(\d+)?\s*(?:min|minutes|m)?/i);
+    if (m) {
+      const h = parseInt(m[1]) || 0;
+      const min = parseInt(m[2]) || 0;
+      const hourLabel = h === 1 ? "hour" : "hours";
+      return `${h} ${hourLabel} ${min} min`;
+    } else {
+      return rawWorked;
+    }
+  }
+  
+  return "-";
+}
+
+// ========== ✅ TAMBAH FUNCTION INI DI SINI ==========
+function loadRegisteredVehicles() {
+  console.log("Loading registered vehicles for:", currentUser?.email);
+  
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    console.error("No user logged in");
+    return;
+  }
+  
+  // Show loading state
+  const vehiclesList = document.getElementById('registeredVehicles');
+  if (vehiclesList) {
+    vehiclesList.innerHTML = '<p>Loading vehicles...</p>';
+  }
+  
+  // Query vehicles dari Firebase
+  db.ref('plates').once('value')
+    .then((snapshot) => {
+      const plates = snapshot.val() || {};
+      const userVehicles = [];
+      
+      // Filter vehicles untuk user ini
+      Object.keys(plates).forEach(plate => {
+        const vehicle = plates[plate];
+        if (vehicle.registeredBy === user.email || 
+            (vehicle.name && matchByNameVariations(vehicle.name, userName))) {
+          userVehicles.push({
+            plate: plate,
+            name: vehicle.name,
+            jabatan: vehicle.jabatan,
+            registeredAt: vehicle.registeredAt
+          });
+        }
+      });
+      
+      // Display results
+      if (!vehiclesList) return;
+      
+      if (userVehicles.length === 0) {
+        vehiclesList.innerHTML = '<p>No vehicles registered.</p>';
+        return;
+      }
+      
+      vehiclesList.innerHTML = '';
+      userVehicles.forEach(vehicle => {
+        const registeredDate = vehicle.registeredAt ? 
+          new Date(vehicle.registeredAt).toLocaleDateString() : 'Unknown';
+        
+        vehiclesList.innerHTML += `
+          <div class="vehicle-item">
+            <div>
+              <h4>${vehicle.plate}</h4>
+              <p class="small">Department: ${vehicle.jabatan || 'N/A'}</p>
+            </div>
+            <div class="vehicle-actions">
+              <button onclick="deleteVehicle('${vehicle.plate}')" style="background:#ef4444; padding: 6px 12px; font-size: 12px;">Delete</button>
+            </div>
+          </div>
+        `;
+      });
+    })
+    .catch((error) => {
+      console.error("Error loading vehicles:", error);
+      if (vehiclesList) {
+        vehiclesList.innerHTML = '<p>Error loading vehicles.</p>';
+      }
+    });
+}
+
+// show section helper
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  
+  // Close mobile menu when selecting a section
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  if (sidebar && mobileOverlay) {
+    sidebar.classList.remove('mobile-open');
+    mobileOverlay.classList.remove('active');
+  }
+  
+  if (id === 'attendance') loadAttendanceByDate();
+  if (id === 'daily') calculateDailyStatus();
+  if (id === 'weekly') {
+    const wk = document.getElementById('weekPicker');
+    if (!wk.value) wk.value = new Date().toISOString().split('T')[0];
+    calculateWeeklySummary();
+  }
+  if (id === 'monthly') calculateMonthlySummary();
+  if (id === 'workday') {
+    const now = new Date();
+    currentCalendarYear = now.getFullYear();
+    currentCalendarMonth = now.getMonth();
+    renderCalendar(currentCalendarYear, currentCalendarMonth);
+  }
+  if (id === 'register') loadRegisteredVehicles();
+  if (id === 'settings') loadUserSettings();
+  if (id === 'user-management') loadUsers();
+}
+
+function loadUserSettings() {
+  const nameInput = document.getElementById('userNameInput');
+  if (nameInput) {
+    nameInput.value = userName;
+  }
+}
+
+// logout
+function logout() {
+  firebase.auth().signOut().then(() => location.href = 'index.html');
+}
+
+// ========== Enhanced Pagination Functions ==========
+function updatePaginationControls() {
+  const firstPageBtn = document.getElementById('firstPageBtn');
+  const prevPageBtn = document.getElementById('prevPageBtn');
+  const nextPageBtn = document.getElementById('nextPageBtn');
+  const lastPageBtn = document.getElementById('lastPageBtn');
+  const paginationInfo = document.getElementById('paginationInfo');
+  
+  // Update button states
+  firstPageBtn.disabled = currentAttendancePage <= 1;
+  prevPageBtn.disabled = currentAttendancePage <= 1;
+  nextPageBtn.disabled = currentAttendancePage >= totalAttendancePages;
+  lastPageBtn.disabled = currentAttendancePage >= totalAttendancePages;
+  
+  // Update pagination info
+  const startRecord = (currentAttendancePage - 1) * attendancePerPage + 1;
+  const endRecord = Math.min(currentAttendancePage * attendancePerPage, totalAttendanceRecords);
+  
+  if (totalAttendanceRecords > 0) {
+    paginationInfo.textContent = `Showing ${startRecord}-${endRecord} of ${totalAttendanceRecords} records`;
+  } else {
+    paginationInfo.textContent = 'No records found';
+  }
+}
+
+function goToPage(page) {
+  if (page < 1 || page > totalAttendancePages) return;
+  currentAttendancePage = page;
+  loadAttendanceByDate(false);
+}
+
+function goToPreviousPage() {
+  if (currentAttendancePage > 1) {
+    currentAttendancePage--;
+    loadAttendanceByDate(false);
+  }
+}
+
+function goToNextPage() {
+  if (currentAttendancePage < totalAttendancePages) {
+    currentAttendancePage++;
+    loadAttendanceByDate(false);
+  }
+}
+
+function goToLastPage() {
+  if (currentAttendancePage < totalAttendancePages) {
+    currentAttendancePage = totalAttendancePages;
+    loadAttendanceByDate(false);
+  }
+}
+
+// ========== Daily Status Pagination Functions ==========
+function updateDailyPaginationControls() {
+  // HANYA update bottom pagination (atas sudah dibuang)
+  const firstPageBtnBottom = document.getElementById('dailyFirstPageBtnBottom');
+  const prevPageBtnBottom = document.getElementById('dailyPrevPageBtnBottom');
+  const nextPageBtnBottom = document.getElementById('dailyNextPageBtnBottom');
+  const lastPageBtnBottom = document.getElementById('dailyLastPageBtnBottom');
+  const paginationInfoBottom = document.getElementById('dailyPaginationInfoBottom');
+  
+  // Check jika element wujud sebelum update
+  if (firstPageBtnBottom) {
+    firstPageBtnBottom.disabled = currentDailyPage <= 1;
+    prevPageBtnBottom.disabled = currentDailyPage <= 1;
+    nextPageBtnBottom.disabled = currentDailyPage >= totalDailyPages;
+    lastPageBtnBottom.disabled = currentDailyPage >= totalDailyPages;
+  }
+  
+  // Update pagination info - BETULKAN "seconds" kepada "records"
+  const startRecord = (currentDailyPage - 1) * dailyPerPage + 1;
+  const endRecord = Math.min(currentDailyPage * dailyPerPage, totalDailyRecords);
+  
+  if (totalDailyRecords > 0) {
+    if (paginationInfoBottom) {
+      paginationInfoBottom.textContent = `Showing ${startRecord}-${endRecord} of ${totalDailyRecords} records`;
+    }
+  } else {
+    if (paginationInfoBottom) {
+      paginationInfoBottom.textContent = 'No records found';
+    }
+  }
+}
+
+function goToDailyPage(page) {
+  if (page < 1 || page > totalDailyPages) return;
+  currentDailyPage = page;
+  displayDailyRecords();
+  updateDailyPaginationControls();
+}
+
+function goToPreviousDailyPage() {
+  if (currentDailyPage > 1) {
+    currentDailyPage--;
+    displayDailyRecords();
+    updateDailyPaginationControls();
+  }
+}
+
+function goToNextDailyPage() {
+  if (currentDailyPage < totalDailyPages) {
+    currentDailyPage++;
+    displayDailyRecords();
+    updateDailyPaginationControls();
+  }
+}
+
+function goToLastDailyPage() {
+  if (currentDailyPage < totalDailyPages) {
+    currentDailyPage = totalDailyPages;
+    displayDailyRecords();
+    updateDailyPaginationControls();
+  }
+}
+
+function displayDailyRecords() {
+  const startIndex = (currentDailyPage - 1) * dailyPerPage;
+  const endIndex = startIndex + dailyPerPage;
+  const recordsToShow = allDailyRecords.slice(startIndex, endIndex);
+  
+  const dailyTable = document.getElementById('dailyStatusTable');
+  
+  if (recordsToShow.length === 0) {
+    dailyTable.innerHTML = '<p style="text-align:center;padding:20px;">No records found.</p>';
+    return;
+  }
+  
+  let html = '<table class="data-table"><tr><th>Name</th><th>Department</th><th>Status</th></tr>';
+  
+  recordsToShow.forEach(record => {
+    // ✅ FIX: Guna label "-" untuk holiday (bukan "Holiday")
+    let statusClass = '';
+    let displayText = record.status;
+    
+    if (record.status === 'Present') {
+      statusClass = 'status-present';
+      displayText = 'Present';
+    } else if (record.status === 'Absent') {
+      statusClass = 'status-absent';
+      displayText = 'Absent';
+    } else {
+      statusClass = 'status-holiday';
+      displayText = '-'; // ✅ GUNA "-" UNTUK HOLIDAY
+    }
+    
+    html += `
+      <tr>
+        <td>${record.name}</td>
+        <td>${record.jabatan}</td>
+        <td><span class="${statusClass}">${displayText}</span></td>
+      </tr>`;
+  });
+  
+  html += '</table>';
+  dailyTable.innerHTML = html;
+}
+
+// ========== User Management Functions ==========
+
+// ✅ FIXED FUNCTION: Get user department from plates
+function getUserDepartment(userEmail, userName) {
+  if (!allPlatesData || Object.keys(allPlatesData).length === 0) return '-';
+  
+  // Cari semua plates yang belong kepada user ini
+  const userPlates = Object.keys(allPlatesData).filter(plate => {
+    const vehicle = allPlatesData[plate];
+    return (
+      vehicle.registeredBy === userEmail || 
+      (vehicle.name && matchByNameVariations(vehicle.name, userName))
+    );
+  });
+  
+  // Ambil department dari plate pertama (jika ada)
+  if (userPlates.length > 0) {
+    const firstPlate = userPlates[0];
+    return allPlatesData[firstPlate].jabatan || '-';
+  }
+  
+  return '-';
+}
+
+async function loadUsers() {
+  if (!isAdmin) return;
+  
+  showSpinner();
+  try {
+    // ✅ FIX: Load plates data sekali untuk semua user
+    const [usersSnapshot, platesSnapshot] = await Promise.all([
+      db.ref('users').once('value'),
+      db.ref('plates').once('value')
+    ]);
+    
+    const users = usersSnapshot.val() || {};
+    allPlatesData = platesSnapshot.val() || {}; // ✅ STORE plates data globally
+    
+    // Convert to array and add user ID
+    allUsers = Object.keys(users).map(uid => {
+      return {
+        id: uid,
+        ...users[uid]
+      };
+    });
+    
+    // ✅ FIX: Filter out admin user from the list
+    allUsers = allUsers.filter(user => user.email !== ADMIN_EMAIL);
+    
+    totalUsers = allUsers.length;
+    totalUserPages = Math.ceil(totalUsers / usersPerPage);
+    
+    displayUsers();
+    updateUserPaginationControls();
+    
+  } catch (err) {
+    console.error('Error loading users:', err);
+    showSnackbar('❌ Failed to load users: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+function displayUsers() {
+  const startIndex = (currentUserPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const usersToShow = allUsers.slice(startIndex, endIndex);
+  
+  const userTable = document.getElementById('userTable');
+  
+  if (usersToShow.length === 0) {
+    userTable.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:12px;">No users found.</td></tr>';
+    return;
+  }
+  
+  let html = '';
+  usersToShow.forEach(user => {
+    const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
+    const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
+    
+    // ✅ FIX: Get department from user's plates
+    const userDepartment = getUserDepartment(user.email, user.name);
+    
+    html += `
+      <tr class="user-list-item" onclick="showUserDetail('${user.id}')">
+        <td style="text-align:left;padding-left:8px;">${user.name || 'Unknown'}</td>
+        <td>${userDepartment}</td>
+        <td><span class="${statusClass}">${statusIcon} ${user.status === 'inactive' ? 'Inactive' : 'Active'}</span></td>
+      </tr>
+    `;
+  });
+  
+  userTable.innerHTML = html;
+}
+
+function updateUserPaginationControls() {
+  const firstPageBtn = document.getElementById('userFirstPageBtn');
+  const prevPageBtn = document.getElementById('userPrevPageBtn');
+  const nextPageBtn = document.getElementById('userNextPageBtn');
+  const lastPageBtn = document.getElementById('userLastPageBtn');
+  const paginationInfo = document.getElementById('userPaginationInfo');
+  const paginationInfoBottom = document.getElementById('userPaginationInfoBottom');
+  
+  // Update button states
+  firstPageBtn.disabled = currentUserPage <= 1;
+  prevPageBtn.disabled = currentUserPage <= 1;
+  nextPageBtn.disabled = currentUserPage >= totalUserPages;
+  lastPageBtn.disabled = currentUserPage >= totalUserPages;
+  
+  // Update pagination info
+  const startRecord = (currentUserPage - 1) * usersPerPage + 1;
+  const endRecord = Math.min(currentUserPage * usersPerPage, totalUsers);
+  
+  if (totalUsers > 0) {
+    paginationInfo.textContent = `Showing ${startRecord}-${endRecord} of ${totalUsers} users`;
+    paginationInfoBottom.textContent = `Showing ${startRecord}-${endRecord} of ${totalUsers} users`;
+  } else {
+    paginationInfo.textContent = 'No users found';
+    paginationInfoBottom.textContent = 'No users found';
+  }
+}
+
+function goToUserPage(page) {
+  if (page < 1 || page > totalUserPages) return;
+  currentUserPage = page;
+  displayUsers();
+  updateUserPaginationControls();
+}
+
+function goToPreviousUserPage() {
+  if (currentUserPage > 1) {
+    currentUserPage--;
+    displayUsers();
+    updateUserPaginationControls();
+  }
+}
+
+function goToNextUserPage() {
+  if (currentUserPage < totalUserPages) {
+    currentUserPage++;
+    displayUsers();
+    updateUserPaginationControls();
+  }
+}
+
+function goToLastUserPage() {
+  if (currentUserPage < totalUserPages) {
+    currentUserPage = totalUserPages;
+    displayUsers();
+    updateUserPaginationControls();
+  }
+}
+
+function filterUsers() {
+  const searchTerm = document.getElementById('searchUser').value.toLowerCase();
+  const departmentFilter = document.getElementById('userDepartmentFilter').value;
+  
+  let filteredUsers = allUsers;
+  
+  // Apply department filter
+  if (departmentFilter) {
+    filteredUsers = filteredUsers.filter(user => {
+      const userDepartment = getUserDepartment(user.email, user.name);
+      return userDepartment === departmentFilter;
+    });
+  }
+  
+  // Apply search filter
+  if (searchTerm) {
+    filteredUsers = filteredUsers.filter(user => 
+      (user.name && user.name.toLowerCase().includes(searchTerm)) ||
+      (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+      (user.jabatan && user.jabatan.toLowerCase().includes(searchTerm))
+    );
+  }
+  
+  const startIndex = (currentUserPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const usersToShow = filteredUsers.slice(startIndex, endIndex);
+  
+  const userTable = document.getElementById('userTable');
+  
+  if (usersToShow.length === 0) {
+    userTable.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:12px;">No matching users found.</td></tr>';
+    return;
+  }
+  
+  let html = '';
+  usersToShow.forEach(user => {
+    const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
+    const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
+    
+    // ✅ FIX: Get department from user's plates
+    const userDepartment = getUserDepartment(user.email, user.name);
+    
+    html += `
+      <tr class="user-list-item" onclick="showUserDetail('${user.id}')">
+        <td style="text-align:left;padding-left:8px;">${user.name || 'Unknown'}</td>
+        <td>${userDepartment}</td>
+        <td><span class="${statusClass}">${statusIcon} ${user.status === 'inactive' ? 'Inactive' : 'Active'}</span></td>
+      </tr>
+    `;
+  });
+  
+  userTable.innerHTML = html;
+}
+
+async function showUserDetail(userId) {
+  if (!isAdmin) return;
+  
+  showSpinner();
+  try {
+    const userSnapshot = await db.ref('users/' + userId).once('value');
+    const user = userSnapshot.val();
+    
+    if (!user) {
+      showSnackbar('❌ User not found');
+      return;
+    }
+    
+    currentEditingUser = {
+      id: userId,
+      ...user
+    };
+    
+    // Load user's vehicles
+    const platesSnapshot = await db.ref('plates').once('value');
+    const allPlates = platesSnapshot.val() || {};
+    const userVehicles = [];
+    
+    Object.keys(allPlates).forEach(plate => {
+      const vehicle = allPlates[plate];
+      if (vehicle.registeredBy === user.email || 
+          (vehicle.name && matchByNameVariations(vehicle.name, user.name))) {
+        userVehicles.push({
+          plate: plate,
+          name: vehicle.name,
+          jabatan: vehicle.jabatan
+        });
+      }
+    });
+    
+    // Load user's RFID
+    let userRFID = '';
+    const rfidSnapshot = await db.ref('rfid_cards').once('value');
+    const rfidCards = rfidSnapshot.val() || {};
+    
+    Object.keys(rfidCards).forEach(rfid => {
+      const card = rfidCards[rfid];
+      if (card.user_id === userId) {
+        userRFID = rfid;
+      }
+    });
+    
+    // ✅ FIX: Get user's department from their plates
+    let userDepartment = '-';
+    if (userVehicles.length > 0) {
+      // Use the department from the first vehicle
+      userDepartment = userVehicles[0].jabatan;
+    }
+    
+    // Populate user detail form
+    document.getElementById('userDetailTitle').textContent = `User Profile: ${user.name}`;
+    document.getElementById('userDetailName').value = user.name || '';
+    document.getElementById('userDetailDepartment').value = userDepartment;
+    document.getElementById('userDetailEmail').value = user.email || '';
+    document.getElementById('userDetailRFID').value = userRFID || '';
+    
+    // Update toggle button text
+    const toggleBtn = document.getElementById('toggleUserStatusBtn');
+    toggleBtn.textContent = user.status === 'inactive' ? 'Activate User' : 'Deactivate User';
+    
+    // Display user vehicles
+    const vehiclesList = document.getElementById('userVehiclesList');
+    if (userVehicles.length === 0) {
+      vehiclesList.innerHTML = '<p>No vehicles registered for this user.</p>';
+    } else {
+      let vehiclesHtml = '<table class="data-table"><tr><th>Plate</th><th>Department</th><th>Actions</th></tr>';
+      userVehicles.forEach(vehicle => {
+        vehiclesHtml += `
+          <tr>
+            <td>${vehicle.plate}</td>
+            <td>${vehicle.jabatan}</td>
+            <td>
+              <button onclick="deleteUserVehicle('${vehicle.plate}')" style="padding:4px 8px;font-size:12px;">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+      vehiclesHtml += '</table>';
+      vehiclesList.innerHTML = vehiclesHtml;
+    }
+    
+    showSection('user-detail');
+    
+  } catch (err) {
+    console.error('Error loading user detail:', err);
+    showSnackbar('❌ Failed to load user details: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+async function saveUserRFID() {
+  if (!isAdmin || !currentEditingUser) return;
+  
+  const rfidInput = document.getElementById('userDetailRFID');
+  const rfidValue = rfidInput.value.trim().toUpperCase();
+  
+  if (!rfidValue) {
+    showSnackbar('❌ Please enter an RFID UID');
+    return;
+  }
+  
+  // Validate RFID format (hexadecimal, 8 characters)
+  const hexRegex = /^[0-9A-F]{8}$/;
+  if (!hexRegex.test(rfidValue)) {
+    showSnackbar('❌ RFID must be 8 hexadecimal characters (e.g., E4F77C05)');
+    return;
+  }
+  
+  showSpinner();
+  try {
+    // Check if RFID is already assigned to another user
+    const rfidSnapshot = await db.ref('rfid_cards/' + rfidValue).once('value');
+    if (rfidSnapshot.exists() && rfidSnapshot.val().user_id !== currentEditingUser.id) {
+      showSnackbar('❌ This RFID is already assigned to another user');
+      hideSpinner();
+      return;
+    }
+    
+    // Remove any existing RFID for this user
+    const allRfidSnapshot = await db.ref('rfid_cards').once('value');
+    const allRfid = allRfidSnapshot.val() || {};
+    
+    const updates = {};
+    
+    // Remove any existing RFID for this user
+    Object.keys(allRfid).forEach(rfid => {
+      if (allRfid[rfid].user_id === currentEditingUser.id) {
+        updates[`rfid_cards/${rfid}`] = null;
+      }
+    });
+    
+    // Add new RFID
+    updates[`rfid_cards/${rfidValue}`] = {
+      user_id: currentEditingUser.id,
+      assigned_by: currentUser.email,
+      assigned_at: new Date().toISOString(),
+      status: 'active'
+    };
+    
+    // Update lookup table
+    updates[`rfid_to_user/${rfidValue}`] = currentEditingUser.id;
+    
+    await db.ref().update(updates);
+    
+    showSnackbar('✅ RFID saved successfully');
+    
+  } catch (err) {
+    console.error('Error saving RFID:', err);
+    showSnackbar('❌ Failed to save RFID: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+async function toggleUserStatus() {
+  if (!isAdmin || !currentEditingUser) return;
+  
+  const newStatus = currentEditingUser.status === 'inactive' ? 'active' : 'inactive';
+  const confirmMessage = newStatus === 'inactive' 
+    ? `Are you sure you want to deactivate ${currentEditingUser.name}?` 
+    : `Are you sure you want to activate ${currentEditingUser.name}?`;
+  
+  if (!confirm(confirmMessage)) return;
+  
+  showSpinner();
+  try {
+    await db.ref(`users/${currentEditingUser.id}/status`).set(newStatus);
+    
+    showSnackbar(`✅ User ${newStatus === 'inactive' ? 'deactivated' : 'activated'} successfully`);
+    
+    // Reload user detail
+    showUserDetail(currentEditingUser.id);
+    
+  } catch (err) {
+    console.error('Error toggling user status:', err);
+    showSnackbar('❌ Failed to update user status: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+async function deleteUserVehicle(plate) {
+  if (!isAdmin || !currentEditingUser) return;
+  
+  if (!confirm(`Are you sure you want to delete plate ${plate}?`)) return;
+  
+  showSpinner();
+  try {
+    await db.ref('plates/' + plate).remove();
+    
+    showSnackbar(`✅ Plate ${plate} deleted successfully`);
+    
+    // Reload user detail
+    showUserDetail(currentEditingUser.id);
+    
+  } catch (err) {
+    console.error('Error deleting vehicle:', err);
+    showSnackbar('❌ Failed to delete vehicle: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+// ✅ COMPLETE FIXED VERSION
+async function loadAttendanceByDate(resetPage = true) {
+  console.log("🔄 loadAttendanceByDate() called");
+  
+  if (resetPage) {
+    currentAttendancePage = 1;
+  }
+  
+  const date = document.getElementById("datePicker").value;
+  const jabatanFilter = document.getElementById("jabatanFilter").value;
+  const table = document.getElementById("attendanceTable");
+
+  if (!date) {
+    table.innerHTML = "<tr><td colspan='8' style='text-align:center;padding:12px;'>Please select a date.</td></tr>";
+    return;
+  }
+
+  showSpinner();
+
+  try {
+
+    // Add debug logging to see what's happening
+    console.log("📡 Loading FRESH data for:", date);
+
+    // Load BOTH attendance data, plates data, DAN workdays data
+    const [attendanceSnap, platesSnap, workdaysData] = await Promise.all([
+      db.ref("attendance/" + date).once("value"),
+      db.ref("plates").once("value"),
+      loadWorkdaysRange(date, date)
+    ]);
+
+    const attendanceData = attendanceSnap.exists() ? attendanceSnap.val() : {};
+    const platesData = platesSnap.val() || {};
+    
+    // Check workday status
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    const isToday = selectedDate.getTime() === today.getTime();
+    const isFuture = selectedDate > today;
+    const isWorkday = date in workdaysData ? !!workdaysData[date] : isDefaultWorkdayISO(date);
+
+    // Use Map to avoid duplicate names
+    const uniqueStaffMap = new Map();
+    
+    // Process plates data to get staff list without duplicates
+    Object.values(platesData).forEach(staff => {
+      const staffName = staff.name || "-";
+      const staffJabatan = staff.jabatan || "-";
+      
+      // Filter by department if admin
+      if (isAdmin && jabatanFilter && staffJabatan !== jabatanFilter) return;
+      
+      // Filter by user if not admin
+      if (!isAdmin && !matchByNameVariations(staffName, userName)) return;
+      
+      // Use Map to avoid duplicate names
+      if (!uniqueStaffMap.has(staffName)) {
+        uniqueStaffMap.set(staffName, {
+          name: staffName,
+          jabatan: staffJabatan,
+          plates: []
+        });
+      }
+    });
+
+    // If regular user has no plates, add user
+    if (!isAdmin && uniqueStaffMap.size === 0) {
+      uniqueStaffMap.set(userName, {
+        name: userName,
+        jabatan: 'Unknown',
+        plates: []
+      });
+    }
+
+    let allRows = [];
+
+    // Process each staff from unique list
+    uniqueStaffMap.forEach((staff, staffName) => {
+      // Find attendance record for this staff
+      const attendanceRecord = findAttendanceRecord(attendanceData, staffName);
+      
+      let shift = "-";
+      let status = "-";
+      let checkin = "-";
+      let checkout = "-";
+      let workedHours = "-";
+      let punctuality = "-";
+
+      // If attendance record exists, use that data
+      if (attendanceRecord) {
+        shift = attendanceRecord.shift || "-";
+        status = attendanceRecord.status || "Present";
+        checkin = attendanceRecord.checkin || "-";
+        checkout = attendanceRecord.checkout || "-";
+        workedHours = calculateWorkedHours(attendanceRecord);
+        punctuality = attendanceRecord.punctuality || "-";
+      } else {
+        // If NO attendance record, check workday status
+        if (!isWorkday) {
+          status = "-";
+        } else if (isFuture) {
+          status = "-";
+        } else {
+          status = "Absent";
+        }
+      }
+
+      // Apply color coding
+      const statusColor = getStatusColor(status);
+      const punctualityColor = getPunctualityColor(punctuality);
+
+      allRows.push(`
+        <tr>
+          <td>${staffName}</td>
+          <td class="${isAdmin ? '' : 'admin-only'} mobile-hidden">${staff.jabatan}</td>
+          <td>${shift}</td>
+          <td style="${statusColor}">${status}</td>
+          <td>${checkin}</td>
+          <td class="mobile-hidden">${checkout}</td>
+          <td class="mobile-hidden">${workedHours}</td>
+          <td class="mobile-hidden" style="${punctualityColor}">${punctuality}</td>
+        </tr>`);
+    });
+
+    // ✅ THIS IS THE MISSING PAGINATION CODE:
+    // Handle pagination and display data
+    if (isAdmin) {
+      totalAttendanceRecords = allRows.length;
+      totalAttendancePages = Math.ceil(totalAttendanceRecords / attendancePerPage);
+      const startIndex = (currentAttendancePage - 1) * attendancePerPage;
+      const endIndex = startIndex + attendancePerPage;
+      const pageRows = allRows.slice(startIndex, endIndex);
+      
+      table.innerHTML = pageRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No staff found.</td></tr>";
+      
+      updatePaginationControls();
+    } else {
+      table.innerHTML = allRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No attendance records found.</td></tr>";
+    }
+
+  } catch (err) {
+    console.error("Firebase error:", err);
+    table.innerHTML = "<tr><td colspan='8' style='text-align:center;padding:12px;'>Firebase connection error.</td></tr>";
+  } finally {
+    hideSpinner();
+  }
+}
+
+// Filter attendance table
+function filterAttendanceTable() {
+  const searchTerm = document.getElementById('searchAttendance').value.toLowerCase();
+  const rows = document.querySelectorAll('#attendanceTable tr');
+  
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+// Export attendance data
+function exportAttendanceData() {
+  const date = document.getElementById("datePicker").value;
+  if (!date) {
+    showSnackbar('Please select a date first');
+    return;
+  }
+  
+  let csvContent = "Name,Department,Shift,Status,Checkin,Checkout,Worked Hours,Punctuality\n";
+  
+  const rows = document.querySelectorAll('#attendanceTable tr');
+  rows.forEach(row => {
+    if (row.style.display !== 'none') {
+      const cells = row.querySelectorAll('td');
+      if (cells.length > 0) {
+        const rowData = Array.from(cells).map(cell => {
+          let text = cell.textContent.trim();
+          if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+            text = '"' + text.replace(/"/g, '""') + '"';
+          }
+          return text;
+        });
+        csvContent += rowData.join(',') + '\n';
+      }
+    }
+  });
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", `attendance_${date}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showSnackbar('Data exported successfully');
+}
+
+// ========== Daily Status - SUPER SIMPLE FIX ==========
+async function calculateDailyStatus() {
+  showSpinner();
+  try {
+    const targetDate = todayISO();
+    const filterJabatan = document.getElementById('jabatanFilterDaily') ? document.getElementById('jabatanFilterDaily').value : '';
+    
+    console.log('🔍 DAILY START - Date:', targetDate);
+    
+    // ✅ LOAD DATA SAMA SEPERTI ATTENDANCE
+    const [platesSnap, attendanceSnap] = await Promise.all([
+      db.ref('plates').once('value'),
+      db.ref('attendance/' + targetDate).once('value')
+    ]);
+
+    const allPlates = platesSnap.val() || {};
+    const attendanceData = attendanceSnap.exists() ? attendanceSnap.val() : {};
+    
+    // ✅ DIRECT CHECK WORKDAY - CARA MUDAH
+    await ensureWorkdaysLoadedOnce();
+    
+    let isWorkday;
+    if (workdaysFullSnapshot && targetDate in workdaysFullSnapshot) {
+      isWorkday = workdaysFullSnapshot[targetDate];
+      console.log('✅ DAILY: Workday Manager setting =', isWorkday);
+    } else {
+      isWorkday = isDefaultWorkdayISO(targetDate);
+      console.log('✅ DAILY: Default setting =', isWorkday);
+    }
+
+    console.log('🔍 DAILY FINAL - isWorkday:', isWorkday, 'Workday Data:', workdaysFullSnapshot);
+
+    // Reset pagination
+    currentDailyPage = 1;
+    allDailyRecords = [];
+    const uniqueStaffMap = new Map();
+
+    if (isAdmin) {
+      Object.values(allPlates).forEach(staff => {
+        const staffName = staff.name || "-";
+        const staffJabatan = staff.jabatan || "-";
+        
+        if (!staffName || staffName === "-") return;
+        if (filterJabatan && staffJabatan !== filterJabatan) return;
+        
+        if (!uniqueStaffMap.has(staffName)) {
+          const attendanceRecord = findAttendanceRecord(attendanceData, staffName);
+          
+          let status = "-";
+          if (isWorkday) {
+            status = attendanceRecord ? "Present" : "Absent";
+          }
+          
+          uniqueStaffMap.set(staffName, {
+            name: staffName,
+            jabatan: staffJabatan,
+            status: status
+          });
+        }
+      });
+
+      allDailyRecords = Array.from(uniqueStaffMap.values());
+      
+    } else {
+      // Untuk user biasa
+      Object.values(allPlates).forEach(staff => {
+        const staffName = staff.name || "-";
+        const staffJabatan = staff.jabatan || "-";
+        
+        if (matchByNameVariations(staffName, userName)) {
+          const attendanceRecord = findAttendanceRecord(attendanceData, staffName);
+          
+          let status = "-";
+          if (isWorkday) {
+            status = attendanceRecord ? "Present" : "Absent";
+          }
+          
+          allDailyRecords.push({
+            name: staffName,
+            jabatan: staffJabatan,
+            status: status
+          });
+        }
+      });
+      
+      if (allDailyRecords.length === 0) {
+        const attendanceRecord = findAttendanceRecord(attendanceData, userName);
+        
+        let status = "-";
+        if (isWorkday) {
+          status = attendanceRecord ? "Present" : "Absent";
+        }
+        
+        allDailyRecords.push({
+          name: userName,
+          jabatan: 'Unknown',
+          status: status
+        });
+      }
+    }
+
+    // Update dan display
+    totalDailyRecords = allDailyRecords.length;
+    totalDailyPages = Math.ceil(totalDailyRecords / dailyPerPage);
+    displayDailyRecords();
+    updateDailyPaginationControls();
+
+    // Show date info
+    const dateDisplay = new Date().toLocaleDateString('en-MY', {
+      weekday: 'long',
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric'
+    });
+    
+    let dateInfoElement = document.getElementById('dailyDateInfo');
+    if (!dateInfoElement) {
+      dateInfoElement = document.createElement('div');
+      dateInfoElement.id = 'dailyDateInfo';
+      dateInfoElement.className = 'daily-date-info';
+      
+      const dailyTable = document.getElementById('dailyStatusTable');
+      dailyTable.parentNode.insertBefore(dateInfoElement, dailyTable);
+    }
+    
+    const workdayStatus = isWorkday ? 
+      '<span style="color:#10b981;margin-left:8px;">(Workday)</span>' : 
+      '<span style="color:#6b7280;margin-left:8px;">(Non-Workday)</span>';
+    
+    dateInfoElement.innerHTML = `<strong>📅 Today: ${dateDisplay}</strong> ${workdayStatus}`;
+
+    console.log('✅ DAILY COMPLETED SUCCESSFULLY');
+
+  } catch (err) {
+    console.error('❌ DAILY ERROR:', err);
+    showSnackbar('❌ Failed to load daily status: ' + err.message);
+  } finally {
+    hideSpinner();
+  }
+}
+
+// ========== Weekly Summary - DEBUG VERSION ==========
+async function calculateWeeklySummary() {
+  showSpinner();
+  try {
+    const pick = document.getElementById('weekPicker').value || todayISO();
+    const base = new Date(pick);
+    const day = base.getDay();
+    const diffToMonday = (day === 0) ? -6 : (1 - day);
+    const monday = new Date(base);
+    monday.setDate(base.getDate() + diffToMonday);
+
+    const dates = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return ymdFromDate(d);
+    });
+
+    console.log('📅 DATES FOR WEEK:', dates);
+    
+    const workdaysMap = await loadWorkdaysRange(dates[0], dates[dates.length - 1]);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    console.log('🗓️ WORKDAYS MAP:', workdaysMap);
+    console.log('🕒 TODAY:', todayISO());
+
+    // Load data
+    const [attendanceSnaps, platesSnap] = await Promise.all([
+      Promise.all(dates.map(dt => db.ref('attendance/' + dt).once('value'))),
+      db.ref('plates').once('value')
+    ]);
+
+    const plates = platesSnap.val() || {};
+    const filterJabatan = document.getElementById('weekJabatanFilter')?.value || '';
+
+    console.log('👥 TOTAL PLATES:', Object.keys(plates).length);
+    console.log('🔍 FILTER DEPARTMENT:', filterJabatan);
+
+    // Process attendance data
+    const attendanceByDate = {};
+    attendanceSnaps.forEach((snap, idx) => {
+      const dt = dates[idx];
+      attendanceByDate[dt] = {};
+      if (snap.exists()) {
+        snap.forEach(r => {
+          const v = r.val();
+          const name = v.name || 'Unknown';
+          attendanceByDate[dt][name] = v;
+        });
+      }
+      console.log(`📊 ${dt} - Attendance records:`, Object.keys(attendanceByDate[dt]).length);
+    });
+
+    const namesSet = new Set();
+    
+    if (isAdmin) {
+      Object.values(plates).forEach(p => {
+        const name = p.name || 'Unknown';
+        const jab = p.jabatan || '';
+        if (filterJabatan && jab !== filterJabatan) return;
+        namesSet.add(name);
+      });
+    } else {
+      Object.values(plates).forEach(p => {
+        const name = p.name || 'Unknown';
+        if (matchByNameVariations(name, userName)) {
+          namesSet.add(name);
+        }
+      });
+      if (namesSet.size === 0) {
+        namesSet.add(userName);
+      }
+    }
+
+    console.log('👤 NAMES TO PROCESS:', Array.from(namesSet));
+
+    const stats = {};
+    const perDayTotals = dates.map(() => ({ present: 0, late: 0, absent: 0 }));
+
+    // DEBUG: Log workday status for each date
+    dates.forEach((dt, i) => {
+      const dtObj = new Date(dt);
+      dtObj.setHours(0, 0, 0, 0);
+      const isWork = dt in workdaysMap ? !!workdaysMap[dt] : isDefaultWorkdayISO(dt);
+      const isFuture = dtObj > today;
+      console.log(`📆 ${dt} - Workday: ${isWork}, Future: ${isFuture}, Default: ${isDefaultWorkdayISO(dt)}`);
+    });
+
+    namesSet.forEach(name => {
+      stats[name] = { t: 0, p: 0, l: 0, dayStatus: Array(dates.length).fill('') };
+      
+      dates.forEach((dt, i) => {
+        const dtObj = new Date(dt);
+        dtObj.setHours(0, 0, 0, 0);
+        
+        let isWork = dt in workdaysMap ? !!workdaysMap[dt] : isDefaultWorkdayISO(dt);
+        const isFuture = dtObj > today;
+        
+        console.log(`🔍 ${name} - ${dt}: Workday=${isWork}, Future=${isFuture}`);
+        
+        // Future dates atau non-workday - show '-'
+        if (isFuture || !isWork) {
+          stats[name].dayStatus[i] = '-';
+          console.log(`   ${name} - ${dt}: Show '-' (Future or Non-workday)`);
+          return;
+        }
+        
+        // Process workdays that have passed
+        const rec = attendanceByDate[dt] && attendanceByDate[dt][name];
+        let status = 'A'; // Default to Absent for workdays with no data
+        
+        if (rec && rec.checkin) {
+          if (rec.status && rec.status.toLowerCase().includes('late')) {
+            status = 'L';
+            console.log(`   ${name} - ${dt}: Show 'L' (Late)`);
+          } else if (rec.punctuality && rec.punctuality.toLowerCase().includes('late')) {
+            status = 'L';
+            console.log(`   ${name} - ${dt}: Show 'L' (Late from punctuality)`);
+          } else {
+            status = 'P';
+            console.log(`   ${name} - ${dt}: Show 'P' (Present)`);
+          }
+        } else {
+          console.log(`   ${name} - ${dt}: Show 'A' (Absent - No record)`);
+        }
+        
+        stats[name].dayStatus[i] = status;
+
+        // Update counters for charts
+        if (isWork && !isFuture) {
+          stats[name].t++;
+          if (status === 'P') {
+            stats[name].p++;
+            perDayTotals[i].present++;
+          } else if (status === 'L') {
+            stats[name].l++;
+            perDayTotals[i].late++;
+          } else if (status === 'A') {
+            perDayTotals[i].absent++;
+          }
+        }
+      });
+    });
+
+    console.log('📈 PER DAY TOTALS:', perDayTotals);
+    console.log('👤 STAFF STATS:', stats);
+
+    // Rest of the function remains the same...
+    if (isAdmin) {
+      const rows = Object.entries(stats).map(([name, st]) => {
+        const perc = st.t ? ((st.p + st.l) / st.t * 100).toFixed(1) : '0.0';
+        return {
+          name,
+          t: st.t,
+          p: st.p,
+          l: st.l,
+          absent: st.t - st.p - st.l,
+          perc,
+          dayStatus: st.dayStatus
+        };
+      }).sort((a, b) => (b.perc === 'N/A' ? 0 : parseFloat(b.perc)) - (a.perc === 'N/A' ? 0 : parseFloat(a.perc)));
+
+      console.log('📊 FINAL ROWS:', rows);
+
+      const totalPresent = rows.reduce((sum, row) => sum + row.p, 0);
+      const totalLate = rows.reduce((sum, row) => sum + row.l, 0);
+      const totalAbsent = rows.reduce((sum, row) => sum + row.absent, 0);
+      const totalStaff = rows.length;
+      const totalWorkdays = rows.reduce((sum, row) => sum + row.t, 0);
+      const attendanceRate = totalWorkdays > 0 ? ((totalPresent + totalLate) / totalWorkdays * 100).toFixed(1) : 0;
+      
+      console.log('📈 FINAL TOTALS:', { totalPresent, totalLate, totalAbsent, totalStaff, totalWorkdays, attendanceRate });
+
+      let tblHtml = `
+      <div class="summary-cards">
+        <div class="summary-card" style="background: #10b981;">
+          <div class="number">${totalPresent}</div>
+          <div class="label">Present On Time</div>
+        </div>
+        <div class="summary-card" style="background: #f59e0b;">
+          <div class="number">${totalLate}</div>
+          <div class="label">Present Late</div>
+        </div>
+        <div class="summary-card" style="background: #ef4444;">
+          <div class="number">${totalAbsent}</div>
+          <div class="label">Absent</div>
+        </div>
+        <div class="summary-card" style="background: #3b82f6;">
+          <div class="number">${totalStaff}</div>
+          <div class="label">Total Staff</div>
+        </div>
+      </div>
+
+      <table class="mini-table">
+        <tr><th>Department</th><td>${filterJabatan || "All Departments"}</td></tr>
+        <tr><th>Period</th><td>${dates[0]} to ${dates[6]}</td></tr>
+        <tr><th>Attendance Rate</th><td>${attendanceRate}%</td></tr>
+      </table>`;
+      
+      document.getElementById("weeklySummaryTable").innerHTML = tblHtml;
+
+      // Chart code remains the same...
+      const labels = dates.map(date => {
+        const d = new Date(date);
+        return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
+      });
+      
+      const presentData = [], lateData = [], absentData = [];
+      for (let i = 0; i < dates.length; i++) {
+        const dt = dates[i];
+        const dtObj = new Date(dt);
+        dtObj.setHours(0, 0, 0, 0);
+        const isWork = dt in workdaysMap ? !!workdaysMap[dt] : isDefaultWorkdayISO(dt);
+
+        if (!isWork || dtObj > today) {
+          presentData.push(0);
+          lateData.push(0);
+          absentData.push(0);
+        } else {
+          presentData.push(perDayTotals[i].present);
+          lateData.push(perDayTotals[i].late);
+          absentData.push(perDayTotals[i].absent);
+        }
+      }
+      
+      console.log('📊 CHART DATA:', { presentData, lateData, absentData });
+      
+      const ctx = document.getElementById("weeklyChart").getContext('2d');
+      if (weeklyChartInstance) weeklyChartInstance.destroy();
+      
+      const allData = [...presentData, ...lateData, ...absentData];
+      const maxData = Math.max(...allData);
+      const maxY = maxData > 0 ? maxData + 1 : 10;
+      
+      weeklyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Present', data: presentData, backgroundColor: '#10b981' },
+            { label: 'Late', data: lateData, backgroundColor: '#f59e0b' },
+            { label: 'Absent', data: absentData, backgroundColor: '#ef4444' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 12
+                }
+              }
+            },
+            title: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: maxY,
+              ticks: {
+                stepSize: 1,
+                precision: 0,
+                font: { size: 11 },
+                callback: function(value) {
+                  return Number.isInteger(value) ? value : '';
+                }
+              }
+            },
+            x: {
+              ticks: {
+                font: { size: 11 }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Rest of the function for Staff Attendance Details...
+    const rows = Object.entries(stats).map(([name, st]) => {
+      const perc = st.t ? ((st.p + st.l) / st.t * 100).toFixed(1) : '0.0';
+      return {
+        name,
+        t: st.t,
+        p: st.p,
+        l: st.l,
+        absent: st.t - st.p - st.l,
+        perc,
+        dayStatus: st.dayStatus
+      };
+    }).sort((a, b) => (b.perc === 'N/A' ? 0 : parseFloat(b.perc)) - (a.perc === 'N/A' ? 0 : parseFloat(a.perc)));
+
+    console.log('👥 FINAL STAFF DETAILS ROWS:', rows);
+
+let gridHtml = `
+<div style="overflow-x: auto;">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="text-align: left; min-width: 140px;">Name</th>`;
+
+dates.forEach(date => {
+  const d = new Date(date);
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  gridHtml += `<th title="${date}" style="min-width: 50px;">${pad(d.getDate())}/${pad(d.getMonth() + 1)}<br><small style="font-size:11px;">${dayNames[d.getDay()]}</small></th>`;
+});
+
+gridHtml += `
+        <th style="min-width: 70px;">Attendance %</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+rows.forEach(r => {
+  console.log(`🔄 RENDERING: ${r.name} - Status: [${r.dayStatus.join(', ')}]`);
+  
+  gridHtml += `<tr><td style="text-align: left; font-weight: 500;">${r.name}</td>`;
+  
+  r.dayStatus.forEach((s, index) => {
+    const dt = dates[index];
+    const dtObj = new Date(dt);
+    dtObj.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let statusClass = '';
+    let displayText = s;
+    
+    console.log(`   📅 ${dt}: Raw status='${s}', Today=${todayISO()}, IsFuture=${dtObj > today}`);
+    
+    // ✅ FIX: Proper future date check
+    if (dtObj > today) {
+      statusClass = 'status-holiday';
+      displayText = '-';
+      console.log(`      → Future date: Show '-'`);
+    } else if (s === 'P') {
+      statusClass = 'status-present';
+      displayText = '✓';
+      console.log(`      → Present: Show '✓'`);
+    } else if (s === 'L') {
+      statusClass = 'status-late';
+      displayText = '⚠';
+      console.log(`      → Late: Show '⚠'`);
+    } else if (s === 'A') {
+      statusClass = 'status-absent';
+      displayText = '✗';
+      console.log(`      → Absent: Show '✗'`);
+    } else if (s === '-') {
+      statusClass = 'status-holiday';
+      displayText = '-';
+      console.log(`      → Holiday: Show '-'`);
+    } else {
+      // Fallback - should not happen
+      statusClass = 'status-holiday';
+      displayText = '-';
+      console.log(`      → Unknown status '${s}': Show '-'`);
+    }
+    
+    gridHtml += `<td><span class="${statusClass}">${displayText}</span></td>`;
+  });
+  
+  gridHtml += `<td style="font-weight: 600; background: #f8fafc;">${r.perc}%</td></tr>`;
+});
+
+    gridHtml += `
+    <div style="display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; font-size: 12px;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="status-present" style="padding: 3px 5px;">✓</span>
+        <span>Present On Time</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="status-late" style="padding: 3px 5px;">⚠</span>
+        <span>Present Late</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="status-absent" style="padding: 3px 5px;">✗</span>
+        <span>Absent</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="status-holiday" style="padding: 3px 5px;">-</span>
+        <span>Holiday/Future</span>
+      </div>
+    </div>`;
+
+    document.getElementById("weeklyDetailGrid").innerHTML = gridHtml;
+
+  } catch (err) {
+    console.error('❌ ERROR in calculateWeeklySummary:', err);
+    showSnackbar('❌ Error building weekly report');
+  } finally {
+    hideSpinner();
+  }
+}
+
+// Filter weekly table
+function filterWeeklyTable() {
+  const searchTerm = document.getElementById('searchWeekly').value.toLowerCase();
+  const rows = document.querySelectorAll('#weeklyDetailGrid tr');
+  
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+// ========== Monthly Summary ==========
+async function calculateMonthlySummary() {
+  showSpinner();
+  try {
+    const month = parseInt(document.getElementById('monthSelect').value, 10);
+    const year = parseInt(document.getElementById('yearSelect').value, 10);
+    const filterJabatan = document.getElementById('monthJabatanFilter') ? document.getElementById('monthJabatanFilter').value : '';
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const dates = [];
+    for (let d = 1; d <= daysInMonth; d++) dates.push(`${year}-${pad(month)}-${pad(d)}`);
+
+    const workdaysMap = await loadWorkdaysRange(dates[0], dates[dates.length - 1]);
+    const snaps = await Promise.all(dates.map(dt => db.ref('attendance/' + dt).once('value')));
+    const platesSnap = await db.ref('plates').once('value');
+    const plates = platesSnap.val() || {};
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const stats = {};
+    const perDayTotals = dates.map(() => ({ present: 0, late: 0, absent: 0 }));
+
+    const attendanceByDate = {};
+    snaps.forEach((snap, idx) => {
+      const dt = dates[idx];
+      attendanceByDate[dt] = {};
+      if (snap.exists()) {
+        snap.forEach(r => {
+          const v = r.val();
+          const name = v.name || 'Unknown';
+          attendanceByDate[dt][name] = v;
+        });
+      }
+    });
+
+    const namesToProcess = isAdmin ?
+      Object.values(plates)
+        .filter(p => !filterJabatan || p.jabatan === filterJabatan)
+        .map(p => p.name)
+        .filter(name => name) :
+      Object.values(plates)
+        .filter(p => matchByNameVariations(p.name, userName))
+        .map(p => p.name)
+        .filter(name => name);
+    
+    if (!isAdmin && namesToProcess.length === 0) {
+      namesToProcess.push(userName);
+    }
+
+    namesToProcess.forEach(name => {
+      stats[name] = { totalWorkdays: 0, present: 0, late: 0, absent: 0, byDate: {} };
+      dates.forEach((dt, idx) => {
+        const dtObj = new Date(dt);
+        dtObj.setHours(0, 0, 0, 0);
+        if (dtObj > today) {
+          stats[name].byDate[dt] = 'Future';
+          return;
+        }
+        const isWork = (dt in workdaysMap) ? !!workdaysMap[dt] : isDefaultWorkdayISO(dt);
+        if (!isWork) {
+          stats[name].byDate[dt] = 'Holiday';
+          return;
+        }
+        stats[name].totalWorkdays++;
+        const recA = attendanceByDate[dt] && attendanceByDate[dt][name];
+        let status = 'Absent';
+        if (recA) {
+          if (recA.status) status = recA.status;
+          else if (recA.checkin) {
+            const cMin = parseTimeToMinutes(recA.checkin);
+            let shiftStart = '08:00';
+            if (recA.shift && recA.shift.toUpperCase().includes('10')) shiftStart = '10:00';
+            const sMin = parseTimeToMinutes(shiftStart);
+            if (cMin !== null && sMin !== null) status = (cMin > sMin) ? 'Late' : 'Present';
+            else status = 'Present';
+          } else status = 'Absent';
+        } else status = 'Absent';
+        stats[name].byDate[dt] = status;
+        if (status === 'Absent') stats[name].absent++;
+        else if (status === 'Late') stats[name].late++;
+        else stats[name].present++;
+        if (status === 'Absent') perDayTotals[idx].absent++;
+        else if (status === 'Late') perDayTotals[idx].late++;
+        else if (status === 'Present') perDayTotals[idx].present++;
+      });
+    });
+
+    if (isAdmin) {
+      const labels = dates.map(d => d.split('-')[2]);
+      const dataPresents = perDayTotals.map(x => x.present);
+      const dataLates = perDayTotals.map(x => x.late);
+      const dataAbsents = perDayTotals.map(x => x.absent);
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+      if (monthlyChart) monthlyChart.destroy();
+      monthlyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Present', data: dataPresents, backgroundColor: '#10b981' },
+            { label: 'Late', data: dataLates, backgroundColor: '#f59e0b' },
+            { label: 'Absent', data: dataAbsents, backgroundColor: '#ef4444' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: true,
+              ticks: {
+                font: { size: 12 }
+              }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: {
+                font: { size: 12 },
+                stepSize: 1,
+                callback: function(value) {
+                  return Number.isInteger(value) ? value : '';
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 13
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    const rows = [];
+    for (const [name, st] of Object.entries(stats)) {
+      const perc = st.totalWorkdays ? (((st.present + st.late) / st.totalWorkdays) * 100).toFixed(1) : '0.0';
+      rows.push({
+        name,
+        total: st.totalWorkdays,
+        present: st.present,
+        late: st.late,
+        absent: st.absent,
+        perc
+      });
+    }
+    rows.sort((a, b) => parseFloat(b.perc) - parseFloat(a.perc));
+    
+    let topAttendant = rows.length > 0 ? rows[0] : null;
+    let tbl = '';
+    
+    if (isAdmin) {
+      tbl = `
+      <div style="margin-bottom:12px; padding:10px; background:#f0f9ff; border-radius:6px; border:1px solid #bae6fd;">
+        <strong style="color:#0369a1; font-size:14px;">Top Attendance: </strong>
+        <span style="color:#0c4a6e;">${topAttendant ? `${topAttendant.name} (${topAttendant.perc}%)` : 'No data'}</span>
+      </div>`;
+    }
+    
+    tbl += '<table class="data-table"><tr><th>Name</th><th>Work Days</th><th>Present</th><th>Late</th><th>Absent</th><th>Attendance %</th></tr>';
+    rows.forEach(r => {
+      tbl += `<tr>
+        <td style="text-align:left;padding-left:8px">${r.name}</td>
+        <td>${r.total}</td>
+        <td>${r.present}</td>
+        <td>${r.late}</td>
+        <td>${r.absent}</td>
+        <td style="font-weight:600;">${r.perc}%</td>
+      </tr>`;
+    });
+    tbl += '</table>';
+    document.getElementById('monthlySummaryTable').innerHTML = tbl;
+
+    let grid = '<div style="overflow-x: auto;"><table class="data-table"><tr><th style="min-width:120px;text-align:left;">Name</th>';
+    const labels = dates.map(d => d.split('-')[2]);
+    labels.forEach(l => grid += `<th style="min-width:28px;">${l}</th>`);
+    grid += '</tr>';
+    
+    rows.forEach(r => {
+      const st = stats[r.name];
+      grid += `<tr><td style="text-align:left;padding-left:8px;font-weight:500;">${r.name}</td>`;
+      dates.forEach(dt => {
+        const status = st.byDate[dt] || ((dt in workdaysMap) ? (!workdaysMap[dt] ? 'Holiday' : 'Absent') : (isDefaultWorkdayISO(dt) ? 'Absent' : 'Holiday'));
+        let cell = '', cls = '';
+        if (status === 'Holiday' || status === 'Future') {
+          cell = '-';
+          cls = 'status-holiday';
+        } else if (status === 'Absent') {
+          cell = 'A';
+          cls = 'status-absent';
+        } else if (status === 'Late') {
+          cell = 'L';
+          cls = 'status-late';
+        } else {
+          cell = 'P';
+          cls = 'status-present';
+        }
+        grid += `<td><span class="${cls}">${cell}</span></td>`;
+      });
+      grid += '</tr>';
+    });
+    grid += '</table></div>';
+    document.getElementById('monthlyDetailGrid').innerHTML = grid;
+
+  } catch (err) {
+    console.error(err);
+    showSnackbar('❌ Error while building monthly report');
+  } finally {
+    hideSpinner();
+  }
+}
+
+// Filter monthly table
+function filterMonthlyTable() {
+  const searchTerm = document.getElementById('searchMonthly').value.toLowerCase();
+  const rows = document.querySelectorAll('#monthlyDetailGrid tr');
+  
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+// ========== Workday Manager ==========
+async function renderCalendar(year, month0) {
+  currentCalendarYear = year;
+  currentCalendarMonth = month0;
+  const title = new Date(year, month0).toLocaleString(undefined, { month: 'long', year: 'numeric' });
+  document.getElementById('calendarTitle').textContent = title;
+
+  const first = new Date(year, month0, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(year, month0 + 1, 0).getDate();
+  const startISO = `${year}-${pad(month0 + 1)}-01`;
+  const endISO = `${year}-${pad(month0 + 1)}-${pad(daysInMonth)}`;
+
+  const workdaysMap = await loadWorkdaysRange(startISO, endISO);
+
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < startDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(year, month0, d);
+    const iso = ymdFromDate(dt);
+    const explicit = (iso in workdaysMap);
+    const isWork = explicit ? !!workdaysMap[iso] : isDefaultWorkdayObj(dt);
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell ' + (isWork ? 'work' : 'holiday') + (iso === new Date().toISOString().split('T')[0] ? ' today' : '');
+    cell.setAttribute('data-iso', iso);
+    const smallText = explicit ? (isWork ? 'Work (set)' : 'Holiday (set)') : (isWork ? 'Work' : 'Holiday');
+    cell.innerHTML = `<div class="date">${d}</div><div class="small-tag">${smallText}</div>`;
+
+    cell.addEventListener('click', async (ev) => {
+      const multi = ev.ctrlKey || ev.metaKey;
+      if (multi) {
+        if (selectedDatesSet.has(iso)) {
+          selectedDatesSet.delete(iso);
+          cell.classList.remove('selected');
+        } else {
+          selectedDatesSet.add(iso);
+          cell.classList.add('selected');
+        }
+        return;
+      }
+      const currentExplicit = (iso in workdaysMap) ? workdaysMap[iso] : undefined;
+      let next;
+      if (currentExplicit === undefined) {
+        next = true;
+      } else if (currentExplicit === true) {
+        next = false;
+      } else if (currentExplicit === false) {
+        next = null;
+      }
+
+      if (next === true) {
+        cell.classList.add('work');
+        cell.classList.remove('holiday');
+        cell.querySelector('.small-tag').textContent = 'Work (set)';
+      } else if (next === false) {
+        cell.classList.remove('work');
+        cell.classList.add('holiday');
+        cell.querySelector('.small-tag').textContent = 'Holiday (set)';
+      } else {
+        const defaultIsWork = isDefaultWorkdayObj(dt);
+        if (defaultIsWork) {
+          cell.classList.add('work');
+          cell.classList.remove('holiday');
+          cell.querySelector('.small-tag').textContent = 'Work';
+        } else {
+          cell.classList.remove('work');
+          cell.classList.add('holiday');
+          cell.querySelector('.small-tag').textContent = 'Holiday';
+        }
+      }
+
+      if (next === null) {
+        await persistWorkdaysMap({ [iso]: null });
+      } else {
+        await persistWorkdaysMap({ [iso]: next });
+      }
+      await ensureWorkdaysLoadedOnce();
+    });
+
+    grid.appendChild(cell);
+  }
+
+  const totalCells = startDow + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 0; i < remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    grid.appendChild(cell);
+  }
+}
+
+async function applySelection() {
+  if (selectedDatesSet.size === 0) {
+    showSnackbar('Select dates (Ctrl/Cmd + click) first.');
+    return;
+  }
+  const updates = {};
+  await ensureWorkdaysLoadedOnce();
+  selectedDatesSet.forEach(iso => {
+    const current = (iso in workdaysFullSnapshot) ? !!workdaysFullSnapshot[iso] : isDefaultWorkdayISO(iso);
+    const newVal = !current;
+    const defaultVal = isDefaultWorkdayISO(iso);
+    if (newVal === defaultVal) {
+      updates[iso] = null;
+    } else {
+      updates[iso] = newVal;
+    }
+  });
+  await persistWorkdaysMap(updates);
+  selectedDatesSet.clear();
+  renderCalendar(currentCalendarYear, currentCalendarMonth);
+}
+
+function clearSelection() {
+  selectedDatesSet.clear();
+  document.querySelectorAll('#calendarGrid .cal-cell.selected').forEach(c => c.classList.remove('selected'));
+}
+
+async function saveVisibleWorkdays() {
+  const cells = document.querySelectorAll('#calendarGrid .cal-cell[data-iso]');
+  const updates = {};
+  await ensureWorkdaysLoadedOnce();
+  cells.forEach(c => {
+    const iso = c.getAttribute('data-iso');
+    const isWork = c.classList.contains('work');
+    const defaultVal = isDefaultWorkdayISO(iso);
+    if (isWork === defaultVal) {
+      updates[iso] = null;
+    } else {
+      updates[iso] = isWork;
+    }
+  });
+  if (Object.keys(updates).length === 0) {
+    showSnackbar('No changes to save.');
+    return;
+  }
+  await persistWorkdaysMap(updates);
+  renderCalendar(currentCalendarYear, currentCalendarMonth);
+}
+
+function prevMonth() {
+  currentCalendarMonth--;
+  if (currentCalendarMonth < 0) {
+    currentCalendarMonth = 11;
+    currentCalendarYear--;
+  }
+  renderCalendar(currentCalendarYear, currentCalendarMonth);
+}
+
+function nextMonth() {
+  currentCalendarMonth++;
+  if (currentCalendarMonth > 11) {
+    currentCalendarMonth = 0;
+    currentCalendarYear++;
+  }
+  renderCalendar(currentCalendarYear, currentCalendarMonth);
+}
+
+// ========== Utils: init pickers, months, years ==========
+function initPickers() {
+  const monthSel = document.getElementById('monthSelect');
+  const yearSel = document.getElementById('yearSelect');
+  monthSel.innerHTML = '';
+  for (let m = 1; m <= 12; m++) {
+    const o = document.createElement('option');
+    o.value = m;
+    o.text = new Date(2000, m - 1, 1).toLocaleString(undefined, { month: 'short' });
+    monthSel.appendChild(o);
+  }
+  const now = new Date();
+  monthSel.value = now.getMonth() + 1;
+  yearSel.innerHTML = '';
+  const startYear = now.getFullYear() - 3;
+  for (let y = startYear; y <= now.getFullYear() + 1; y++) {
+    const o = document.createElement('option');
+    o.value = y;
+    o.text = y;
+    yearSel.appendChild(o);
+  }
+  yearSel.value = now.getFullYear();
+  const wp = document.getElementById('weekPicker');
+  if (wp) wp.value = now.toISOString().split('T')[0];
+  const dp = document.getElementById('datePicker');
+  if (dp) dp.value = now.toISOString().split('T')[0];
+  
+  // ✅ TAMBAH: Set daily date picker kepada hari ini
+  const dailyDatePicker = document.getElementById('dailyDatePicker');
+  if (dailyDatePicker) {
+    dailyDatePicker.value = new Date().toISOString().split('T')[0];
+  }
+  
+  document.getElementById('monthSelect').addEventListener('change', calculateMonthlySummary);
+  document.getElementById('yearSelect').addEventListener('change', calculateMonthlySummary);
+}
+
+// ========== Auto load on DOM ready ==========
+document.addEventListener('DOMContentLoaded', () => {
+  initPickers();
+  setupMobileMenu();
+  loadAttendanceByDate();
+});
+
+// Initialize with current date
+document.getElementById('weekPicker').valueAsDate = new Date();
+</script>
+</body>
+</html>

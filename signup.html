@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up - Smart Attendance</title>
+
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #1a73e8;
+      --blue-dark: #1669c1;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --bg: #f4f6fb;
+      --radius: 12px;
+      --glass: rgba(255, 255, 255, 0.75);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, #f4f6fb 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* --- Container (dua kotak kiri dan kanan sama tinggi) --- */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      gap: 28px;
+      align-items: stretch; /* penting! untuk tinggi sama */
+    }
+
+    /* Left branding */
+    .brand {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 28px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(26, 115, 232, 0.08), rgba(26, 115, 232, 0.03));
+      box-shadow: 0 8px 30px rgba(21, 41, 82, 0.06);
+      justify-content: center;
+      text-align: center;
+    }
+
+    .brand .logo {
+      width: 100%;
+      height: 200px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(26, 115, 232, 0.08);
+    }
+
+    .brand .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand h1 { font-size: 20px; color: #0f1724; }
+    .brand p { color: var(--muted); line-height: 1.5; text-align: justify; }
+
+    .feature-list { margin-top: 6px; display: grid; gap: 8px; text-align: left; }
+    .feature { display: flex; align-items: flex-start; gap: 12px; color: var(--muted); }
+    .feature .icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--glass); display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--blue);
+    }
+
+    /* Right form */
+    .card {
+      flex: 1;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card h2 { font-size: 20px; margin-bottom: 6px; }
+    .card p.lead { color: var(--muted); margin-bottom: 16px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { margin-bottom: 12px; position: relative; }
+
+    label {
+      display: block; font-size: 13px; color: #374151; margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px 12px 44px;
+      border: 1px solid #e6eaf0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: box-shadow 0.18s, border-color 0.18s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 6px 18px rgba(26, 115, 232, 0.08);
+    }
+
+    input::-ms-reveal,
+    input::-ms-clear { display: none; }
+
+    input::-webkit-credentials-auto-fill-button {
+      visibility: hidden; display: none !important;
+    }
+
+    /* Ikon mata kiri */
+    .toggle-eye {
+      position: absolute;
+      left: 14px;
+      top: 38px;
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      fill: #6b7280;
+      opacity: 0.75;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .toggle-eye:hover { opacity: 1; transform: scale(1.1); }
+    .toggle-eye.active { fill: var(--blue); }
+
+    .helper { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .error { color: #dc2626; font-size: 13px; margin-top: 8px; }
+    .success { color: #16a34a; font-size: 13px; margin-top: 8px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 100%; padding: 12px;
+      border-radius: 10px; background: var(--blue); color: white;
+      border: 0; cursor: pointer; font-weight: 600; font-size: 15px;
+      transition: background 0.12s;
+    }
+
+    .btn-primary:hover { background: var(--blue-dark); }
+
+    .or-line {
+      display: flex; align-items: center; gap: 12px;
+      margin: 18px 0; color: var(--muted);
+    }
+
+    .or-line::before, .or-line::after {
+      content: ""; height: 1px; background: #eef2ff; flex: 1; border-radius: 2px;
+    }
+
+    .footer-links {
+      display: flex; justify-content: space-between;
+      margin-top: 20px; font-size: 14px; flex-wrap: wrap; gap: 8px;
+    }
+
+    .footer-links a { color: var(--blue); text-decoration: none; }
+    .footer-links a:hover { text-decoration: underline; }
+
+    /* Responsif */
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .container { flex-direction: column; }
+      .brand { order: -1; padding: 16px; }
+      .card { padding: 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-links { flex-direction: column; text-align: center; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand">
+    <div class="logo">
+      <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" alt="KV Seberang Perai">
+    </div>
+    <h1>Smart Attendance — KV Seberang Perai</h1>
+    <p>Daftar akaun dengan Gmail anda untuk akses ke sistem Smart Attendance. Semua data direkod dan disimpan secara selamat.</p>
+    <div class="feature-list">
+      <div class="feature"><div class="icon">🔒</div><div>Account security is guaranteed</div></div>
+      <div class="feature"><div class="icon">⚡</div><div>Responsive design — works on all devices</div></div>
+      <div class="feature"><div class="icon">📊</div><div>Trusted online data storage</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Create your account</h2>
+    <p class="lead">Use your <strong>Gmail</strong> to sign up. After registration you'll be logged in automatically.</p>
+
+    <div id="messageArea"></div>
+
+    <div class="field">
+      <label for="email">Email (Gmail)</label>
+      <input id="email" type="email" placeholder="you@gmail.com" autocomplete="email" />
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="password">Password</label>
+        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-eye" viewBox="0 0 24 24" id="togglePw">
+          <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/>
+        </svg>
+        <input id="password" type="password" placeholder="Min 6 characters" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label for="confirm">Confirm password</label>
+        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-eye" viewBox="0 0 24 24" id="toggleConfirm">
+          <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/>
+        </svg>
+        <input id="confirm" type="password" placeholder="Repeat password" autocomplete="new-password" />
+      </div>
+    </div>
+
+    <div class="helper">Password must be at least 6 characters.</div>
+    <div id="error" class="error" style="display:none"></div>
+    <div id="success" class="success" style="display:none"></div>
+
+    <div style="margin-top:18px">
+      <button class="btn-primary" id="signupBtn" onclick="handleSignUp()">Create account</button>
+    </div>
+
+    <div class="or-line">or</div>
+
+    <div class="footer-links">
+      <span>Already have an account? <a href="index.html">Sign in</a></span>
+      <a href="forgot.html">Forgot password?</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Firebase init
+  const firebaseConfig = {
+    apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+    authDomain: "drive-thru-smartattendance.firebaseapp.com",
+    databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "drive-thru-smartattendance",
+    storageBucket: "drive-thru-smartattendance.appspot.com",
+    messagingSenderId: "235048051665",
+    appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+  function showError(msg) {
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error').textContent = msg;
+    document.getElementById('success').style.display = 'none';
+  }
+
+  function showSuccess(msg) {
+    document.getElementById('success').style.display = 'block';
+    document.getElementById('success').textContent = msg;
+    document.getElementById('error').style.display = 'none';
+  }
+
+  function isGmail(email) {
+    return /\b[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
+  }
+
+  // Toggle show/hide password (left icon)
+  function setupToggle(idInput, idIcon) {
+    const input = document.getElementById(idInput);
+    const icon = document.getElementById(idIcon);
+    icon.addEventListener("click", () => {
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      icon.classList.toggle("active", isHidden);
+    });
+  }
+  setupToggle("password", "togglePw");
+  setupToggle("confirm", "toggleConfirm");
+
+  async function handleSignUp() {
+    const email = document.getElementById('email').value.trim();
+    const pw = document.getElementById('password').value;
+    const conf = document.getElementById('confirm').value;
+
+    if (!email) return showError('Please enter your Gmail address.');
+    if (!isGmail(email)) return showError('Please use a valid Gmail address (example@gmail.com).');
+    if (!pw || pw.length < 6) return showError('Password must be at least 6 characters.');
+    if (pw !== conf) return showError('Passwords do not match.');
+
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.textContent = 'Creating...';
+
+    try {
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pw);
+      const user = userCredential.user;
+
+      await firebase.database().ref('users/' + user.uid).set({
+        email: user.email,
+        createdAt: new Date().toISOString()
+      });
+
+      showSuccess('Account created. Redirecting...');
+      setTimeout(() => (window.location.href = 'index.html'), 1500);
+    } catch (err) {
+      if (err.code === 'auth/email-already-in-use') {
+        showError('This email is already in use.');
+      } else if (err.code === 'auth/invalid-email') {
+        showError('Invalid email address.');
+      } else if (err.code === 'auth/weak-password') {
+        showError('Password too weak.');
+      } else {
+        showError(err.message || 'Registration failed.');
+      }
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.textContent = 'Create account';
+    }
+  }
+</script>
+
+</body>
+</html>
