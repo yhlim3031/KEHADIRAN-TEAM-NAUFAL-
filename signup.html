@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sign Up - Smart Attendance</title>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -22,15 +24,11 @@
       --glass: rgba(255, 255, 255, 0.75);
     }
 
-<<<<<<< HEAD
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-=======
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
 
     body {
       font-family: "Poppins", sans-serif;
@@ -42,15 +40,7 @@
       padding: 24px;
     }
 
-<<<<<<< HEAD
-    /* --- Container (dua kotak kiri dan kanan sama tinggi) --- */
-    .container {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      gap: 28px;
-      align-items: stretch; /* penting! untuk tinggi sama */
-=======
+    /* Container (two boxes side by side) */
     .container {
       width: 100%;
       max-width: 960px;
@@ -58,15 +48,10 @@
       grid-template-columns: 1fr 520px;
       gap: 28px;
       align-items: center;
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
     }
 
     /* Left branding */
     .brand {
-<<<<<<< HEAD
-      flex: 1;
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -74,31 +59,21 @@
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(26, 115, 232, 0.08), rgba(26, 115, 232, 0.03));
       box-shadow: 0 8px 30px rgba(21, 41, 82, 0.06);
-<<<<<<< HEAD
-=======
       min-height: 520px;
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
       justify-content: center;
       text-align: center;
     }
 
     .brand .logo {
       width: 100%;
-<<<<<<< HEAD
-      height: 200px;
-=======
-      height: 340px;
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
+      height: 300px;
       border-radius: 20px;
       overflow: hidden;
       background: var(--card);
       display: flex;
       align-items: center;
       justify-content: center;
-<<<<<<< HEAD
-=======
       margin-bottom: 8px;
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
       box-shadow: 0 6px 18px rgba(26, 115, 232, 0.08);
     }
 
@@ -108,17 +83,6 @@
       object-fit: contain;
     }
 
-<<<<<<< HEAD
-    .brand h1 { font-size: 20px; color: #0f1724; }
-    .brand p { color: var(--muted); line-height: 1.5; text-align: justify; }
-
-    .feature-list { margin-top: 6px; display: grid; gap: 8px; text-align: left; }
-    .feature { display: flex; align-items: flex-start; gap: 12px; color: var(--muted); }
-    .feature .icon {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: var(--glass); display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: var(--blue);
-=======
     .brand h1 {
       font-size: 22px;
       color: #0f1724;
@@ -154,41 +118,17 @@
       justify-content: center;
       font-size: 18px;
       color: var(--blue);
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
     }
 
     /* Right form */
     .card {
-<<<<<<< HEAD
-      flex: 1;
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
       background: var(--card);
       border-radius: var(--radius);
       padding: 28px;
       box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
-<<<<<<< HEAD
       display: flex;
       flex-direction: column;
       justify-content: center;
-    }
-
-    .card h2 { font-size: 20px; margin-bottom: 6px; }
-    .card p.lead { color: var(--muted); margin-bottom: 16px; }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .field { margin-bottom: 12px; position: relative; }
-
-    label {
-      display: block; font-size: 13px; color: #374151; margin-bottom: 6px;
-    }
-
-    input[type="email"],
-    input[type="password"],
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 14px 12px 44px;
-=======
     }
 
     .card h2 {
@@ -209,6 +149,7 @@
 
     .field {
       margin-bottom: 12px;
+      position: relative;
     }
 
     label {
@@ -221,8 +162,7 @@
     input[type="email"],
     input[type="password"] {
       width: 100%;
-      padding: 12px 14px;
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
+      padding: 12px 14px 12px 44px;
       border: 1px solid #e6eaf0;
       border-radius: 10px;
       font-size: 15px;
@@ -235,15 +175,6 @@
       box-shadow: 0 6px 18px rgba(26, 115, 232, 0.08);
     }
 
-<<<<<<< HEAD
-    input::-ms-reveal,
-    input::-ms-clear { display: none; }
-
-    input::-webkit-credentials-auto-fill-button {
-      visibility: hidden; display: none !important;
-    }
-
-    /* Ikon mata kiri */
     .toggle-eye {
       position: absolute;
       left: 14px;
@@ -260,54 +191,10 @@
     .toggle-eye.active { fill: var(--blue); }
 
     .helper { font-size: 13px; color: var(--muted); margin-top: 6px; }
-=======
-    .helper {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
     .error { color: #dc2626; font-size: 13px; margin-top: 8px; }
     .success { color: #16a34a; font-size: 13px; margin-top: 8px; }
 
     .btn-primary {
-<<<<<<< HEAD
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 100%; padding: 12px;
-      border-radius: 10px; background: var(--blue); color: white;
-      border: 0; cursor: pointer; font-weight: 600; font-size: 15px;
-      transition: background 0.12s;
-    }
-
-    .btn-primary:hover { background: var(--blue-dark); }
-
-    .or-line {
-      display: flex; align-items: center; gap: 12px;
-      margin: 18px 0; color: var(--muted);
-    }
-
-    .or-line::before, .or-line::after {
-      content: ""; height: 1px; background: #eef2ff; flex: 1; border-radius: 2px;
-    }
-
-    .footer-links {
-      display: flex; justify-content: space-between;
-      margin-top: 20px; font-size: 14px; flex-wrap: wrap; gap: 8px;
-    }
-
-    .footer-links a { color: var(--blue); text-decoration: none; }
-    .footer-links a:hover { text-decoration: underline; }
-
-    /* Responsif */
-    @media (max-width: 768px) {
-      body { padding: 12px; }
-      .container { flex-direction: column; }
-      .brand { order: -1; padding: 16px; }
-      .card { padding: 20px; }
-      .form-row { grid-template-columns: 1fr; }
-      .footer-links { flex-direction: column; text-align: center; gap: 6px; }
-=======
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -323,9 +210,7 @@
       transition: background 0.12s;
     }
 
-    .btn-primary:hover {
-      background: var(--blue-dark);
-    }
+    .btn-primary:hover { background: var(--blue-dark); }
 
     .or-line {
       display: flex;
@@ -335,8 +220,7 @@
       color: var(--muted);
     }
 
-    .or-line::before,
-    .or-line::after {
+    .or-line::before, .or-line::after {
       content: "";
       height: 1px;
       background: #eef2ff;
@@ -344,7 +228,6 @@
       border-radius: 2px;
     }
 
-    /* Footer Links */
     .footer-links {
       display: flex;
       justify-content: space-between;
@@ -363,7 +246,7 @@
       text-decoration: underline;
     }
 
-    /* 📱 Responsive for phone */
+    /* Responsive */
     @media (max-width: 768px) {
       body { padding: 12px; }
       .container {
@@ -391,7 +274,6 @@
         text-align: center;
         gap: 6px;
       }
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
     }
   </style>
 </head>
@@ -403,19 +285,11 @@
       <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png" alt="KV Seberang Perai">
     </div>
     <h1>Smart Attendance — KV Seberang Perai</h1>
-<<<<<<< HEAD
-    <p>Daftar akaun dengan Gmail anda untuk akses ke sistem Smart Attendance. Semua data direkod dan disimpan secara selamat.</p>
-    <div class="feature-list">
-      <div class="feature"><div class="icon">🔒</div><div>Account security is guaranteed</div></div>
-      <div class="feature"><div class="icon">⚡</div><div>Responsive design — works on all devices</div></div>
-      <div class="feature"><div class="icon">📊</div><div>Trusted online data storage</div></div>
-=======
     <p>Daftar akaun menggunakan Gmail anda untuk rekod kehadiran. Sistem ini menggunakan Firebase untuk keselamatan dan penyimpanan data.</p>
     <div class="feature-list">
       <div class="feature"><div class="icon">🔒</div><div>Secure Firebase authentication</div></div>
       <div class="feature"><div class="icon">⚡</div><div>Responsive design — works on all devices</div></div>
       <div class="feature"><div class="icon">📊</div><div>Dashboard & weekly report access</div></div>
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
     </div>
   </div>
 
@@ -433,22 +307,16 @@
     <div class="form-row">
       <div class="field">
         <label for="password">Password</label>
-<<<<<<< HEAD
         <svg xmlns="http://www.w3.org/2000/svg" class="toggle-eye" viewBox="0 0 24 24" id="togglePw">
           <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/>
         </svg>
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
         <input id="password" type="password" placeholder="Min 6 characters" autocomplete="new-password" />
       </div>
       <div class="field">
         <label for="confirm">Confirm password</label>
-<<<<<<< HEAD
         <svg xmlns="http://www.w3.org/2000/svg" class="toggle-eye" viewBox="0 0 24 24" id="toggleConfirm">
           <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/>
         </svg>
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
         <input id="confirm" type="password" placeholder="Repeat password" autocomplete="new-password" />
       </div>
     </div>
@@ -471,10 +339,6 @@
 </div>
 
 <script>
-<<<<<<< HEAD
-  // Firebase init
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
   const firebaseConfig = {
     apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
     authDomain: "drive-thru-smartattendance.firebaseapp.com",
@@ -484,6 +348,7 @@
     messagingSenderId: "235048051665",
     appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
   };
+
   firebase.initializeApp(firebaseConfig);
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
@@ -503,8 +368,6 @@
     return /\b[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
   }
 
-<<<<<<< HEAD
-  // Toggle show/hide password (left icon)
   function setupToggle(idInput, idIcon) {
     const input = document.getElementById(idInput);
     const icon = document.getElementById(idIcon);
@@ -514,11 +377,10 @@
       icon.classList.toggle("active", isHidden);
     });
   }
+
   setupToggle("password", "togglePw");
   setupToggle("confirm", "toggleConfirm");
 
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
   async function handleSignUp() {
     const email = document.getElementById('email').value.trim();
     const pw = document.getElementById('password').value;

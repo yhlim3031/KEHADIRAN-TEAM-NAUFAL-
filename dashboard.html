@@ -14,7 +14,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Google Fonts -->
-<<<<<<< HEAD
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 
@@ -33,37 +32,11 @@ body{font-family:'Poppins',sans-serif;background:#f8fafc;display:flex;min-height
 .sidebar a span{transition:opacity 0.3s,visibility 0.3s}
 .sidebar.collapsed a span{opacity:0;visibility:hidden;display:none}
 .sidebar .toggle-btn{display:block;margin-top:16px;text-align:center;cursor:pointer;color:#fff;transition: transform 0.3s}
-=======
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',sans-serif;background:#f0f2f5;display:flex;min-height:100vh;transition:0.3s}
-
-/* Sidebar */
-.sidebar{
-  width:220px;background:#2f3e50;color:#fff;padding:20px;position:fixed;height:100vh;transition:width 0.3s;
-}
-.sidebar.collapsed{width:60px;overflow:hidden}
-.sidebar h2{font-size:22px;margin-bottom:25px;transition:0.3s}
-.sidebar.collapsed h2{opacity:0}
-.sidebar a{
-  display:flex;align-items:center;color:#cbd6df;padding:12px;border-radius:8px;text-decoration:none;margin-bottom:8px;transition:0.3s;
-  position:relative;
-}
-.sidebar a i{margin-right:12px;min-width:20px;text-align:center;font-style:normal;}
-.sidebar a.active,.sidebar a:hover{background:#4a90e2;color:#fff}
-.sidebar .toggle-btn{
-  display:block;margin-top:20px;text-align:center;cursor:pointer;color:#fff;
-  transition: transform 0.3s;
-}
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
 
 /* Tooltip for collapsed sidebar */
 .sidebar.collapsed a:hover::after{
   content: attr(data-tooltip);
   position:absolute;left:70px;top:50%;transform:translateY(-50%);
-<<<<<<< HEAD
   background:#334155;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap;z-index:100;opacity:0;animation: fadeIn 0.25s forwards;font-size:12px;
 }
 @keyframes fadeIn{to{opacity:1}}
@@ -714,81 +687,29 @@ input[type=text],input[type=date],select{
   font-size: 14px;
   color: #0369a1;
 }
-=======
-  background:#333;color:#fff;padding:5px 10px;border-radius:6px;white-space:nowrap;z-index:100;
-  opacity:0; animation: fadeIn 0.3s forwards;
-}
-@keyframes fadeIn{to{opacity:1;}}
-.sidebar:not(.collapsed) a:hover::after{display:none}
-
-/* Main */
-.main{margin-left:220px;padding:30px;flex:1;transition:margin-left 0.3s}
-.sidebar.collapsed + .main{margin-left:60px}
-
-/* Cards */
-.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:transform 0.2s}
-.card:hover{transform:translateY(-3px)}
-
-/* Table */
-table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{padding:10px;text-align:center;border-bottom:1px solid #eee}
-tr:hover{background:#f1f6fb}
-.status-late{color:#ff9800;font-weight:600}
-.status-absent{color:#f44336;font-weight:600}
-.status-punctual{color:#4caf50;font-weight:600}
-
-/* Buttons */
-button{background:#4a90e2;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;transition:0.2s}
-button:hover{background:#357ab8}
-
-/* Inputs */
-input[type=text],input[type=date],select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;margin-top:8px}
-
-/* Snackbar */
-#snackbar{visibility:hidden;min-width:250px;background:#333;color:#fff;text-align:center;
-border-radius:8px;padding:14px;position:fixed;z-index:999;left:50%;bottom:30px;
-transform:translateX(-50%);font-size:16px;transition:0.5s;}
-#snackbar.show{visibility:visible;opacity:1}
-
-/* Spinner */
-#spinner{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-border:6px solid #f3f3f3;border-top:6px solid #4a90e2;border-radius:50%;width:50px;height:50px;animation:spin 1s linear infinite;z-index:1000}
-@keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
-
-/* Responsive */
-@media(max-width:900px){.sidebar{position:fixed;left:-220px}.sidebar.collapsed{left:0;width:220px}.main{margin-left:0;padding:20px}}
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
 </style>
 </head>
 <body>
 
 <div id="spinner"></div>
 
-<<<<<<< HEAD
 <!-- Mobile Menu Button -->
 <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
 
 <!-- Mobile Overlay -->
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
-=======
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <h2>📊 Smart Attendance</h2>
   <a href="#" id="nav-home" onclick="showSection('home')" data-tooltip="Home"><i>🏠</i><span>Home</span></a>
   <a href="#" id="nav-attendance" onclick="showSection('attendance')" data-tooltip="Attendance"><i>📋</i><span>Attendance</span></a>
   <a href="#" id="nav-register" onclick="showSection('register')" data-tooltip="Register Plate"><i>📝</i><span>Register Plate</span></a>
-<<<<<<< HEAD
   <a href="#" id="nav-user-management" onclick="showSection('user-management')" style="display:none" data-tooltip="User Management"><i>👥</i><span>User Management</span></a>
   <a href="#" id="nav-daily" onclick="showSection('daily')" style="display:none" data-tooltip="Daily"><i>📅</i><span>Daily</span></a>
   <a href="#" id="nav-weekly" onclick="showSection('weekly')" style="display:none" data-tooltip="Weekly"><i>🗓️</i><span>Weekly</span></a>
   <a href="#" id="nav-monthly" onclick="showSection('monthly')" style="display:none" data-tooltip="Monthly"><i>📆</i><span>Monthly</span></a>
   <a href="#" id="nav-workday" onclick="showSection('workday')" style="display:none" data-tooltip="Workday Manager"><i>🛠️</i><span>Workday</span></a>
-=======
-  <a href="#" id="nav-daily" onclick="showSection('daily')" style="display:none" data-tooltip="Daily"><i>📅</i><span>Daily</span></a>
-  <a href="#" id="nav-weekly" onclick="showSection('weekly')" style="display:none" data-tooltip="Weekly"><i>📈</i><span>Weekly</span></a>
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
   <a href="#" id="nav-settings" onclick="showSection('settings')" data-tooltip="Settings"><i>⚙️</i><span>Settings</span></a>
   <a href="#" onclick="logout()" data-tooltip="Logout"><i>🔓</i><span>Logout</span></a>
   <span class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">⬅️</span>
@@ -799,7 +720,6 @@ border:6px solid #f3f3f3;border-top:6px solid #4a90e2;border-radius:50%;width:50
 
 <!-- Home -->
 <div id="home" class="card section">
-<<<<<<< HEAD
   <div class="section-header">
     <h3>Welcome</h3>
   </div>
@@ -1209,92 +1129,10 @@ border:6px solid #f3f3f3;border-top:6px solid #4a90e2;border-radius:50%;width:50
     <div class="legend-item"><div class="legend-swatch legend-work"></div><div>Work Day</div></div>
     <div class="legend-item"><div class="legend-swatch legend-holiday"></div><div>Holiday</div></div>
   </div>
-=======
-  <h3>Welcome</h3>
-  <p>Signed in as <strong id="userEmail">-</strong></p>
-</div>
-
-<!-- Attendance -->
-<div id="attendance" class="card section" style="display:none">
-  <h3>📋 Attendance Records</h3>
-  <label>Select date</label>
-  <input type="date" id="datePicker" onchange="loadAttendanceByDate()" />
-  <label id="jabatanFilterLabel" style="display:none;margin-top:10px">Filter by Jabatan</label>
-  <select id="jabatanFilter" style="display:none" onchange="loadAttendanceByDate()">
-    <option value="">All</option>
-    <option>PENGARAH</option>
-    <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
-    <option>TIMBALAN PENGARAH AKADEMIK</option>
-    <option>KETUA JAMINAN KUALITI</option>
-    <option>JABATAN TEKNOLOGI AWAM</option>
-    <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
-    <option>JABATAN TEKNOLOGI MAKLUMAT</option>
-    <option>JABATAN PERNIAGAAN</option>
-    <option>JABATAN PENDIDIKAN UMUM</option>
-    <option>UNIT PSIKOLOGI DAN KERJAYA</option>
-  </select>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th><th>Jabatan</th><th>Shift</th><th>Status</th><th>Checkin</th><th>Checkout</th><th>Worked Hours</th>
-      </tr>
-    </thead>
-    <tbody id="attendanceTable"></tbody>
-  </table>
-</div>
-
-<!-- Register -->
-<div id="register" class="card section" style="display:none">
-  <h3>📝 Register Plate</h3>
-  <input type="text" id="regPlate" placeholder="Plate (e.g. PBL 666)"><br>
-  <label>Select Jabatan</label>
-  <select id="regJawatan">
-    <option>PENGARAH</option>
-    <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
-    <option>TIMBALAN PENGARAH AKADEMIK</option>
-    <option>KETUA JAMINAN KUALITI</option>
-    <option>JABATAN TEKNOLOGI AWAM</option>
-    <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
-    <option>JABATAN TEKNOLOGI MAKLUMAT</option>
-    <option>JABATAN PERNIAGAAN</option>
-    <option>JABATAN PENDIDIKAN UMUM</option>
-    <option>UNIT PSIKOLOGI DAN KERJAYA</option>
-  </select><br>
-  <input type="text" id="regName" placeholder="Name"><br>
-  <button onclick="registerPlate()">Register Plate</button>
-</div>
-
-<!-- Daily -->
-<div id="daily" class="card section" style="display:none">
-  <h3>📅 Daily Status <button onclick="calculateDailyStatus()">🔄</button></h3>
-  <label id="jabatanFilterDailyLabel" style="display:none;margin-top:10px">Filter by Jabatan</label>
-  <select id="jabatanFilterDaily" style="display:none" onchange="calculateDailyStatus()">
-    <option value="">All</option>
-    <option>PENGARAH</option>
-    <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
-    <option>TIMBALAN PENGARAH AKADEMIK</option>
-    <option>KETUA JAMINAN KUALITI</option>
-    <option>JABATAN TEKNOLOGI AWAM</option>
-    <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
-    <option>JABATAN TEKNOLOGI MAKLUMAT</option>
-    <option>JABATAN PERNIAGAAN</option>
-    <option>JABATAN PENDIDIKAN UMUM</option>
-    <option>UNIT PSIKOLOGI DAN KERJAYA</option>
-  </select>
-  <div id="dailyStatusTable"></div>
-</div>
-
-<!-- Weekly -->
-<div id="weekly" class="card section" style="display:none">
-  <h3>📈 Weekly Summary <button onclick="calculateWeeklySummary()">🔄</button></h3>
-  <canvas id="weeklyChart" height="80"></canvas>
-  <div id="weeklySummaryTable"></div>
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
 </div>
 
 <!-- Settings -->
 <div id="settings" class="card section" style="display:none">
-<<<<<<< HEAD
   <div class="section-header">
     <h3>⚙️ Settings</h3>
   </div>
@@ -3853,150 +3691,3 @@ document.getElementById('weekPicker').valueAsDate = new Date();
 </script>
 </body>
 </html>
-=======
-  <h3>⚙️ Settings</h3>
-  <label>Change Language:</label>
-  <select id="langSelect" onchange="changeLanguage()">
-    <option value="en">English</option>
-    <option value="ms">Malay</option>
-  </select>
-</div>
-
-</div>
-<div id="snackbar"></div>
-
-<script>
-// Firebase config
-const firebaseConfig={apiKey:"AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
-authDomain:"drive-thru-smartattendance.firebaseapp.com",
-databaseURL:"https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"drive-thru-smartattendance",
-storageBucket:"drive-thru-smartattendance.appspot.com",
-messagingSenderId:"235048051665",
-appId:"1:235048051665:web:a8c68cc40eb83946e9f6f0"};
-
-firebase.initializeApp(firebaseConfig);
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-function normalizePlate(txt){ return txt.trim().toUpperCase().replace(/\s+/g,''); }
-
-// Sidebar toggle
-function toggleSidebar(){
-  const sb=document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  const toggleBtn=document.getElementById('toggleBtn');
-  toggleBtn.textContent=sb.classList.contains('collapsed')?'➡️':'⬅️';
-}
-
-// Spinner
-function showSpinner(){document.getElementById('spinner').style.display='block';}
-function hideSpinner(){document.getElementById('spinner').style.display='none';}
-
-// Snackbar
-function showSnackbar(msg){const sb=document.getElementById('snackbar'); sb.textContent=msg; sb.className="show"; setTimeout(()=>sb.className="",3000);}
-
-// Auth
-firebase.auth().onAuthStateChanged(user=>{
-if(!user) return window.location.href='index.html';
-document.getElementById('userEmail').textContent=user.email;
-const isAdmin=user.email==='yhlim3031@gmail.com';
-['daily','weekly'].forEach(id=>document.getElementById('nav-'+id).style.display=isAdmin?'block':'none');
-['jabatanFilterLabel','jabatanFilter','jabatanFilterDailyLabel','jabatanFilterDaily'].forEach(id=>document.getElementById(id).style.display=isAdmin?'block':'none');
-showSection('home');
-});
-
-function logout(){firebase.auth().signOut().then(()=>location.href='index.html');}
-function showSection(id){document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));document.getElementById(id).style.display='block';const nav=document.getElementById('nav-'+id);if(nav) nav.classList.add('active');if(id==='attendance') loadAttendanceByDate();if(id==='daily') calculateDailyStatus();if(id==='weekly') calculateWeeklySummary();}
-
-// ===== Attendance Loader =====
-function loadAttendance(dateOverride){
-showSpinner();
-const tbody=document.getElementById('attendanceTable'); tbody.innerHTML='';
-const filterJabatan=document.getElementById('jabatanFilter').value;
-firebase.database().ref('attendance').once('value').then(snap=>{
-snap.forEach(day=>{
-if(dateOverride && day.key!==dateOverride) return;
-day.forEach(rec=>{
-const d=rec.val();
-if(filterJabatan && d.jabatan!==filterJabatan) return;
-let cls=d.status==='Late'?'status-late':d.status==='Absent'?'status-absent':'status-punctual';
-let checkin=d.checkin||'-';
-let checkout=d.checkout||'-';
-let workedLabel='-';
-if(d.workedHours!==undefined){let minHour=7;if(new Date(day.key).getDay()===5) minHour=4;workedLabel=d.workedHours<minHour?`${d.workedHours} hours (Incomplete < ${minHour})`:`${d.workedHours} hours (Complete)`;}
-tbody.innerHTML+=`<tr><td>${d.name||'-'}</td><td>${d.jabatan||'-'}</td><td>${d.shift||'-'}</td><td class="${cls}">${d.status||'-'}</td><td>${checkin}</td><td>${checkout}</td><td>${workedLabel}</td></tr>`;});});
-hideSpinner();
-}
-)}
-function loadAttendanceByDate(){loadAttendance(document.getElementById('datePicker').value);}
-
-// ===== Register Plate =====
-function registerPlate(){
-const raw=document.getElementById('regPlate').value;
-const p=normalizePlate(raw);
-const n=document.getElementById('regName').value.trim();
-const j=document.getElementById('regJawatan').value;
-if(!p||!n||!j) return showSnackbar('❌ Fill all fields');
-showSpinner();
-firebase.database().ref('plates/'+p).set({name:n,jabatan:j})
-.then(()=>{hideSpinner();showSnackbar(`✅ ${p} registered.`);})
-.catch(e=>{hideSpinner();showSnackbar('❌ '+e.message);});
-}
-
-// ===== Daily Status =====
-function calculateDailyStatus(){
-showSpinner();
-const today=new Date().toISOString().split('T')[0];
-const filterJabatan=document.getElementById('jabatanFilterDaily').value;
-let res={};
-firebase.database().ref('plates').once('value').then(ps=>{
-const all=ps.val()||{};
-firebase.database().ref('attendance/'+today).once('value').then(as=>{
-as.forEach(a=>{const data=a.val();if(!data.checkin && !data.checkout) return;
-const plate=data.plate||'';const name=data.name||all[plate]?.name||'Unknown';const jabatan=data.jabatan||all[plate]?.jabatan||'Unknown';
-if(filterJabatan && jabatan!==filterJabatan) return;res[name]='Present';});
-for(const plate in all){const name=all[plate].name||'Unknown';const jabatan=all[plate].jabatan||'Unknown';
-if(filterJabatan && jabatan!==filterJabatan) continue;if(!res[name]) res[name]='Absent';}
-let h='<table><tr><th>Name</th><th>Status</th></tr>';
-for(const [n,s] of Object.entries(res)){let cls=s==='Absent'?'status-absent':'status-punctual';h+=`<tr><td>${n}</td><td class="${cls}">${s}</td></tr>`;}
-document.getElementById('dailyStatusTable').innerHTML=h+'</table>';
-hideSpinner();});});
-}
-
-// ===== Weekly Summary =====
-function calculateWeeklySummary(){
-showSpinner();
-const today=new Date(); let start=new Date(today); start.setDate(today.getDate()-today.getDay());
-const days=[]; for(let i=0;i<7;i++){ let d=new Date(start); d.setDate(start.getDate()+i); days.push(d.toISOString().split('T')[0]);}
-let stats={};
-Promise.all(days.map(d=>firebase.database().ref('attendance/'+d).once('value'))).then(snaps=>{
-snaps.forEach(s=>s.forEach(r=>{const {name,status}=r.val();stats[name]=stats[name]||{t:0,p:0};stats[name].t++;if(status!=='Absent') stats[name].p++;}));
-const labels=[],values=[],tableRows=[];
-for(const [n,st] of Object.entries(stats)){const perc=((st.p/st.t)*100).toFixed(1);labels.push(n);values.push(perc);tableRows.push(`<tr><td>${n}</td><td>${perc}%</td></tr>`);}
-document.getElementById('weeklySummaryTable').innerHTML='<table><tr><th>Name</th><th>%</th></tr>'+tableRows.join('')+'</table>';
-const ctx=document.getElementById('weeklyChart').getContext('2d'); if(window.myChart) window.myChart.destroy();
-window.myChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'% Attendance',data:values,backgroundColor:'#4a90e2'}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
-hideSpinner();});
-}
-
-// ==== Language ====
-const translations={
-ms:{'Home':'Utama','Attendance':'Kehadiran','Register Plate':'Daftar Plat','Daily':'Harian','Weekly':'Mingguan','Settings':'Tetapan','Logout':'Keluar'},
-en:{'Home':'Home','Attendance':'Attendance','Register Plate':'Register Plate','Daily':'Daily','Weekly':'Weekly','Settings':'Settings','Logout':'Logout'}
-};
-function changeLanguage(){
-const lang=document.getElementById('langSelect').value;
-document.querySelectorAll('.sidebar a').forEach(a=>{
-const txt=a.querySelector('span'); if(txt) txt.textContent=translations[lang][txt.textContent]||txt.textContent;
-});
-}
-
-// ==== Auto load today ====
-document.addEventListener('DOMContentLoaded',()=>{
-const today=new Date().toISOString().split('T')[0];
-document.getElementById('datePicker').value=today;
-loadAttendanceByDate();
-});
-</script>
-</body>
-</html>
->>>>>>> e9584e549cb42911a77575776c5d2206afef309b
