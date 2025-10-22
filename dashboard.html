@@ -216,25 +216,110 @@ input[type=text],input[type=date],select{
 .legend-work{background:#3b82f6}
 .legend-holiday{background:#ef4444}
 
-
 /* Mini table for summary */
 .mini-table{width:100%;border-collapse:collapse;margin-top:10px;border:1px solid #e2e8f0;font-size:13px;}
 .mini-table th,.mini-table td{padding:8px 10px;text-align:left;border:1px solid #e2e8f0;}
 .mini-table th{font-weight:600;color:#475569;width:40%;background:#f8fafc;}
 .mini-table td{color:#334155;}
 
+/* Calendar Container with Headers */
+.calendar-container {
+  margin-top: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  background: white;
+}
+
+.calendar-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.cal-header {
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: #475569;
+  padding: 10px 4px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Calendar Grid */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-cell {
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px 4px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  user-select: none;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Rest of your existing cal-cell styles... */
 .workday-controls {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.workday-selector-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.workday-nav-buttons {
+.selector-container {
   display: flex;
-  gap: 6px;
   align-items: center;
+  gap: 6px;
+}
+
+.selector-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.year-selector, .month-selector {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  min-width: 100px;
+}
+
+.year-selector {
+  min-width: 80px;
+}
+
+.month-selector {
+  min-width: 120px;
 }
 
 .workday-action-buttons {
@@ -243,23 +328,77 @@ input[type=text],input[type=date],select{
   flex-wrap: wrap;
 }
 
-.workday-controls button {
-  padding: 8px 14px;
+.workday-action-buttons button {
+  padding: 6px 12px;
   font-size: 13px;
-  min-height: 40px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Workday Status Display */
-#workdayStatus {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  display: none;
+/* Calendar cell improvements */
+.cal-cell {
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px 4px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  user-select: none;
   font-size: 13px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.cal-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cal-cell .date {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.cal-cell .status-label {
+  font-size: 10px;
   font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.05);
+  text-align: center;
+  width: 100%;
+}
+
+.cal-cell.work .status-label {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+
+.cal-cell.holiday .status-label {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.cal-cell.modified {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+/* Remove old navigation buttons */
+.workday-nav-buttons {
+  display: none !important;
 }
 .section-header {
   display: flex;
@@ -420,9 +559,11 @@ input[type=text],input[type=date],select{
 /* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
-  position: fixed;
-  top: 10px;
-  left: 10px;
+  position: fixed !important;
+  top: 15px !important;
+  left: 10px !important;
+  transform: none !important;
+  will-change: transform;
   background: #3b82f6;
   color: white;
   border: none;
@@ -431,6 +572,7 @@ input[type=text],input[type=date],select{
   z-index: 1001;
   font-size: 16px;
 }
+
 
 /* Mobile Overlay */
 .mobile-overlay {
@@ -460,9 +602,22 @@ input[type=text],input[type=date],select{
   display: none;
 }
 
-.admin-only {
-  display: none;
-}
+  .admin-user .admin-only {
+    display: block !important;
+  }
+  
+  .admin-user .filter-section {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  /* Ensure filter elements are visible */
+  .admin-user .filter-section select,
+  .admin-user .filter-section input {
+    display: block !important;
+    width: 100%;
+  }
 
 /* Add vehicle form improvements */
 .add-vehicle-form {
@@ -493,19 +648,29 @@ input[type=text],input[type=date],select{
   font-size: 14px;
 }
 
-/* Settings improvements */
-.settings-section {
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f8fafc;
+/* PERBAIKI Settings Section */
+#user-settings {
+  position: relative;
+  width: 100%;
+  display: none;
+  background: white;
+  padding: 20px;
+  margin: 0;
   border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
 }
 
-.settings-section h4 {
-  margin: 0 0 12px 0;
-  color: #1e293b;
-  font-size: 16px;
+/* Pastikan main container layout benar */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.main > .section {
+  order: 0;
+  flex: none;
 }
 
 /* Auto-capitalize input */
@@ -582,8 +747,261 @@ input[type=text],input[type=date],select{
   margin-top: 0 !important;
 }
 
+/* ========== ATTENDANCE CARD STYLES ========== */
+.attendance-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.attendance-card:hover {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.attendance-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.attendance-card-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1e293b;
+  flex: 1;
+}
+
+.attendance-card-status {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.attendance-card-status.present {
+  background: #10b981;
+  color: white;
+}
+
+.attendance-card-status.late {
+  background: #f59e0b;
+  color: white;
+}
+
+.attendance-card-status.absent {
+  background: #ef4444;
+  color: white;
+}
+
+.attendance-card-status.holiday {
+  background: #6b7280;
+  color: white;
+}
+
+.attendance-card-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.attendance-card-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.attendance-card-detail-label {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.attendance-card-detail-value {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.attendance-card-department {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.attendance-card-department-icon {
+  font-size: 16px;
+}
+
+.no-attendance-cards {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #e2e8f0;
+}
+
+/* Hide cards on desktop by default */
+.mobile-attendance-cards {
+  display: none;
+}
+
 /* ========== MOBILE RESPONSIVE IMPROVEMENTS ========== */
 @media(max-width:900px){
+  /* Show cards and hide table on mobile */
+  .mobile-attendance-cards {
+    display: block !important;
+  }
+ body.admin-user .admin-only {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Fix filter section layout for mobile */
+  body.admin-user .filter-section {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  /* Ensure filter inputs are visible and properly sized */
+  body.admin-user .filter-section select,
+  body.admin-user .filter-section input {
+    display: block !important;
+    width: 100% !important;
+    min-height: 44px; /* Better touch targets */
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+  
+  /* Fix pagination for admin on mobile */
+  body.admin-user .pagination-controls {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Fix action buttons for admin */
+  body.admin-user .action-buttons {
+    display: flex !important;
+    gap: 6px;
+  }
+}
+
+/* ========== SPECIFIC FIX FOR ATTENDANCE SECTION ========== */
+@media(max-width:900px){
+  #attendance .filter-section {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  /* Show both table and cards but hide table on mobile */
+  #attendance .scroll-container {
+    display: none !important;
+  }
+  
+  #attendance .mobile-attendance-cards {
+    display: block !important;
+  }
+  
+  /* Admin-specific attendance fixes */
+  body.admin-user #attendance .filter-section {
+    background: #f0f9ff;
+    border: 1px solid #e0f2fe;
+  }
+  
+  /* Hide table on mobile for all users */
+  #attendance .scroll-container {
+    display: none !important;
+  }
+  
+  #user-settings .section-header h3 {
+    display: none;
+  }
+  
+  .sidebar.mobile-open ~ .main #user-settings .section-header::before {
+    display: none !important;
+  }
+  
+  #user-settings .section-header {
+    display: flex;
+    align-items: center;
+    margin-top: 0 !important;
+    padding-top: 30px !important;
+  }
+  
+  #user-settings .section-header::before {
+    content: "⚙️ Settings";
+    position: fixed;
+    top: 22px;
+    left: 55px;
+    font-size: 18px !important;
+    font-weight: 600;
+    z-index: 1000;   
+  }
+  
+  #user-settings .section-header h3 {
+    display: none;
+  }
+  
+  #user-settings .settings-section h4 {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #1e293b !important;
+    margin-bottom: 14px !important;
+  }
+  
+  /* Besarkan label "Your Display Name:" */
+  #user-settings .form-group label {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Besarkan input field */
+  #user-settings .form-group input {
+    font-size: 16px !important;
+    padding: 10px 12px !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Besarkan button */
+  #user-settings .form-group button {
+    font-size: 16px !important;
+    padding: 10px 16px !important;
+    font-weight: 600 !important;
+    margin-top: 16px !important;
+  }
+  
+  .sidebar.mobile-open ~ #user-settings .section-header::before {
+    display: none !important;
+  }
+  
   .workday-btn-clear,
   .workday-btn-save {
     min-height: 36px !important;
@@ -592,55 +1010,30 @@ input[type=text],input[type=date],select{
     justify-content: center !important;
     font-weight: 500 !important;
   }
-   .workday-controls {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    flex-wrap: nowrap;
-    overflow: hidden;
+  
+  .workday-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
   
-  .workday-nav-buttons {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex: 0 0 auto;
-    min-width: 0;
+  .workday-selector-group {
+    justify-content: center;
   }
   
   .workday-action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex: 0 0 auto;
-    min-width: 0;
-    margin-right: 30px !important; /* ✅ TAMBAH INI - gerak ke kiri */
-    margin-left: 10px;
+    justify-content: center;
   }
   
-  .workday-action-buttons button {
-    padding: 6px 8px;
-    font-size: 11px;
-    white-space: nowrap;
-    flex: 0 0 auto;
+  .year-selector, .month-selector {
+    min-width: 70px;
+    font-size: 12px;
   }
   
-  .workday-nav-buttons button {
-    padding: 6px 8px;
-    font-size: 11px;
-    min-width: 32px;
-    flex: 0 0 auto;
+  .selector-label {
+    font-size: 12px;
   }
-  
-  #calendarTitle {
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    min-width: 0;
-    padding: 0 4px;
-  }
+
   /* Adjust mobile menu button */
   .mobile-menu-btn {
     display: block;
@@ -653,7 +1046,7 @@ input[type=text],input[type=date],select{
     z-index: 1002;
   }
 
-  /* ⬇️ FIX: Gunakan selector yang lebih spesifik ⬇️ */
+  /* FIX: Gunakan selector yang lebih spesifik */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
@@ -715,26 +1108,27 @@ input[type=text],input[type=date],select{
     gap: 8px;
   }
   
-  /* ✅ FIX: Selaraskan section headers untuk mobile */
-.section-header {
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 12px;
-  min-height: 40px;
-}
+  /* FIX: Selaraskan section headers untuk mobile */
+  .section-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px;
+    min-height: 40px;
+  }
 
-.section-header h3 {
-  font-size: 18px !important;
-  margin: 0 !important;
-  flex: 1;
-  padding-left: 26px !important; 
-}
-    #home .section-header {
+  .section-header h3 {
+    font-size: 18px !important;
+    margin: 0 !important;
+    flex: 1;
+    padding-left: 26px !important; 
+  }
+  
+  #home .section-header {
     display: flex;
     align-items: center;
     margin-top: 0 !important;
-    padding-top: 30px !important; /* ⬅️ Ruang untuk row fixed */
+    padding-top: 30px !important;
   }
   
   #home .section-header::before {
@@ -748,38 +1142,39 @@ input[type=text],input[type=date],select{
   }
   
   #home .section-header h3 {
-    display: none; /* ⬅️ Sembunyikan h3 asal */
-
+    display: none;
   }
-    .sidebar.mobile-open ~ .main #home .section-header::before {
+  
+  .sidebar.mobile-open ~ .main #home .section-header::before {
     display: none !important;
   }
-/* ✅ FIX: Selaraskan action buttons */
-.action-buttons {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-top: 0 !important;
-}
+  
+  /* FIX: Selaraskan action buttons */
+  .action-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 0 !important;
+  }
 
-.action-buttons button {
-  padding: 6px 8px;
-  font-size: 11px;
-  min-height: 36px;
-  min-width: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .action-buttons button {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 36px;
+    min-width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.action-buttons button .text {
-  display: none;
-}
+  .action-buttons button .text {
+    display: none;
+  }
 
-.action-buttons button .icon {
-  margin-right: 0;
-  font-size: 12px;
-}
+  .action-buttons button .icon {
+    margin-right: 0;
+    font-size: 12px;
+  }
   
   /* Improve filter sections */
   .filter-section {
@@ -848,19 +1243,41 @@ input[type=text],input[type=date],select{
   }
   
   /* Better calendar for mobile */
-  .calendar {
+  .calendar-headers {
+    display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  
+  .cal-header {
+    padding: 8px 2px;
+    font-size: 11px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   
   .cal-cell {
-    padding: 2px 1px;
-    min-height: 35px;
-    font-size: 10px;
+    min-height: 50px!important;
+    padding: 4px 2px!important;
+    font-size: 12px;
+    text-align: center;
   }
   
-  .cal-cell .date {
-    font-size: 10px;
+  /* Ensure both headers and cells have same width distribution */
+  .cal-header,
+  .cal-cell {
+    width: 100%;
+    box-sizing: border-box;
   }
   
   /* Adjust chart sizes */
@@ -888,11 +1305,6 @@ input[type=text],input[type=date],select{
   
   .form-group {
     min-width: 100%;
-  }
-  
-  /* Hide some columns on mobile tables */
-  .mobile-hidden {
-    display: none;
   }
   
   /* Smaller status badges */
@@ -930,88 +1342,132 @@ input[type=text],input[type=date],select{
   .add-vehicle-form, .settings-section, .user-detail-section {
     padding: 10px;
   }
+  
   /* ========== CUSTOM DAILY ADMIN TEXT SIZES ========== */
-#daily .section-header h3 {
-  font-size: 14px !important;
-  font-weight: 600 !important;
-}
+  #daily .section-header h3 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
 
-#daily .filter-section label {
-  font-size: 10px !important;
-  font-weight: 500 !important;
-}
+  #daily .filter-section label {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+  }
 
-#daily .filter-section select,
-#daily .filter-section input {
-  font-size: 10px !important;
-}
+  #daily .filter-section select,
+  #daily .filter-section input {
+    font-size: 10px !important;
+  }
 
-#dailyDateInfo {
-  font-size: 10px !important;
-  font-weight: 500 !important;
-}
+  #dailyDateInfo {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+  }
 
-#daily .data-table th {
-  font-size: 12px !important;
-  padding: 14px 12px !important;
-  font-weight: 500 !important;
-}
+  #daily .data-table th {
+    font-size: 12px !important;
+    padding: 14px 12px !important;
+    font-weight: 500 !important;
+  }
 
-#daily .data-table td {
-  font-size: 9px !important;
-  padding: 12px 10px !important;
-}
+  #daily .data-table td {
+    font-size: 9px !important;
+    padding: 12px 10px !important;
+  }
 
-#daily .status-present,
-#daily .status-absent,
-#daily .status-holiday {
-  font-size: 9px !important;
-  padding: 6px 9px !important;
-  font-weight: 500 !important;
-}
+  #daily .status-present,
+  #daily .status-absent,
+  #daily .status-holiday {
+    font-size: 9px !important;
+    padding: 6px 9px !important;
+    font-weight: 500 !important;
+  }
 
-#daily .pagination-info {
-  font-size: 8px !important;
-  font-weight: 500 !important;
-}
+  #daily .pagination-info {
+    font-size: 8px !important;
+    font-weight: 500 !important;
+  }
 
-#daily .pagination-buttons button {
-  font-size: 8px !important;
-  padding: 8px 14px !important;
-  font-weight: 400 !important;
-}
+  #daily .pagination-buttons button {
+    font-size: 8px !important;
+    padding: 8px 14px !important;
+    font-weight: 400 !important;
+  }
+  
 }
 
 /* ========== 600px BREAKPOINT ========== */
 @media(max-width:600px){
+
+    body.admin-user .filter-section {
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+  
+  body.admin-user .filter-section label {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+  }
+  
+  body.admin-user .filter-section select,
+  body.admin-user .filter-section input {
+    font-size: 14px !important;
+    padding: 10px !important;
+  }
   /* Mobile menu button fixes */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
   }
- .workday-controls {
-    gap: 3px;
+  
+  .workday-selector-group {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
   }
   
-  .workday-action-buttons {
-    gap: 3px;
+  .selector-container {
+    justify-content: space-between;
+    width: 100%;
   }
   
-  .workday-action-buttons button {
-    padding: 5px 6px;
+  .year-selector, .month-selector {
+    flex: 1;
+    min-width: auto;
+  }
+  
+  .cal-cell {
+    min-height: 45px !important;
+  }
+  
+  .cal-cell .date {
+    font-size: 13px !important;
+  }
+
+  .cal-cell .status-label {
+    font-size: 9px;
+  }
+
+  .calendar-headers {
+    gap: 1px;
+  }
+  
+  .calendar {
+    gap: 1px;
+  }
+  
+  .cal-header {
     font-size: 10px;
+    padding: 6px 1px;
+    min-height: 28px;
   }
   
-  .workday-nav-buttons button {
-    padding: 5px 6px;
-    font-size: 10px;
-    min-width: 28px;
+  .cal-cell {
+    min-height: 40px;
+    padding: 4px 1px;
+    font-size: 11px;
   }
   
-  #calendarTitle {
-    font-size: 12px;
-    padding: 0 3px;
-  }
   body:has(.sidebar.mobile-open) .mobile-menu-btn {
     display: none !important;
   }
@@ -1057,26 +1513,26 @@ input[type=text],input[type=date],select{
     font-size: 9px;
   }
   
-  /* ✅ FIX: Even smaller but selari */
-.action-buttons button {
-  padding: 5px 6px;
-  font-size: 10px;
-  min-height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  /* FIX: Even smaller but selari */
+  .action-buttons button {
+    padding: 5px 6px;
+    font-size: 10px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-/* ✅ FIX: Smaller section headers tapi tetap selari */
-.section-header h3 {
-  font-size: 17px!important; 
-  margin: 0 !important;
-}
+  /* FIX: Smaller section headers tapi tetap selari */
+  .section-header h3 {
+    font-size: 17px!important; 
+    margin: 0 !important;
+  }
 
-.section-header {
-  gap: 8px !important;
-  padding-left: 26px !important;
-}
+  .section-header {
+    gap: 8px !important;
+    padding-left: 26px !important;
+  }
   
   /* Smaller cards */
   .card {
@@ -1097,15 +1553,16 @@ input[type=text],input[type=date],select{
   }
   
   /* ========== ATTENDANCE CARD LAYOUT FOR PHONE USERS ========== */
-  /* Hide table for non-admin users on mobile */
-  body:not(.admin-user) #attendance .data-table {
+  /* Hide table for all users on mobile */
+  #attendance .data-table {
     display: none !important;
   }
   
-  /* Show card layout for non-admin users on mobile */
-  body:not(.admin-user) #attendance .attendance-cards-container {
+  /* Show card layout for all users on mobile */
+  #attendance .mobile-attendance-cards {
     display: block !important;
   }
+  
   .workday-action-buttons {
     flex-direction: column;
     gap: 4px;
@@ -1127,106 +1584,42 @@ input[type=text],input[type=date],select{
     font-size: 13px;
     padding: 0 4px;
   }
-
-  /* Attendance Card Styles */
-  .attendance-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #e2e8f0;
-  }
-  
-  .attendance-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #f1f5f9;
-  }
-  
-  .attendance-card-name {
-    font-weight: 600;
-    font-size: 14px;
-    color: #1e293b;
-  }
-  
-  .attendance-card-status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-  
-  .attendance-card-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    font-size: 12px;
-  }
-  
-  .attendance-card-detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  
-  .attendance-card-label {
-    color: #64748b;
-    font-size: 13px !important;
-    font-weight: 500;
-  }
-  
-  .attendance-card-value {
-    color: #334155;
-    font-size: 13px !important;
-    font-weight: 500;
-  }
-  
-  /* Status color variations */
-  .attendance-card-status.present {
-    background: #10b981;
-    color: white;
-  }
-  
-  .attendance-card-status.late {
-    background: #f59e0b;
-    color: white;
-  }
-  
-  .attendance-card-status.absent {
-    background: #ef4444;
-    color: white;
-  }
-  
-  .attendance-card-status.holiday {
-    background: #6b7280;
-    color: white;
-  }
-  
-  /* No records message */
-  .no-attendance-cards {
-    text-align: center;
-    padding: 20px;
-    color: #64748b;
-    font-size: 14px;
-  }
 }
 
 /* ========== 400px BREAKPOINT ========== */
 @media(max-width:400px){
+  .calendar-headers {
+    gap: 1px;
+  }
+  
+  .calendar {
+    gap: 1px;
+  }
+  
+  .cal-header {
+    font-size: 9px;
+    padding: 4px 1px;
+    min-height: 26px;
+  }
+  
+  .cal-cell {
+    min-height: 60px;
+    padding: 3px 1px;
+    font-size: 10px;
+  }
+  
   /* Mobile menu button fixes */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
   }
-    .workday-btn-clear,
+  
+  .workday-btn-clear,
   .workday-btn-save {
     min-height: 30px !important;
     font-size: 10px !important;
   }
+  
   .workday-action-buttons button {
     padding: 4px 5px;
     font-size: 9px;
@@ -1250,6 +1643,7 @@ input[type=text],input[type=date],select{
     font-size: 11px;
     padding: 0 2px;
   }
+  
   body:has(.sidebar.mobile-open) .mobile-menu-btn {
     display: none !important;
   }
@@ -1330,23 +1724,23 @@ input[type=text],input[type=date],select{
   
   /* ========== ATTENDANCE CARD LAYOUT ENHANCEMENTS FOR 400px ========== */
   .attendance-card {
-    padding: 10px;
-    margin-bottom: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
   }
   
   .attendance-card-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
   }
   
   .attendance-card-name {
-    font-size: 13px;
+    font-size: 15px;
   }
   
   .attendance-card-status {
-    font-size: 10px;
-    padding: 3px 6px;
+    font-size: 11px;
+    padding: 5px 8px;
     align-self: flex-start;
   }
   
@@ -1355,31 +1749,26 @@ input[type=text],input[type=date],select{
     gap: 6px;
   }
   
-  .attendance-card-detail-item {
+  .attendance-card-detail-row {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
   
-  .attendance-card-label {
-    font-size: 10px;
+  .attendance-card-detail-label {
+    font-size: 12px;
     min-width: 80px;
   }
   
-  .attendance-card-value {
-    font-size: 11px;
+  .attendance-card-detail-value {
+    font-size: 12px;
     text-align: right;
   }
   
   .no-attendance-cards {
-    padding: 15px;
-    font-size: 13px;
+    padding: 20px;
+    font-size: 14px;
   }
-}
-
-/* Hide card layout by default (will be shown via media query) */
-.attendance-cards-container {
-  display: none;
 }
 </style>
 </head>
@@ -1404,7 +1793,7 @@ input[type=text],input[type=date],select{
   <a href="#" id="nav-weekly" onclick="showSection('weekly')" style="display:none" data-tooltip="Weekly"><i>🗓️</i><span>Weekly</span></a>
   <a href="#" id="nav-monthly" onclick="showSection('monthly')" style="display:none" data-tooltip="Monthly"><i>📆</i><span>Monthly</span></a>
   <a href="#" id="nav-workday" onclick="showSection('workday')" style="display:none" data-tooltip="Workday Manager"><i>🛠️</i><span>Workday</span></a>
-  <a href="#" id="nav-settings" onclick="showSection('settings')" data-tooltip="Settings"><i>⚙️</i><span>Settings</span></a>
+  <a href="#" id="nav-settings" onclick="showSection('user-settings')" data-tooltip="Settings"><i>⚙️</i><span>Settings</span></a>
   <a href="#" onclick="logout()" data-tooltip="Logout"><i>🔓</i><span>Logout</span></a>
   <span class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">⬅️</span>
 </div>
@@ -1465,21 +1854,21 @@ input[type=text],input[type=date],select{
   </div>
 
   <!-- Card Layout Container (for mobile users) -->
-  <div class="attendance-cards-container" id="attendanceCardsContainer"></div>
+  <div class="mobile-attendance-cards" id="mobileAttendanceCards"></div>
 
-  <!-- Table Layout (for admin users) -->
+  <!-- Table Layout (for desktop users) -->
   <div class="scroll-container">
     <table class="data-table">
       <thead>
-        <tr>
+        <tr>  
           <th>Name</th>
-          <th class="admin-only mobile-hidden">Department</th>
+          <th>Department</th>
           <th>Shift</th>
           <th>Status</th>
           <th>Checkin</th>
-          <th class="mobile-hidden">Checkout</th>
-          <th class="mobile-hidden">Worked Hours</th>
-          <th class="mobile-hidden">Punctuality</th>
+          <th>Checkout</th>
+          <th>Worked Hours</th>
+          <th>Punctuality</th>
         </tr>
       </thead>
       <tbody id="attendanceTable"></tbody>
@@ -1498,6 +1887,7 @@ input[type=text],input[type=date],select{
   </div>
 </div>
 
+<!-- Rest of your HTML sections remain the same -->
 <!-- Register (for regular users) -->
 <div id="register" class="card section" style="display:none">
   <div class="section-header">
@@ -1835,30 +2225,60 @@ input[type=text],input[type=date],select{
     </div>
   </div>
   
- <div class="workday-controls">
-  <div class="workday-nav-buttons">
-    <button onclick="prevMonth()">◀</button>
-    <div id="calendarTitle" style="font-weight:600;font-size:16px;"></div>
-    <button onclick="nextMonth()">▶</button>
+  <!-- Year/Month Selector Controls -->
+  <div class="workday-controls">
+    <div class="workday-selector-group">
+      <div class="selector-container">
+        <label for="yearSelectWorkday" class="selector-label">Year:</label>
+        <select id="yearSelectWorkday" class="year-selector" onchange="onYearMonthChange()">
+          <!-- Options will be populated by JavaScript -->
+        </select>
+      </div>
+      <div class="selector-container">
+        <label for="monthSelectWorkday" class="selector-label">Month:</label>
+        <select id="monthSelectWorkday" class="month-selector" onchange="onYearMonthChange()">
+          <option value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">October</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="workday-action-buttons">
+      <button onclick="clearSelection()" style="background:#ef4444;" class="workday-btn-clear">Clear Selection</button>
+      <button onclick="saveVisibleWorkdays()" style="background:#10b981;" class="workday-btn-save">Save All</button>
+    </div>
   </div>
-  
-  <div class="workday-action-buttons">
-    <button onclick="clearSelection()" style="background:#ef4444;" class="workday-btn-clear">Clear Selection</button>
-    <button onclick="saveVisibleWorkdays()" style="background:#10b981;" class="workday-btn-save">Save All</button>
-  </div>
-</div>
+    <!-- Calendar Grid with Day Headers -->
+  <div class="calendar-container">
+    <!-- Day of Week Headers -->
+    <div class="calendar-headers">
+      <div class="cal-header">Sun</div>
+      <div class="cal-header">Mon</div>
+      <div class="cal-header">Tue</div>
+      <div class="cal-header">Wed</div>
+      <div class="cal-header">Thu</div>
+      <div class="cal-header">Fri</div>
+      <div class="cal-header">Sat</div>
+    </div>
   <div id="calendarGrid" class="calendar" aria-hidden="false"></div>
-  
-  <div class="cal-legend">
-    <div class="legend-item"><div class="legend-swatch legend-work"></div><div>Work Day</div></div>
-    <div class="legend-item"><div class="legend-swatch legend-holiday"></div><div>Holiday</div></div>
-  </div>
   
   <div id="workdayStatus" style="margin-top: 10px; padding: 8px; border-radius: 4px; display: none;"></div>
 </div>
+</div>
+
 
 <!-- Settings -->
-<div id="settings" class="card section" style="display:none">
+<div id="user-settings" class="card section" style="display:none">
   <div class="section-header">
     <h3>⚙️ Settings</h3>
   </div>
@@ -1883,8 +2303,8 @@ input[type=text],input[type=date],select{
 const firebaseConfig = {
   apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
   authDomain: "drive-thru-smartattendance.firebaseapp.com",
-  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "drive-thru-smatattendance",
+  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app", // FIXED URL
+  projectId: "drive-thru-smartattendance",
   storageBucket: "drive-thru-smartattendance.appspot.com",
   messagingSenderId: "235048051665",
   appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
@@ -1907,7 +2327,8 @@ function setupMobileMenu() {
   const mobileOverlay = document.getElementById('mobileOverlay');
   
   if (mobileMenuBtn && sidebar && mobileOverlay) {
-    mobileMenuBtn.addEventListener('click', function() {
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       sidebar.classList.toggle('mobile-open');
       mobileOverlay.classList.toggle('active');
       document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
@@ -1919,13 +2340,30 @@ function setupMobileMenu() {
       document.body.style.overflow = '';
     });
     
-    // Close menu when clicking on a link
+    // Close menu when clicking on a link - FIXED VERSION
     document.querySelectorAll('.sidebar a').forEach(link => {
-      link.addEventListener('click', function() {
+      link.addEventListener('click', function(e) {
         sidebar.classList.remove('mobile-open');
         mobileOverlay.classList.remove('active');
         document.body.style.overflow = '';
+        
+        // Allow the click to proceed to section navigation
+        setTimeout(() => {
+          const sectionId = this.getAttribute('onclick')?.match(/showSection\('([^']+)'\)/)?.[1];
+          if (sectionId) {
+            showSection(sectionId);
+          }
+        }, 100);
       });
+    });
+    
+    // Close menu when window is resized to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 900) {
+        sidebar.classList.remove('mobile-open');
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
     });
   }
 }
@@ -1975,7 +2413,7 @@ function parseTimeToMinutes(t) {
   return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
 }
 
-// ✅ FIXED: Simple todayISO()
+// FIXED: Simple todayISO()
 function todayISO() {
   const now = new Date();
   
@@ -2050,6 +2488,14 @@ let allDailyRecords = [];
 // Global plates data for department lookup
 let allPlatesData = {};
 
+// Calendar rendering control
+let isRenderingCalendar = false;
+let lastRenderCall = { year: null, month0: null };
+
+// Workday modifications
+let modifiedDates = new Map();
+let workdaysFullSnapshot = null;
+
 // ========== USER PROFILE SYSTEM ==========
 function extractNameFromEmail(email) {
   if (!email) return 'User';
@@ -2062,7 +2508,7 @@ function extractNameFromEmail(email) {
     .join(' ');
 }
 
-// ✅ IMPROVED: Better name matching function
+// IMPROVED: Better name matching function
 function matchByNameVariations(attendanceName, userName) {
   if (!attendanceName || !userName) return false;
   
@@ -2093,7 +2539,7 @@ function matchByNameVariations(attendanceName, userName) {
   return false;
 }
 
-// ✅ NEW HELPER FUNCTIONS untuk color coding
+// NEW HELPER FUNCTIONS untuk color coding
 function getStatusColor(status) {
   const lowerS = (status || "").toLowerCase();
   if (lowerS.includes("present") || lowerS.includes("complete")) {
@@ -2116,9 +2562,9 @@ function getPunctualityColor(punctuality) {
   return "color:#334155;font-weight:500;";
 }
 
-// ✅ NEW FUNCTION: Render attendance cards untuk mobile users
+// NEW FUNCTION: Render attendance cards untuk mobile users
 function renderAttendanceCards(records) {
-  const container = document.getElementById('attendanceCardsContainer');
+  const container = document.getElementById('mobileAttendanceCards');
   
   if (!records || records.length === 0) {
     container.innerHTML = '<div class="no-attendance-cards">No attendance records found for selected date.</div>';
@@ -2151,26 +2597,34 @@ function renderAttendanceCards(records) {
           <div class="attendance-card-name">${record.name}</div>
           <div class="attendance-card-status ${statusClass}">${status}</div>
         </div>
+        <div class="attendance-card-department">
+          <span class="attendance-card-department-icon">🏢</span>
+          <span>${record.jabatan || '-'}</span>
+        </div>
         <div class="attendance-card-details">
-          <div class="attendance-card-detail-item">
-            <span class="attendance-card-label">Shift</span>
-            <span class="attendance-card-value">${shift}</span>
+          <div class="attendance-card-detail-row">
+            <span class="attendance-card-detail-label">
+              <span>📥 IN</span>
+            </span>
+            <span class="attendance-card-detail-value">${checkin}</span>
           </div>
-          <div class="attendance-card-detail-item">
-            <span class="attendance-card-label">Check-in</span>
-            <span class="attendance-card-value">${checkin}</span>
+          <div class="attendance-card-detail-row">
+            <span class="attendance-card-detail-label">
+              <span>📤 OUT</span>
+            </span>
+            <span class="attendance-card-detail-value">${checkout}</span>
           </div>
-          <div class="attendance-card-detail-item">
-            <span class="attendance-card-label">Check-out</span>
-            <span class="attendance-card-value">${checkout}</span>
+          <div class="attendance-card-detail-row">
+            <span class="attendance-card-detail-label">
+              <span>⏰ HRS</span>
+            </span>
+            <span class="attendance-card-detail-value">${workedHours}</span>
           </div>
-          <div class="attendance-card-detail-item">
-            <span class="attendance-card-label">Worked Hours</span>
-            <span class="attendance-card-value">${workedHours}</span>
-          </div>
-          <div class="attendance-card-detail-item">
-            <span class="attendance-card-label">Punctuality</span>
-            <span class="attendance-card-value">${punctuality}</span>
+          <div class="attendance-card-detail-row">
+            <span class="attendance-card-detail-label">
+              <span>${punctuality.toLowerCase().includes('late') ? '⚠️' : '✅'}</span>
+            </span>
+            <span class="attendance-card-detail-value">${punctuality}</span>
           </div>
         </div>
       </div>
@@ -2180,7 +2634,7 @@ function renderAttendanceCards(records) {
   container.innerHTML = cardsHtml;
 }
 
-// ✅ IMPROVED: Find attendance record dengan better matching
+// IMPROVED: Find attendance record dengan better matching
 function findAttendanceRecord(attendanceData, staffName) {
   if (!attendanceData || !staffName) return null;
   
@@ -2209,7 +2663,7 @@ function findAttendanceRecord(attendanceData, staffName) {
   return null;
 }
 
-// ✅ NEW FUNCTION: Sync plates dengan nama baru
+// NEW FUNCTION: Sync plates dengan nama baru
 async function syncPlatesWithNewName(newName) {
   try {
     const platesSnapshot = await db.ref('plates').once('value');
@@ -2248,7 +2702,7 @@ async function syncPlatesWithNewName(newName) {
   }
 }
 
-// ✅ NEW FUNCTION: Check dan sync plates jika out of sync
+// NEW FUNCTION: Check dan sync plates jika out of sync
 async function checkAndSyncPlates(currentUserName) {
   try {
     const platesSnapshot = await db.ref('plates').once('value');
@@ -2294,7 +2748,7 @@ async function ensureUserProfile() {
       });
       userName = userNameFromEmail;
       
-      // ✅ Auto-sync existing plates dengan nama baru
+      // Auto-sync existing plates dengan nama baru
       await syncPlatesWithNewName(userNameFromEmail);
       
     } else {
@@ -2304,7 +2758,7 @@ async function ensureUserProfile() {
         lastLogin: new Date().toISOString()
       });
       
-      // ✅ Check dan sync plates jika perlu
+      // Check dan sync plates jika perlu
       await checkAndSyncPlates(userName);
     }
     
@@ -2349,7 +2803,7 @@ async function updateUserName() {
       updatedAt: new Date().toISOString()
     });
     
-    // ✅ AUTO-SYNC: Update semua plates yang belong kepada user ini
+    // AUTO-SYNC: Update semua plates yang belong kepada user ini
     const updatedPlatesCount = await syncPlatesWithNewName(newName);
     
     userName = newName;
@@ -2378,19 +2832,33 @@ async function ensureWorkdaysLoadedOnce() {
   showSpinner();
   try {
     const snap = await db.ref('settings/workdays').once('value');
-    workdaysFullSnapshot = snap.exists() ? (snap.val() || {}) : {};
+    const freshData = snap.exists() ? (snap.val() || {}) : {};
     
-    console.log("✅ Fresh workday data loaded:", workdaysFullSnapshot);
+    console.log("✅ Fresh workday data loaded:", freshData);
     
+    // FIX: Completely reset cache
     workdaysCache = {};
     
-    Object.keys(workdaysFullSnapshot).forEach(iso => {
-      const key = iso.slice(0, 7);
+    // Rebuild cache from fresh data
+    Object.keys(freshData).forEach(iso => {
+      const key = iso.slice(0, 7); // "YYYY-MM"
       if (!(key in workdaysCache)) workdaysCache[key] = {};
-      workdaysCache[key][iso] = workdaysFullSnapshot[iso];
+      workdaysCache[key][iso] = freshData[iso];
     });
     
-    return workdaysFullSnapshot;
+    // FIX: Mark months that exist in the date range but have no overrides
+    // This prevents empty cache entries from causing unnecessary reloads
+    const allMonthsInData = new Set();
+    Object.keys(freshData).forEach(iso => {
+      allMonthsInData.add(iso.slice(0, 7));
+    });
+    
+    console.log("✅ Months with data:", Array.from(allMonthsInData));
+    
+    workdaysFullSnapshot = freshData;
+    
+    console.log("✅ Cache rebuilt:", workdaysCache);
+    return freshData;
   } catch (err) {
     console.error('Failed to load settings/workdays:', err);
     showSnackbar('❌ Failed to load workday overrides.');
@@ -2402,25 +2870,66 @@ async function ensureWorkdaysLoadedOnce() {
 }
 
 async function loadWorkdaysRange(startISO, endISO) {
-  await ensureWorkdaysLoadedOnce();
+  console.log("🔄 loadWorkdaysRange CALLED for:", startISO, "to", endISO);
   
-  if (!workdaysCache) workdaysCache = {};
+  // FIX: Always ensure workdaysCache is initialized
+  if (!workdaysCache) {
+    workdaysCache = {};
+  }
   
   const s = startISO.split('-').map(x => parseInt(x, 10));
   const e = endISO.split('-').map(x => parseInt(x, 10));
   const startMonth = new Date(s[0], s[1] - 1, 1);
   const endMonth = new Date(e[0], e[1] - 1, 1);
-  const combined = {};
+  
+  console.log("📅 Range months:", 
+    `${startMonth.getFullYear()}-${startMonth.getMonth() + 1}`,
+    "to", 
+    `${endMonth.getFullYear()}-${endMonth.getMonth() + 1}`
+  );
+
+  // FIX: Improved cache checking - detect EMPTY cache entries
+  let needsRefresh = false;
   const cursor = new Date(startMonth);
   
   while (cursor <= endMonth) {
     const key = `${cursor.getFullYear()}-${pad(cursor.getMonth() + 1)}`;
-    const map = workdaysCache[key] || {};
-    Object.assign(combined, map);
+    const cacheExists = key in workdaysCache;
+    const cacheHasData = cacheExists && workdaysCache[key] && Object.keys(workdaysCache[key]).length > 0;
+    
+    console.log("🔍 Checking cache for:", key, "exists:", cacheExists, "hasData:", cacheHasData);
+    
+    if (!cacheExists || !cacheHasData) {
+      needsRefresh = true;
+      console.log("🔄 Need to refresh -", !cacheExists ? "missing" : "empty", "cache for:", key);
+      break;
+    }
+    
     cursor.setMonth(cursor.getMonth() + 1);
   }
+
+  if (needsRefresh) {
+    console.log("🔄 Refreshing workday data due to missing/empty cache...");
+    await ensureWorkdaysLoadedOnce();
+  } else {
+    console.log("✅ Using cached data - all months have data");
+  }
+
+  // FIX: Build combined data from cache
+  const combined = {};
+  const combinedCursor = new Date(startMonth);
   
-  console.log("📅 Workday range data for", startISO, "to", endISO, ":", combined);
+  while (combinedCursor <= endMonth) {
+    const key = `${combinedCursor.getFullYear()}-${pad(combinedCursor.getMonth() + 1)}`;
+    const map = workdaysCache[key] || {};
+    
+    console.log("📂 Adding to combined from cache:", key, "data:", map);
+    Object.assign(combined, map);
+    
+    combinedCursor.setMonth(combinedCursor.getMonth() + 1);
+  }
+
+  console.log("✅ FINAL Workday range data for", startISO, "to", endISO, ":", combined);
   return combined;
 }
 
@@ -2462,7 +2971,6 @@ async function persistWorkdaysMap(map) {
   }
 }
 
-
 // ========== Sidebar toggle ==========
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
@@ -2473,15 +2981,17 @@ function toggleSidebar() {
 // ========== Auth & UI init ==========
 let currentCalendarYear, currentCalendarMonth;
 const ADMIN_EMAIL = 'yhlim3031@gmail.com';
-let modifiedDates = new Map(); // Store temporary modifications: { iso: { current: boolean, original: boolean } }
-let workdaysFullSnapshot = null;
 
 firebase.auth().onAuthStateChanged(async user => {
   if (!user) return window.location.href = 'index.html';
   
   currentUser = user;
   isAdmin = (user.email === ADMIN_EMAIL);
-  
+    if (isAdmin) {
+    document.body.classList.add('admin-user');
+  } else {
+    document.body.classList.remove('admin-user');
+  }
   document.getElementById('userEmail').textContent = user.email;
   
   await ensureUserProfile();
@@ -2573,7 +3083,7 @@ function calculateWorkedHours(record) {
   return "-";
 }
 
-// ========== ✅ TAMBAH FUNCTION INI DI SINI ==========
+// TAMBAH FUNCTION INI DI SINI
 function loadRegisteredVehicles() {
   console.log("Loading registered vehicles for:", currentUser?.email);
   
@@ -2671,20 +3181,30 @@ function showSection(id) {
   if (id === 'monthly') calculateMonthlySummary();
   if (id === 'workday') {
     const now = new Date();
-    currentCalendarYear = now.getFullYear();
-    currentCalendarMonth = now.getMonth();
+    
+    // FIX: Initialize calendar variables if undefined
+    if (typeof currentCalendarYear === 'undefined' || typeof currentCalendarMonth === 'undefined') {
+      currentCalendarYear = now.getFullYear();
+      currentCalendarMonth = now.getMonth();
+      console.log('📅 Initializing calendar variables:', currentCalendarYear, currentCalendarMonth);
+    }
+    
+    console.log('📅 Workday - Rendering:', currentCalendarYear, currentCalendarMonth);
     renderCalendar(currentCalendarYear, currentCalendarMonth);
   }
   if (id === 'register') loadRegisteredVehicles();
   if (id === 'settings') loadUserSettings();
   if (id === 'user-management') loadUsers();
-}
 
-function loadUserSettings() {
-  const nameInput = document.getElementById('userNameInput');
-  if (nameInput) {
-    nameInput.value = userName;
+  if (id === 'user-settings') {
+    console.log('Settings section loaded');
+    // Populate current name jika perlu
+    const nameInput = document.getElementById('userNameInput');
+    if (nameInput && userName) {
+      nameInput.value = userName;
+    }
   }
+
 }
 
 // logout
@@ -2822,7 +3342,7 @@ function displayDailyRecords() {
   let html = '<table class="data-table"><tr><th>Name</th><th>Department</th><th>Status</th></tr>';
   
   recordsToShow.forEach(record => {
-    // ✅ FIX: Guna label "-" untuk holiday (bukan "Holiday")
+    // FIX: Guna label "-" untuk holiday (bukan "Holiday")
     let statusClass = '';
     let displayText = record.status;
     
@@ -2834,7 +3354,7 @@ function displayDailyRecords() {
       displayText = 'Absent';
     } else {
       statusClass = 'status-holiday';
-      displayText = '-'; // ✅ GUNA "-" UNTUK HOLIDAY
+      displayText = '-'; // GUNA "-" UNTUK HOLIDAY
     }
     
     html += `
@@ -2851,7 +3371,7 @@ function displayDailyRecords() {
 
 // ========== User Management Functions ==========
 
-// ✅ FIXED FUNCTION: Get user department from plates
+// FIXED FUNCTION: Get user department from plates
 function getUserDepartment(userEmail, userName) {
   if (!allPlatesData || Object.keys(allPlatesData).length === 0) return '-';
   
@@ -2878,14 +3398,14 @@ async function loadUsers() {
   
   showSpinner();
   try {
-    // ✅ FIX: Load plates data sekali untuk semua user
+    // FIX: Load plates data sekali untuk semua user
     const [usersSnapshot, platesSnapshot] = await Promise.all([
       db.ref('users').once('value'),
       db.ref('plates').once('value')
     ]);
     
     const users = usersSnapshot.val() || {};
-    allPlatesData = platesSnapshot.val() || {}; // ✅ STORE plates data globally
+    allPlatesData = platesSnapshot.val() || {}; // STORE plates data globally
     
     // Convert to array and add user ID
     allUsers = Object.keys(users).map(uid => {
@@ -2895,7 +3415,7 @@ async function loadUsers() {
       };
     });
     
-    // ✅ FIX: Filter out admin user from the list
+    // FIX: Filter out admin user from the list
     allUsers = allUsers.filter(user => user.email !== ADMIN_EMAIL);
     
     totalUsers = allUsers.length;
@@ -2929,7 +3449,7 @@ function displayUsers() {
     const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
     const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
     
-    // ✅ FIX: Get department from user's plates
+    // FIX: Get department from user's plates
     const userDepartment = getUserDepartment(user.email, user.name);
     
     html += `
@@ -3041,7 +3561,7 @@ function filterUsers() {
     const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
     const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
     
-    // ✅ FIX: Get department from user's plates
+    // FIX: Get department from user's plates
     const userDepartment = getUserDepartment(user.email, user.name);
     
     html += `
@@ -3103,7 +3623,7 @@ async function showUserDetail(userId) {
       }
     });
     
-    // ✅ FIX: Get user's department from their plates
+    // FIX: Get user's department from their plates
     let userDepartment = '-';
     if (userVehicles.length > 0) {
       // Use the department from the first vehicle
@@ -3265,7 +3785,108 @@ async function deleteUserVehicle(plate) {
   }
 }
 
-// ✅ COMPLETE FIXED VERSION dengan card layout untuk mobile users
+// ========== MISSING FUNCTIONS ==========
+
+// Filter vehicles function
+function filterVehicles() {
+  const searchTerm = document.getElementById('searchVehicles').value.toLowerCase();
+  const vehicleItems = document.querySelectorAll('.vehicle-item');
+  
+  vehicleItems.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      item.style.display = 'flex';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+// Delete vehicle function
+function deleteVehicle(plate) {
+  if (!confirm(`Are you sure you want to delete vehicle ${plate}?`)) return;
+  
+  showSpinner();
+  db.ref('plates/' + plate).remove()
+    .then(() => {
+      showSnackbar('Vehicle deleted successfully');
+      loadRegisteredVehicles();
+    })
+    .catch(error => {
+      showSnackbar('Error deleting vehicle: ' + error.message);
+    })
+    .finally(() => {
+      hideSpinner();
+    });
+}
+
+// Register plate function
+function registerPlate() {
+  const plateInput = document.getElementById('regPlate');
+  const jabatanSelect = document.getElementById('regJawatan');
+  
+  const plate = plateInput.value.trim().toUpperCase();
+  const jabatan = jabatanSelect.value;
+  
+  if (!plate) {
+    showSnackbar('❌ Please enter a plate number');
+    return;
+  }
+  
+  if (!jabatan) {
+    showSnackbar('❌ Please select a department');
+    return;
+  }
+  
+  showSpinner();
+  
+  const plateData = {
+    name: userName,
+    jabatan: jabatan,
+    registeredBy: currentUser.email,
+    registeredAt: new Date().toISOString()
+  };
+  
+  db.ref('plates/' + plate).set(plateData)
+    .then(() => {
+      showSnackbar('✅ Vehicle registered successfully');
+      plateInput.value = '';
+      jabatanSelect.value = '';
+      loadRegisteredVehicles();
+    })
+    .catch(error => {
+      showSnackbar('❌ Error registering vehicle: ' + error.message);
+    })
+    .finally(() => {
+      hideSpinner();
+    });
+}
+
+// Load user settings function
+function loadUserSettings() {
+  // Populate the name input with current user name
+  const nameInput = document.getElementById('userNameInput');
+  if (nameInput && userName) {
+    nameInput.value = userName;
+  }
+  
+  console.log('Settings loaded for user:', userName);
+}
+
+// Filter daily table function
+function filterDailyTable() {
+  const searchTerm = document.getElementById('searchDaily').value.toLowerCase();
+  const rows = document.querySelectorAll('#dailyStatusTable tr');
+  
+  rows.forEach(row => {
+    if (row.cells && row.cells.length > 0) {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    }
+  });
+}
+
+// COMPLETE FIXED VERSION dengan card layout untuk mobile users
 async function loadAttendanceByDate(resetPage = true) {
   console.log("🔄 loadAttendanceByDate() called");
   
@@ -3276,7 +3897,7 @@ async function loadAttendanceByDate(resetPage = true) {
   const date = document.getElementById("datePicker").value;
   const jabatanFilter = document.getElementById("jabatanFilter").value;
   const table = document.getElementById("attendanceTable");
-  const cardsContainer = document.getElementById("attendanceCardsContainer");
+  const cardsContainer = document.getElementById("mobileAttendanceCards");
 
   if (!date) {
     table.innerHTML = "<tr><td colspan='8' style='text-align:center;padding:12px;'>Please select a date.</td></tr>";
@@ -3407,7 +4028,7 @@ async function loadAttendanceByDate(resetPage = true) {
       });
     });
 
-    // ✅ THIS IS THE MISSING PAGINATION CODE:
+    // THIS IS THE MISSING PAGINATION CODE:
     // Handle pagination and display data
     if (isAdmin) {
       totalAttendanceRecords = allRows.length;
@@ -3419,12 +4040,13 @@ async function loadAttendanceByDate(resetPage = true) {
       table.innerHTML = pageRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No staff found.</td></tr>";
       
       updatePaginationControls();
+      
     } else {
       table.innerHTML = allRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No attendance records found.</td></tr>";
-      
-      // Render cards untuk mobile users
-      renderAttendanceCards(allCards);
     }
+
+    // RENDER CARDS FOR MOBILE
+    renderAttendanceCards(allCards);
 
   } catch (err) {
     console.error("Firebase error:", err);
@@ -3435,18 +4057,24 @@ async function loadAttendanceByDate(resetPage = true) {
   }
 }
 
-// Filter attendance table
+// Filter attendance table - FIXED VERSION
 function filterAttendanceTable() {
   const searchTerm = document.getElementById('searchAttendance').value.toLowerCase();
-  const rows = document.querySelectorAll('#attendanceTable tr');
   
+  // Filter table rows (for desktop)
+  const rows = document.querySelectorAll('#attendanceTable tr');
   rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    if (text.includes(searchTerm)) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
+    if (row.cells.length > 0) { // Skip header row
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
     }
+  });
+  
+  // Filter cards (for mobile)
+  const cards = document.querySelectorAll('.attendance-card');
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(searchTerm) ? 'block' : 'none';
   });
 }
 
@@ -3499,7 +4127,7 @@ async function calculateDailyStatus() {
     
     console.log('🔍 DAILY START - Date:', targetDate);
     
-    // ✅ LOAD DATA SAMA SEPERTI ATTENDANCE
+    // LOAD DATA SAMA SEPERTI ATTENDANCE
     const [platesSnap, attendanceSnap] = await Promise.all([
       db.ref('plates').once('value'),
       db.ref('attendance/' + targetDate).once('value')
@@ -3508,7 +4136,7 @@ async function calculateDailyStatus() {
     const allPlates = platesSnap.val() || {};
     const attendanceData = attendanceSnap.exists() ? attendanceSnap.val() : {};
     
-    // ✅ DIRECT CHECK WORKDAY - CARA MUDAH
+    // DIRECT CHECK WORKDAY - CARA MUDAH
     await ensureWorkdaysLoadedOnce();
     
     let isWorkday;
@@ -3832,7 +4460,7 @@ async function calculateWeeklySummary() {
       
       document.getElementById("weeklySummaryTable").innerHTML = tblHtml;
 
-      // Chart code remains the same...
+      // FIXED CHART CODE - TAMBAH KURUNGAN TERTUTUP
       const labels = dates.map(date => {
         const d = new Date(date);
         return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
@@ -3860,11 +4488,24 @@ async function calculateWeeklySummary() {
       
       const ctx = document.getElementById("weeklyChart").getContext('2d');
       if (weeklyChartInstance) weeklyChartInstance.destroy();
-      
+
       const allData = [...presentData, ...lateData, ...absentData];
-      const maxData = Math.max(...allData);
-      const maxY = maxData > 0 ? maxData + 1 : 10;
-      
+      const maxData = Math.max(...allData, 1); // Minimum 1
+      const totalUsers = Object.keys(stats).length;
+
+      // FIXED: Kira maxY dengan cara yang lebih dinamik
+      let maxY;
+      if (totalUsers <= 5) {
+        maxY = Math.max(maxData + 1, 3); // Untuk user sedikit
+      } else if (totalUsers <= 10) {
+        maxY = Math.max(maxData + 2, 5); // Untuk user sederhana
+      } else {
+        maxY = Math.max(maxData + 3, Math.ceil(totalUsers * 0.3)); // Untuk user banyak
+      }
+
+      // FIXED: PASTIKAN maxY adalah integer
+      maxY = Math.ceil(maxY);
+
       weeklyChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -3911,8 +4552,17 @@ async function calculateWeeklySummary() {
             }
           }
         }
+      }); // INI KURUNGAN TERTUTUP YANG HILANG
+
+      console.log('📊 Weekly Chart Settings:', { 
+        totalUsers, 
+        maxData, 
+        maxY,
+        presentData,
+        lateData, 
+        absentData 
       });
-    }
+    } // TAMBAH INI - tutup if (isAdmin) untuk chart
 
     // Rest of the function for Staff Attendance Details...
     const rows = Object.entries(stats).map(([name, st]) => {
@@ -3930,75 +4580,77 @@ async function calculateWeeklySummary() {
 
     console.log('👥 FINAL STAFF DETAILS ROWS:', rows);
 
-let gridHtml = `
-<div style="overflow-x: auto;">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th style="text-align: left; min-width: 140px;">Name</th>`;
+    let gridHtml = `
+    <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="text-align: left; min-width: 140px;">Name</th>`;
 
-dates.forEach(date => {
-  const d = new Date(date);
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  gridHtml += `<th title="${date}" style="min-width: 50px;">${pad(d.getDate())}/${pad(d.getMonth() + 1)}<br><small style="font-size:11px;">${dayNames[d.getDay()]}</small></th>`;
-});
+    dates.forEach(date => {
+      const d = new Date(date);
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      gridHtml += `<th title="${date}" style="min-width: 50px;">${pad(d.getDate())}/${pad(d.getMonth() + 1)}<br><small style="font-size:11px;">${dayNames[d.getDay()]}</small></th>`;
+    });
 
-gridHtml += `
-        <th style="min-width: 70px;">Attendance %</th>
-      </tr>
-    </thead>
-    <tbody>`;
+    gridHtml += `
+            <th style="min-width: 70px;">Attendance %</th>
+          </tr>
+        </thead>
+        <tbody>`;
 
-rows.forEach(r => {
-  console.log(`🔄 RENDERING: ${r.name} - Status: [${r.dayStatus.join(', ')}]`);
-  
-  gridHtml += `<tr><td style="text-align: left; font-weight: 500;">${r.name}</td>`;
-  
-  r.dayStatus.forEach((s, index) => {
-    const dt = dates[index];
-    const dtObj = new Date(dt);
-    dtObj.setHours(0, 0, 0, 0);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    let statusClass = '';
-    let displayText = s;
-    
-    console.log(`   📅 ${dt}: Raw status='${s}', Today=${todayISO()}, IsFuture=${dtObj > today}`);
-    
-    // ✅ FIX: Proper future date check
-    if (dtObj > today) {
-      statusClass = 'status-holiday';
-      displayText = '-';
-      console.log(`      → Future date: Show '-'`);
-    } else if (s === 'P') {
-      statusClass = 'status-present';
-      displayText = '✓';
-      console.log(`      → Present: Show '✓'`);
-    } else if (s === 'L') {
-      statusClass = 'status-late';
-      displayText = '⚠';
-      console.log(`      → Late: Show '⚠'`);
-    } else if (s === 'A') {
-      statusClass = 'status-absent';
-      displayText = '✗';
-      console.log(`      → Absent: Show '✗'`);
-    } else if (s === '-') {
-      statusClass = 'status-holiday';
-      displayText = '-';
-      console.log(`      → Holiday: Show '-'`);
-    } else {
-      // Fallback - should not happen
-      statusClass = 'status-holiday';
-      displayText = '-';
-      console.log(`      → Unknown status '${s}': Show '-'`);
-    }
-    
-    gridHtml += `<td><span class="${statusClass}">${displayText}</span></td>`;
-  });
-  
-  gridHtml += `<td style="font-weight: 600; background: #f8fafc;">${r.perc}%</td></tr>`;
-});
+    rows.forEach(r => {
+      console.log(`🔄 RENDERING: ${r.name} - Status: [${r.dayStatus.join(', ')}]`);
+      
+      gridHtml += `<tr><td style="text-align: left; font-weight: 500;">${r.name}</td>`;
+      
+      r.dayStatus.forEach((s, index) => {
+        const dt = dates[index];
+        const dtObj = new Date(dt);
+        dtObj.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let statusClass = '';
+        let displayText = s;
+        
+        console.log(`   📅 ${dt}: Raw status='${s}', Today=${todayISO()}, IsFuture=${dtObj > today}`);
+        
+        // FIX: Proper future date check
+        if (dtObj > today) {
+          statusClass = 'status-holiday';
+          displayText = '-';
+          console.log(`      → Future date: Show '-'`);
+        } else if (s === 'P') {
+          statusClass = 'status-present';
+          displayText = '✓';
+          console.log(`      → Present: Show '✓'`);
+        } else if (s === 'L') {
+          statusClass = 'status-late';
+          displayText = '⚠';
+          console.log(`      → Late: Show '⚠'`);
+        } else if (s === 'A') {
+          statusClass = 'status-absent';
+          displayText = '✗';
+          console.log(`      → Absent: Show '✗'`);
+        } else if (s === '-') {
+          statusClass = 'status-holiday';
+          displayText = '-';
+          console.log(`      → Holiday: Show '-'`);
+        } else {
+          // Fallback - should not happen
+          statusClass = 'status-holiday';
+          displayText = '-';
+          console.log(`      → Unknown status '${s}': Show '-'`);
+        }
+        
+        gridHtml += `<td><span class="${statusClass}">${displayText}</span></td>`;
+      });
+      
+      gridHtml += `<td style="font-weight: 600; background: #f8fafc;">${r.perc}%</td></tr>`;
+    });
+
+    gridHtml += `</tbody></table></div>`;
 
     gridHtml += `
     <div style="display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; font-size: 12px;">
@@ -4037,11 +4689,7 @@ function filterWeeklyTable() {
   
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    if (text.includes(searchTerm)) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
+    row.style.display = text.includes(searchTerm) ? '' : 'none';
   });
 }
 
@@ -4079,20 +4727,19 @@ async function calculateMonthlySummary() {
       }
     });
 
-    const namesToProcess = isAdmin ?
-      Object.values(plates)
-        .filter(p => !filterJabatan || p.jabatan === filterJabatan)
-        .map(p => p.name)
-        .filter(name => name) :
-      Object.values(plates)
-        .filter(p => matchByNameVariations(p.name, userName))
-        .map(p => p.name)
-        .filter(name => name);
-    
-    if (!isAdmin && namesToProcess.length === 0) {
-      namesToProcess.push(userName);
-    }
-
+const namesToProcess = isAdmin ?
+            [...new Set(Object.values(plates)
+                .filter(p => !filterJabatan || p.jabatan === filterJabatan)
+                .map(p => p.name)
+                .filter(name => name))] :
+            [...new Set(Object.values(plates)
+                .filter(p => matchByNameVariations(p.name, userName))
+                .map(p => p.name)
+                .filter(name => name))];
+        
+        if (!isAdmin && namesToProcess.length === 0) {
+            namesToProcess.push(userName);
+        }
     namesToProcess.forEach(name => {
       stats[name] = { totalWorkdays: 0, present: 0, late: 0, absent: 0, byDate: {} };
       dates.forEach((dt, idx) => {
@@ -4270,11 +4917,7 @@ function filterMonthlyTable() {
   
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    if (text.includes(searchTerm)) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
+    row.style.display = text.includes(searchTerm) ? '' : 'none';
   });
 }
 
@@ -4288,7 +4931,7 @@ function trackModification(iso, currentState, originalState) {
   updateWorkdayStatus();
 }
 
-// ✅ Function to clear all modifications for current month
+// Function to clear all modifications for current month
 function clearAllModifications() {
   modifiedDates.clear();
   updateWorkdayStatus();
@@ -4298,7 +4941,7 @@ function clearAllModifications() {
   showSnackbar('All modifications cleared');
 }
 
-// ✅ Function to update workday status display
+// Function to update workday status display
 function updateWorkdayStatus() {
   const statusElement = document.getElementById('workdayStatus');
   const modifiedCount = Array.from(modifiedDates.values()).filter(m => m.isModified).length;
@@ -4314,111 +4957,239 @@ function updateWorkdayStatus() {
   }
 }
 
-// ✅ UPDATED: renderCalendar function dengan logic baru
-async function renderCalendar(year, month0) {
-  currentCalendarYear = year;
-  currentCalendarMonth = month0;
-  const title = new Date(year, month0).toLocaleString(undefined, { month: 'long', year: 'numeric' });
-  document.getElementById('calendarTitle').textContent = title;
-
-  const first = new Date(year, month0, 1);
-  const startDow = first.getDay();
-  const daysInMonth = new Date(year, month0 + 1, 0).getDate();
-  const startISO = `${year}-${pad(month0 + 1)}-01`;
-  const endISO = `${year}-${pad(month0 + 1)}-${pad(daysInMonth)}`;
-
-  const workdaysMap = await loadWorkdaysRange(startISO, endISO);
-
-  const grid = document.getElementById('calendarGrid');
-  grid.innerHTML = '';
-
-  // Create empty cells for days before the first day of month
-  for (let i = 0; i < startDow; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell';
-    grid.appendChild(cell);
-  }
-
-  // Create cells for each day of the month
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dt = new Date(year, month0, d);
-    const iso = ymdFromDate(dt);
-    
-    // Determine original state
-    const explicit = (iso in workdaysMap);
-    const originalIsWork = explicit ? !!workdaysMap[iso] : isDefaultWorkdayObj(dt);
-    
-    // Check if this date has been modified temporarily
-    const modification = modifiedDates.get(iso);
-    const currentIsWork = modification ? modification.current : originalIsWork;
-    const isModified = modification ? modification.isModified : false;
-
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell ' + (currentIsWork ? 'work' : 'holiday') + 
-                    (iso === new Date().toISOString().split('T')[0] ? ' today' : '') +
-                    (isModified ? ' modified' : '');
-    
-    cell.setAttribute('data-iso', iso);
-    cell.setAttribute('data-original', originalIsWork.toString());
-    
-    const smallText = isModified ? 
-      (currentIsWork ? 'Work (unsaved)' : 'Holiday (unsaved)') : 
-      (explicit ? (currentIsWork ? 'Work (set)' : 'Holiday (set)') : (currentIsWork ? 'Work' : 'Holiday'));
-    
-    cell.innerHTML = `<div class="date">${d}</div><div class="small-tag">${smallText}</div>`;
-
-    // Click handler dengan logic baru
-    cell.addEventListener('click', async (ev) => {
-      // Prevent multi-select (Ctrl/Cmd click) - kita tak perlukan lagi
-      if (ev.ctrlKey || ev.metaKey) {
-        return;
-      }
-      
-      const iso = cell.getAttribute('data-iso');
-      const originalIsWork = cell.getAttribute('data-original') === 'true';
-      
-      // Get current modification state if exists
-      const existingModification = modifiedDates.get(iso);
-      const currentIsWork = existingModification ? existingModification.current : originalIsWork;
-      
-      // Toggle state: Work -> Holiday -> Work (simple toggle)
-      const newIsWork = !currentIsWork;
-      
-      // Update cell appearance immediately
-      cell.classList.remove('work', 'holiday');
-      cell.classList.add(newIsWork ? 'work' : 'holiday');
-      
-      // Update label
-      const newSmallText = `${newIsWork ? 'Work' : 'Holiday'} (unsaved)`;
-      cell.querySelector('.small-tag').textContent = newSmallText;
-      
-      // Add modified class
-      cell.classList.add('modified');
-      
-      // Track modification
-      trackModification(iso, newIsWork, originalIsWork);
-      
-      // Show immediate feedback
-      showSnackbar(`Changed to ${newIsWork ? 'Work Day' : 'Holiday'} - Remember to Save!`);
-    });
-
-    grid.appendChild(cell);
-  }
-
-  // Create empty cells for days after the last day of month
-  const totalCells = startDow + daysInMonth;
-  const remaining = (7 - (totalCells % 7)) % 7;
-  for (let i = 0; i < remaining; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell';
-    grid.appendChild(cell);
+// Initialize year selector for workday manager
+function initWorkdayYearSelector() {
+  const yearSelect = document.getElementById('yearSelectWorkday');
+  const monthSelect = document.getElementById('monthSelectWorkday');
+  
+  if (!yearSelect || !monthSelect) return;
+  
+  // Clear existing options
+  yearSelect.innerHTML = '';
+  
+  // Add year options (current year -2 to current year +2)
+  const currentYear = new Date().getFullYear();
+  for (let year = currentYear - 2; year <= currentYear + 2; year++) {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
   }
   
-  // Update status display
-  updateWorkdayStatus();
+  // Set current year and month
+  yearSelect.value = currentCalendarYear || currentYear;
+  monthSelect.value = currentCalendarMonth || new Date().getMonth();
 }
 
-// ✅ UPDATED: clearSelection function (sekarang clear semua modification)
+// Handle year/month change
+function onYearMonthChange() {
+  const yearSelect = document.getElementById('yearSelectWorkday');
+  const monthSelect = document.getElementById('monthSelectWorkday');
+  
+  if (!yearSelect || !monthSelect) return;
+  
+  const year = parseInt(yearSelect.value);
+  const month = parseInt(monthSelect.value);
+  
+  // Update global variables
+  currentCalendarYear = year;
+  currentCalendarMonth = month;
+  
+  // Render calendar with new selection
+  renderCalendar(year, month);
+}
+
+async function renderCalendar(year, month0) {
+  // FIX: Prevent multiple simultaneous renders
+  if (isRenderingCalendar) {
+    console.log('⏳ renderCalendar already in progress, skipping...');
+    return;
+  }
+  
+  isRenderingCalendar = true;
+  console.log('🎯 renderCalendar START with:', year, month0, '(month0 means:', month0 + 1, '= actual month)');
+  
+  try {
+    // FIX: Ensure global variables are synced with parameters
+    currentCalendarYear = year;
+    currentCalendarMonth = month0;
+    
+    // Update selectors if they exist
+    const yearSelect = document.getElementById('yearSelectWorkday');
+    const monthSelect = document.getElementById('monthSelectWorkday');
+    if (yearSelect && monthSelect) {
+      yearSelect.value = year;
+      monthSelect.value = month0;
+    }
+    
+    const first = new Date(year, month0, 1);
+    const startDow = first.getDay();
+    const daysInMonth = new Date(year, month0 + 1, 0).getDate();
+    
+    // FIX: Use the CORRECT month calculation
+    const actualMonth = month0 + 1; // month0 is 0-indexed, actual month is 1-indexed
+    const startISO = `${year}-${pad(actualMonth)}-01`;
+    const endISO = `${year}-${pad(actualMonth)}-${pad(daysInMonth)}`;
+    
+    console.log('📅 renderCalendar CALCULATION:', {
+      calledWith: { year, month0 },
+      actualMonth: actualMonth,
+      daysInMonth: daysInMonth,
+      range: `${startISO} to ${endISO}`,
+    });
+
+    const workdaysMap = await loadWorkdaysRange(startISO, endISO);
+
+    const grid = document.getElementById('calendarGrid');
+    grid.innerHTML = '';
+
+    // Create empty cells for days before the first day of month
+    for (let i = 0; i < startDow; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      cell.style.background = '#f8fafc';
+      cell.style.cursor = 'default';
+      grid.appendChild(cell);
+    }
+
+    // Create cells for each day of the month
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dt = new Date(year, month0, d);
+      const iso = ymdFromDate(dt);
+      
+      // Determine original state
+      const explicit = (iso in workdaysMap);
+      const originalIsWork = explicit ? !!workdaysMap[iso] : isDefaultWorkdayObj(dt);
+      
+      // Check if this date has been modified temporarily
+      const modification = modifiedDates.get(iso);
+      const currentIsWork = modification ? modification.current : originalIsWork;
+      const isModified = modification ? modification.isModified : false;
+
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell ' + (currentIsWork ? 'work' : 'holiday') + 
+                      (iso === new Date().toISOString().split('T')[0] ? ' today' : '') +
+                      (isModified ? ' modified' : '');
+      
+      cell.setAttribute('data-iso', iso);
+      cell.setAttribute('data-original', originalIsWork.toString());
+      
+      // Create date and status label
+      const dateDiv = document.createElement('div');
+      dateDiv.className = 'date';
+      dateDiv.textContent = d;
+      
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'status-label';
+      statusDiv.textContent = currentIsWork ? 'Work' : 'Holiday';
+      
+      cell.appendChild(dateDiv);
+      cell.appendChild(statusDiv);
+
+      // Click handler
+      cell.addEventListener('click', async (ev) => {
+        if (ev.ctrlKey || ev.metaKey) {
+          return;
+        }
+        
+        const iso = cell.getAttribute('data-iso');
+        const originalIsWork = cell.getAttribute('data-original') === 'true';
+        
+        const existingModification = modifiedDates.get(iso);
+        const currentIsWork = existingModification ? existingModification.current : originalIsWork;
+        
+        const newIsWork = !currentIsWork;
+        
+        // Update cell appearance
+        cell.classList.remove('work', 'holiday');
+        cell.classList.add(newIsWork ? 'work' : 'holiday');
+        
+        // Update status label
+        cell.querySelector('.status-label').textContent = newIsWork ? 'Work' : 'Holiday';
+        
+        cell.classList.add('modified');
+        
+        trackModification(iso, newIsWork, originalIsWork);
+        
+        showSnackbar(`Changed ${iso} to ${newIsWork ? 'Work Day' : 'Holiday'} - Remember to Save!`);
+      });
+
+      grid.appendChild(cell);
+    }
+
+    // Create empty cells for days after the last day of month
+    const totalCells = startDow + daysInMonth;
+    const remaining = (7 - (totalCells % 7)) % 7;
+    for (let i = 0; i < remaining; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      cell.style.background = '#f8fafc';
+      cell.style.cursor = 'default';
+      grid.appendChild(cell);
+    }
+    
+    // Update status display
+    updateWorkdayStatus();
+    
+    console.log('✅ renderCalendar COMPLETED for:', year, month0);
+    
+  } catch (error) {
+    console.error('❌ renderCalendar ERROR:', error);
+    showSnackbar('❌ Error loading calendar: ' + error.message);
+  } finally {
+    // FIX: Always reset the flag, even if there's an error
+    isRenderingCalendar = false;
+  }
+}
+
+// Updated showSection function to initialize workday manager
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  
+  // Close mobile menu when selecting a section
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  if (sidebar && mobileOverlay) {
+    sidebar.classList.remove('mobile-open');
+    mobileOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  if (id === 'attendance') loadAttendanceByDate();
+  if (id === 'daily') calculateDailyStatus();
+  if (id === 'weekly') {
+    const wk = document.getElementById('weekPicker');
+    if (!wk.value) wk.value = new Date().toISOString().split('T')[0];
+    calculateWeeklySummary();
+  }
+  if (id === 'monthly') calculateMonthlySummary();
+  if (id === 'workday') {
+    const now = new Date();
+    
+    // FIX: Initialize calendar variables if undefined
+    if (typeof currentCalendarYear === 'undefined' || typeof currentCalendarMonth === 'undefined') {
+      currentCalendarYear = now.getFullYear();
+      currentCalendarMonth = now.getMonth();
+      console.log('📅 Initializing calendar variables:', currentCalendarYear, currentCalendarMonth);
+    }
+    
+    // Initialize year selector
+    initWorkdayYearSelector();
+    
+    console.log('📅 Workday - Rendering:', currentCalendarYear, currentCalendarMonth);
+    renderCalendar(currentCalendarYear, currentCalendarMonth);
+  }
+  if (id === 'register') loadRegisteredVehicles();
+  if (id === 'settings') loadUserSettings();
+  if (id === 'user-management') loadUsers();
+}
+
+// UPDATED: clearSelection function (sekarang clear semua modification)
 function clearSelection() {
   if (modifiedDates.size === 0) {
     showSnackbar('No modifications to clear.');
@@ -4430,7 +5201,7 @@ function clearSelection() {
   }
 }
 
-// ✅ UPDATED: saveVisibleWorkdays function
+// UPDATED: saveVisibleWorkdays function
 async function saveVisibleWorkdays() {
   if (modifiedDates.size === 0) {
     showSnackbar('No changes to save.');
@@ -4481,36 +5252,6 @@ async function saveVisibleWorkdays() {
   }
 }
 
-// ✅ UPDATED: Navigation functions dengan confirmation jika ada unsaved changes
-function prevMonth() {
-  if (modifiedDates.size > 0 && !confirm('You have unsaved changes. Are you sure you want to switch months?')) {
-    return;
-  }
-  
-  clearAllModifications();
-  currentCalendarMonth--;
-  if (currentCalendarMonth < 0) {
-    currentCalendarMonth = 11;
-    currentCalendarYear--;
-  }
-  renderCalendar(currentCalendarYear, currentCalendarMonth);
-}
-
-function nextMonth() {
-  if (modifiedDates.size > 0 && !confirm('You have unsaved changes. Are you sure you want to switch months?')) {
-    return;
-  }
-  
-  clearAllModifications();
-  currentCalendarMonth++;
-  if (currentCalendarMonth > 11) {
-    currentCalendarMonth = 0;
-    currentCalendarYear++;
-  }
-  renderCalendar(currentCalendarYear, currentCalendarMonth);
-}
-
-
 // ========== Utils: init pickers, months, years ==========
 function initPickers() {
   const monthSel = document.getElementById('monthSelect');
@@ -4538,7 +5279,7 @@ function initPickers() {
   const dp = document.getElementById('datePicker');
   if (dp) dp.value = now.toISOString().split('T')[0];
   
-  // ✅ TAMBAH: Set daily date picker kepada hari ini
+  // TAMBAH: Set daily date picker kepada hari ini
   const dailyDatePicker = document.getElementById('dailyDatePicker');
   if (dailyDatePicker) {
     dailyDatePicker.value = new Date().toISOString().split('T')[0];
@@ -4552,11 +5293,43 @@ function initPickers() {
 document.addEventListener('DOMContentLoaded', () => {
   initPickers();
   setupMobileMenu();
+    // Initialize with current user role
+  const user = firebase.auth().currentUser;
+  if (user && user.email === ADMIN_EMAIL) {
+    document.body.classList.add('admin-user');
+  }
+  
   loadAttendanceByDate();
 });
+function debugSettingsStructure() {
+  const settings = document.getElementById('settings');
+  console.log('🏗️ SETTINGS STRUCTURE:');
+  
+  // Check the actual HTML
+  console.log('HTML:', settings.outerHTML);
+  
+  // Check all parent containers up to body
+  let parent = settings;
+  let path = [];
+  while (parent && parent !== document.body) {
+    const style = window.getComputedStyle(parent);
+    path.push({
+      element: parent.tagName + (parent.id ? '#' + parent.id : '') + (parent.className ? '.' + parent.className.replace(/ /g, '.') : ''),
+      display: style.display,
+      width: style.width,
+      height: style.height,
+      position: style.position
+    });
+    parent = parent.parentElement;
+  }
+  console.log('📋 PARENT PATH:', path);
+}
 
+debugSettingsStructure();
 // Initialize with current date
 document.getElementById('weekPicker').valueAsDate = new Date();
+
+
 </script>
 </body>
 </html>
