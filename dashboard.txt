@@ -216,12 +216,12 @@ input[type=text],input[type=date],select{
 .legend-work{background:#3b82f6}
 .legend-holiday{background:#ef4444}
 
+
 /* Mini table for summary */
 .mini-table{width:100%;border-collapse:collapse;margin-top:10px;border:1px solid #e2e8f0;font-size:13px;}
 .mini-table th,.mini-table td{padding:8px 10px;text-align:left;border:1px solid #e2e8f0;}
 .mini-table th{font-weight:600;color:#475569;width:40%;background:#f8fafc;}
 .mini-table td{color:#334155;}
-
 /* Calendar Container with Headers */
 .calendar-container {
   margin-top: 16px;
@@ -559,11 +559,9 @@ input[type=text],input[type=date],select{
 /* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
-  position: fixed !important;
-  top: 15px !important;
-  left: 10px !important;
-  transform: none !important;
-  will-change: transform;
+  position: fixed;
+  top: 10px;
+  left: 10px;
   background: #3b82f6;
   color: white;
   border: none;
@@ -571,9 +569,7 @@ input[type=text],input[type=date],select{
   padding: 8px 12px;
   z-index: 1001;
   font-size: 16px;
-  transition: none !important;
 }
-
 
 /* Mobile Overlay */
 .mobile-overlay {
@@ -586,6 +582,7 @@ input[type=text],input[type=date],select{
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
+
 
 /* Daily Status Date Info */
 .daily-date-info {
@@ -603,22 +600,9 @@ input[type=text],input[type=date],select{
   display: none;
 }
 
-  .admin-user .admin-only {
-    display: block !important;
-  }
-  
-  .admin-user .filter-section {
-    display: flex !important;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  /* Ensure filter elements are visible */
-  .admin-user .filter-section select,
-  .admin-user .filter-section input {
-    display: block !important;
-    width: 100%;
-  }
+.admin-only {
+  display: none;
+}
 
 /* Add vehicle form improvements */
 .add-vehicle-form {
@@ -748,403 +732,47 @@ input[type=text],input[type=date],select{
   margin-top: 0 !important;
 }
 
-/* ========== ATTENDANCE CARD STYLES ========== */
-.attendance-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-}
-
-.attendance-card:hover {
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transform: translateY(-1px);
-}
-
-.attendance-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.attendance-card-name {
-  font-weight: 600;
-  font-size: 16px;
-  color: #1e293b;
-  flex: 1;
-}
-
-.attendance-card-status {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.attendance-card-status.present {
-  background: #10b981;
-  color: white;
-}
-
-.attendance-card-status.late {
-  background: #f59e0b;
-  color: white;
-}
-
-.attendance-card-status.absent {
-  background: #ef4444;
-  color: white;
-}
-
-.attendance-card-status.holiday {
-  background: #6b7280;
-  color: white;
-}
-
-.attendance-card-details {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
-
-.attendance-card-detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-}
-
-.attendance-card-detail-label {
-  color: #64748b;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.attendance-card-detail-value {
-  color: #334155;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.attendance-card-department {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #475569;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.attendance-card-department-icon {
-  font-size: 16px;
-}
-
-.no-attendance-cards {
-  text-align: center;
-  padding: 40px 20px;
-  color: #64748b;
-  font-size: 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px dashed #e2e8f0;
-}
-
-/* Hide cards on desktop by default */
-.mobile-attendance-cards {
-  display: none;
-}
-
 /* ========== MOBILE RESPONSIVE IMPROVEMENTS ========== */
 @media(max-width:900px){
-    #user-detail #userVehiclesList {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
   
-  #user-detail #userVehiclesList table {
-    min-width: 300px !important;
-  }
-    #user-detail .user-detail-section {
-    padding: 12px !important;
-    margin-bottom: 16px !important;
-  }
-  
-  #user-detail .user-detail-section h4 {
-    font-size: 16px !important;
-    margin-bottom: 6px !important;
-  }
-  
-  /* Reduce spacing between form rows */
-  #user-detail .form-row {
-    gap: 2px !important; /* REDUCE spacing between rows */
-    margin-bottom: 4px !important; /* REDUCE spacing between rows */
-  }
-  
-  /* Make form groups stack vertically on mobile */
-  #user-detail .form-row {
-    flex-direction: column !important;
-    gap: 2px !important; /* Reduce spacing between rows */
-    margin-bottom: 4px !important; /* Reduce spacing between rows */
-  }
-  
-  #user-detail .form-group {
-    width: 100% !important;
-    margin-bottom: 0 !important;
-  }
-  
-  /* Reduce label size */
-  #user-detail .form-group label {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    margin-bottom: 0px !important;
-  }
-  
-  /* Reduce input size and spacing */
-  #user-detail .form-group input {
-    padding: 6px 8px !important;
-    font-size: 13px !important;
-    min-height: 36px !important;
-  }
-  
-  /* Specifically reduce department text size */
-  #userDetailDepartment {
-    font-size: 13px !important;
-  }
-  
-  /* Registered Vehicles Section */
-  #user-detail #userVehiclesList table {
-    font-size: 12px !important;
-  }
-  
-  #user-detail #userVehiclesList th {
-    font-size: 11px !important;
-    padding: 8px 6px !important;
-  }
-  
-  #user-detail #userVehiclesList td {
-    font-size: 11px !important;
-    padding: 6px 4px !important;
-  }
-  
-  #user-detail #userVehiclesList button {
-    padding: 4px 8px !important;
-    font-size: 11px !important;
-    min-height: 32px !important;
-  }
-    /* Adjust filter section layout for mobile */
-  #user-management .filter-section {
-    flex-direction: column !important;
-    padding: 10px !important;
-    gap: 12px !important;
-    background: #f8fafc !important;
-    border-radius: 8px !important;
-    margin-bottom: 16px !important;
-  }
-  
-  #user-management .filter-section .form-group {
-    width: 100% !important;
-    margin-bottom: 0 !important;
-  }
-  
-  #user-management .filter-section label {
-    font-size: 10px !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-    margin-bottom: 6px !important;
-    display: block !important;
-  }
-  
-  #user-management .filter-section select,
-  #user-management .filter-section input {
-    width: 100% !important;
-    padding: 8px 10px !important;
-    font-size: 14px !important; /* Prevent zoom on iOS */
-    min-height: 40px !important; /* Better touch targets */
-    border: 1px solid #d1d5db !important;
-    border-radius: 6px !important;
-    background: white !important;
-  }
-  
-  /* Improve dropdown appearance on mobile */
-  #user-management .filter-section select {
-    appearance: none !important;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23333' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 8px center !important;
-    background-size: 12px !important;
-    padding-right: 30px !important;
-  }
-  
-  /* Search input specific styles */
-  #user-management .filter-section input[type="text"] {
-    background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.35-4.35'/></svg>") !important;
-    background-repeat: no-repeat !important;
-    background-position: left 8px center !important;
-    background-size: 18px !important;
-    padding-left: 30px !important;
-  }
-
-    #user-management .data-table {
-    font-size: 12px !important;
-  }
-  
-  #user-management .data-table th {
-    font-size: 11px !important;
-    padding: 10px 6px !important;
-    font-weight: 600 !important;
-  }
-  
-  #user-management .data-table td {
-    font-size: 11px !important;
-    padding: 8px 6px !important;
-  }
-  
-  /* Make table horizontally scrollable on mobile */
-  #user-management .scroll-container {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  
-  #user-management .data-table {
-    min-width: 300px !important;
-  }
-  
-  /* Adjust status badges for mobile */
-  #user-management .user-status-active,
-  #user-management .user-status-inactive {
-    font-size: 10px !important;
-    padding: 4px 6px !important;
-    display: inline-block !important;
-    white-space: nowrap !important;
-  }
-  
-  /* Adjust filter section for mobile */
-  #user-management .filter-section {
-    padding: 8px !important;
-    gap: 8px !important;
-  }
-  
-  #user-management .filter-section label {
-    font-size: 11px !important;
-    font-weight: 500 !important;
-  }
-  
-  #user-management .filter-section select,
-  #user-management .filter-section input {
-    padding: 6px 8px !important;
-    font-size: 13px !important;
-    min-height: 36px !important;
-  }
-  
-  /* Adjust pagination for mobile */
-  #user-management .pagination-info {
-    font-size: 11px !important;
-  }
-  
-  #user-management .pagination-buttons button {
-    padding: 6px 8px !important;
-    font-size: 11px !important;
-    min-height: 36px !important;
-  }
-  /* Show cards and hide table on mobile */
-  .mobile-attendance-cards {
-    display: block !important;
-  }
- body.admin-user .admin-only {
-    display: block !important;
-    visibility: visible !important;
-  }
-  
-  /* Fix filter section layout for mobile */
-  body.admin-user .filter-section {
-    display: flex !important;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-  
-  /* Ensure filter inputs are visible and properly sized */
-  body.admin-user .filter-section select,
-  body.admin-user .filter-section input {
-    display: block !important;
-    width: 100% !important;
-    min-height: 44px; /* Better touch targets */
-    font-size: 16px !important; /* Prevent zoom on iOS */
-  }
-  
-  /* Fix pagination for admin on mobile */
-  body.admin-user .pagination-controls {
-    display: flex !important;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  /* Fix action buttons for admin */
-  body.admin-user .action-buttons {
-    display: flex !important;
-    gap: 6px;
-  }
-}
-
-/* ========== SPECIFIC FIX FOR ATTENDANCE SECTION ========== */
-@media(max-width:900px){
-  #attendance .filter-section {
-    display: flex !important;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  /* Show both table and cards but hide table on mobile */
-  #attendance .scroll-container {
+   /* Untuk admin: show table, hide cards */
+  body.admin-user .mobile-attendance-cards {
     display: none !important;
   }
-  
-  #attendance .mobile-attendance-cards {
+  body.admin-user .scroll-container {
     display: block !important;
   }
   
-  /* Admin-specific attendance fixes */
-  body.admin-user #attendance .filter-section {
-    background: #f0f9ff;
-    border: 1px solid #e0f2fe;
+  /* Untuk user biasa: show cards, hide table */
+  body:not(.admin-user) .mobile-attendance-cards {
+    display: flex !important;
   }
-  
-  /* Hide table on mobile for all users */
-  #attendance .scroll-container {
+  body:not(.admin-user) .scroll-container {
     display: none !important;
   }
+    .mobile-attendance-cards {
+    display: flex !important;
+  }
   
+  /* Hide table on mobile for non-admin users */
+  body:not(.admin-user) #attendance .scroll-container {
+    display: none !important;
+  }
   #user-settings .section-header h3 {
-    display: none;
+    display: none; /* ⬅️ Sembunyikan h3 asal */
+
   }
-  
-  .sidebar.mobile-open ~ .main #user-settings .section-header::before {
+    .sidebar.mobile-open ~ .main #user-settings .section-header::before {
     display: none !important;
   }
-  
-  #user-settings .section-header {
+   #user-settings .section-header {
     display: flex;
     align-items: center;
     margin-top: 0 !important;
-    padding-top: 30px !important;
+    padding-top: 30px !important; /* ⬅️ Ruang untuk row fixed */
   }
   
-  #user-settings .section-header::before {
+    #user-settings  .section-header::before {
     content: "⚙️ Settings";
     position: fixed;
     top: 22px;
@@ -1154,11 +782,11 @@ input[type=text],input[type=date],select{
     z-index: 1000;   
   }
   
-  #user-settings .section-header h3 {
-    display: none;
+    #user-settings  .section-header h3 {
+    display: none; /* ⬅️ Sembunyikan h3 asal */
+
   }
-  
-  #user-settings .settings-section h4 {
+    #user-settings .settings-section h4 {
     font-size: 16px !important;
     font-weight: 500 !important;
     color: #1e293b !important;
@@ -1188,11 +816,9 @@ input[type=text],input[type=date],select{
     font-weight: 600 !important;
     margin-top: 16px !important;
   }
-  
-  .sidebar.mobile-open ~ #user-settings .section-header::before {
+    .sidebar.mobile-open ~   #user-settings .section-header::before {
     display: none !important;
   }
-  
   .workday-btn-clear,
   .workday-btn-save {
     min-height: 36px !important;
@@ -1201,8 +827,7 @@ input[type=text],input[type=date],select{
     justify-content: center !important;
     font-weight: 500 !important;
   }
-  
-  .workday-controls {
+   .workday-controls {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
@@ -1227,24 +852,17 @@ input[type=text],input[type=date],select{
 
   /* Adjust mobile menu button */
   .mobile-menu-btn {
-    display: block !important;
-    position: fixed !important; 
-    will-change: transform;
+    display: block;
     top: 15px;
     left: 15px;
     padding: 5px 8px;
     font-size: 12px;
     background: rgba(59, 130, 246, 0.9);
     backdrop-filter: blur(4px);
-    z-index: 1001 !important;
-    transition: none !important;
-    transform: translateY(0);
-    opacity: 1;
+    z-index: 1002;
   }
 
-
-
-  /* FIX: Gunakan selector yang lebih spesifik */
+  /* ⬇️ FIX: Gunakan selector yang lebih spesifik ⬇️ */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
@@ -1306,27 +924,26 @@ input[type=text],input[type=date],select{
     gap: 8px;
   }
   
-  /* FIX: Selaraskan section headers untuk mobile */
-  .section-header {
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 12px;
-    min-height: 40px;
-  }
+  /* ✅ FIX: Selaraskan section headers untuk mobile */
+.section-header {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px;
+  min-height: 40px;
+}
 
-  .section-header h3 {
-    font-size: 18px !important;
-    margin: 0 !important;
-    flex: 1;
-    padding-left: 26px !important; 
-  }
-  
-  #home .section-header {
+.section-header h3 {
+  font-size: 18px !important;
+  margin: 0 !important;
+  flex: 1;
+  padding-left: 26px !important; 
+}
+    #home .section-header {
     display: flex;
     align-items: center;
     margin-top: 0 !important;
-    padding-top: 30px !important;
+    padding-top: 30px !important; /* ⬅️ Ruang untuk row fixed */
   }
   
   #home .section-header::before {
@@ -1340,39 +957,38 @@ input[type=text],input[type=date],select{
   }
   
   #home .section-header h3 {
-    display: none;
+    display: none; /* ⬅️ Sembunyikan h3 asal */
+
   }
-  
-  .sidebar.mobile-open ~ .main #home .section-header::before {
+    .sidebar.mobile-open ~ .main #home .section-header::before {
     display: none !important;
   }
-  
-  /* FIX: Selaraskan action buttons */
-  .action-buttons {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    margin-top: 0 !important;
-  }
+/* ✅ FIX: Selaraskan action buttons */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 0 !important;
+}
 
-  .action-buttons button {
-    padding: 6px 8px;
-    font-size: 11px;
-    min-height: 36px;
-    min-width: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.action-buttons button {
+  padding: 6px 8px;
+  font-size: 11px;
+  min-height: 36px;
+  min-width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .action-buttons button .text {
-    display: none;
-  }
+.action-buttons button .text {
+  display: none;
+}
 
-  .action-buttons button .icon {
-    margin-right: 0;
-    font-size: 12px;
-  }
+.action-buttons button .icon {
+  margin-right: 0;
+  font-size: 12px;
+}
   
   /* Improve filter sections */
   .filter-section {
@@ -1441,7 +1057,7 @@ input[type=text],input[type=date],select{
   }
   
   /* Better calendar for mobile */
-  .calendar-headers {
+    .calendar-headers {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 2px;
@@ -1450,8 +1066,8 @@ input[type=text],input[type=date],select{
   
   .calendar {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    grid-template-columns: repeat(7, 1fr); /* Same as headers */
+    gap: 2px; /* Same gap as headers */
   }
   
   .cal-header {
@@ -1540,182 +1156,66 @@ input[type=text],input[type=date],select{
   .add-vehicle-form, .settings-section, .user-detail-section {
     padding: 10px;
   }
-  
   /* ========== CUSTOM DAILY ADMIN TEXT SIZES ========== */
-  #daily .section-header h3 {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-  }
+#daily .section-header h3 {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
 
-  #daily .filter-section label {
-    font-size: 10px !important;
-    font-weight: 500 !important;
-  }
+#daily .filter-section label {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
 
-  #daily .filter-section select,
-  #daily .filter-section input {
-    font-size: 10px !important;
-  }
+#daily .filter-section select,
+#daily .filter-section input {
+  font-size: 10px !important;
+}
 
-  #dailyDateInfo {
-    font-size: 10px !important;
-    font-weight: 500 !important;
-  }
+#dailyDateInfo {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
 
-  #daily .data-table th {
-    font-size: 12px !important;
-    padding: 14px 12px !important;
-    font-weight: 500 !important;
-  }
+#daily .data-table th {
+  font-size: 12px !important;
+  padding: 14px 12px !important;
+  font-weight: 500 !important;
+}
 
-  #daily .data-table td {
-    font-size: 9px !important;
-    padding: 12px 10px !important;
-  }
+#daily .data-table td {
+  font-size: 9px !important;
+  padding: 12px 10px !important;
+}
 
-  #daily .status-present,
-  #daily .status-absent,
-  #daily .status-holiday {
-    font-size: 9px !important;
-    padding: 6px 9px !important;
-    font-weight: 500 !important;
-  }
+#daily .status-present,
+#daily .status-absent,
+#daily .status-holiday {
+  font-size: 9px !important;
+  padding: 6px 9px !important;
+  font-weight: 500 !important;
+}
 
-  #daily .pagination-info {
-    font-size: 8px !important;
-    font-weight: 500 !important;
-  }
+#daily .pagination-info {
+  font-size: 8px !important;
+  font-weight: 500 !important;
+}
 
-  #daily .pagination-buttons button {
-    font-size: 8px !important;
-    padding: 8px 14px !important;
-    font-weight: 400 !important;
-  }
-  
+#daily .pagination-buttons button {
+  font-size: 8px !important;
+  padding: 8px 14px !important;
+  font-weight: 400 !important;
+}
 }
 
 /* ========== 600px BREAKPOINT ========== */
 @media(max-width:600px){
-    #user-detail .user-detail-section {
-    padding: 10px !important;
-  }
-  
-  #user-detail .user-detail-section h4 {
-    font-size: 15px !important;
-  }
-  
-  #user-detail .form-row {
-    gap: 2px !important;
-    margin-bottom: 4px !important;
-  }
-  
-  #user-detail .form-group label {
-    font-size: 12px !important;
-    margin-bottom: 0px !important;
-  }
-  
-  #user-detail .form-group input {
-    padding: 5px 6px !important;
-    font-size: 12px !important;
-    min-height: 32px !important;
-  }
-  
-  #userDetailDepartment {
-    font-size: 12px !important;
-  }
-  
-  /* Vehicles table - even smaller */
-  #user-detail #userVehiclesList table {
-    font-size: 11px !important;
-  }
-  
-  #user-detail #userVehiclesList th {
-    font-size: 10px !important;
-    padding: 6px 4px !important;
-  }
-  
-  #user-detail #userVehiclesList td {
-    font-size: 10px !important;
-    padding: 5px 3px !important;
-  }
-  
-  #user-detail #userVehiclesList button {
-    padding: 3px 6px !important;
-    font-size: 10px !important;
-    min-height: 28px !important;
-  }
-    #user-management .filter-section {
-    padding: 10px !important;
-    gap: 10px !important;
-  }
-  
-  #user-management .filter-section label {
-    font-size: 13px !important;
-  }
-  
-  #user-management .filter-section select,
-  #user-management .filter-section input {
-    padding: 5px 6px !important;
-    font-size: 12px !important;
-    min-height: 32px !important;
-  }
-  
-  #user-management .filter-section select {
-    background-position: right 10px center !important;
-    padding-right: 36px !important;
-  }
-  
-  #user-management .filter-section input[type="text"] {
-    background-position: left 10px center !important;
-    padding-left: 36px !important;
-  }
-    #user-management .data-table {
-    font-size: 11px !important;
-  }
-  
-  #user-management .data-table th {
-    font-size: 10px !important;
-    padding: 8px 4px !important;
-  }
-  
-  #user-management .data-table td {
-    font-size: 10px !important;
-    padding: 6px 4px !important;
-  }
-  
-  #user-management .user-status-active,
-  #user-management .user-status-inactive {
-    font-size: 9px !important;
-    padding: 3px 5px !important;
-  }
-  
-  #user-management .pagination-buttons button {
-    padding: 5px 6px !important;
-    font-size: 10px !important;
-  }
-
-    body.admin-user .filter-section {
-    padding: 8px !important;
-    gap: 8px !important;
-  }
-  
-  body.admin-user .filter-section label {
-    font-size: 14px !important;
-    font-weight: 500 !important;
-  }
-  
-  body.admin-user .filter-section select,
-  body.admin-user .filter-section input {
-    font-size: 14px !important;
-    padding: 10px !important;
-  }
   /* Mobile menu button fixes */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
   }
-  
-  .workday-selector-group {
+ .workday-selector-group {
     flex-direction: column;
     gap: 8px;
     width: 100%;
@@ -1732,23 +1232,24 @@ input[type=text],input[type=date],select{
   }
   
   .cal-cell {
-    min-height: 45px !important;
+    min-height: 45px !important; /* Even smaller for phones */
   }
   
   .cal-cell .date {
     font-size: 13px !important;
   }
 
+  
   .cal-cell .status-label {
     font-size: 9px;
   }
 
-  .calendar-headers {
+    .calendar-headers {
     gap: 1px;
   }
   
   .calendar {
-    gap: 1px;
+    gap: 1px; /* Same as headers */
   }
   
   .cal-header {
@@ -1762,7 +1263,6 @@ input[type=text],input[type=date],select{
     padding: 4px 1px;
     font-size: 11px;
   }
-  
   body:has(.sidebar.mobile-open) .mobile-menu-btn {
     display: none !important;
   }
@@ -1808,26 +1308,26 @@ input[type=text],input[type=date],select{
     font-size: 9px;
   }
   
-  /* FIX: Even smaller but selari */
-  .action-buttons button {
-    padding: 5px 6px;
-    font-size: 10px;
-    min-height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  /* ✅ FIX: Even smaller but selari */
+.action-buttons button {
+  padding: 5px 6px;
+  font-size: 10px;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  /* FIX: Smaller section headers tapi tetap selari */
-  .section-header h3 {
-    font-size: 17px!important; 
-    margin: 0 !important;
-  }
+/* ✅ FIX: Smaller section headers tapi tetap selari */
+.section-header h3 {
+  font-size: 17px!important; 
+  margin: 0 !important;
+}
 
-  .section-header {
-    gap: 8px !important;
-    padding-left: 26px !important;
-  }
+.section-header {
+  gap: 8px !important;
+  padding-left: 26px !important;
+}
   
   /* Smaller cards */
   .card {
@@ -1848,16 +1348,13 @@ input[type=text],input[type=date],select{
   }
   
   /* ========== ATTENDANCE CARD LAYOUT FOR PHONE USERS ========== */
-  /* Hide table for all users on mobile */
-  #attendance .data-table {
+  /* Hide table for non-admin users on mobile */
+  body:not(.admin-user) #attendance .data-table {
     display: none !important;
   }
   
-  /* Show card layout for all users on mobile */
-  #attendance .mobile-attendance-cards {
-    display: block !important;
-  }
-  
+  /* Show card layout for non-admin users on mobile */
+ 
   .workday-action-buttons {
     flex-direction: column;
     gap: 4px;
@@ -1879,120 +1376,102 @@ input[type=text],input[type=date],select{
     font-size: 13px;
     padding: 0 4px;
   }
+
+  /* Attendance Card Styles */
+  .attendance-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+  }
+  
+  .attendance-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .attendance-card-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+  }
+  
+  .attendance-card-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  
+  .attendance-card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+  }
+  
+  .attendance-card-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .attendance-card-label {
+    color: #64748b;
+    font-size: 13px !important;
+    font-weight: 500;
+  }
+  
+  .attendance-card-value {
+    color: #334155;
+    font-size: 13px !important;
+    font-weight: 500;
+  }
+  
+  /* Status color variations */
+  .attendance-card-status.present {
+    background: #10b981;
+    color: white;
+  }
+  
+  .attendance-card-status.late {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .attendance-card-status.absent {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .attendance-card-status.holiday {
+    background: #6b7280;
+    color: white;
+  }
+  
+  /* No records message */
+  .no-attendance-cards {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+    font-size: 14px;
+  }
 }
 
 /* ========== 400px BREAKPOINT ========== */
 @media(max-width:400px){
-    #user-detail .user-detail-section {
-    padding: 8px !important;
-  }
-  
-  #user-detail .user-detail-section h4 {
-    font-size: 14px !important;
-  }
-  
-  #user-detail .form-row {
-    gap: 1px !important;
-    margin-bottom: 3px !important;
-  }
-  
-  #user-detail .form-group label {
-    font-size: 11px !important;
-    margin-bottom: 0px !important;
-  }
-  
-  #user-detail .form-group input {
-    padding: 4px 5px !important;
-    font-size: 11px !important;
-    min-height: 32px !important;
-  }
-  
-  #userDetailDepartment {
-    font-size: 11px !important;
-  }
-  
-  /* Vehicles table - smallest */
-  #user-detail #userVehiclesList table {
-    font-size: 10px !important;
-  }
-  
-  #user-detail #userVehiclesList th {
-    font-size: 9px !important;
-    padding: 4px 3px !important;
-  }
-  
-  #user-detail #userVehiclesList td {
-    font-size: 9px !important;
-    padding: 4px 2px !important;
-  }
-  
-  #user-detail #userVehiclesList button {
-    padding: 2px 4px !important;
-    font-size: 9px !important;
-    min-height: 24px !important;
-  }
-    #user-management .filter-section {
-    padding: 8px !important;
-    gap: 8px !important;
-  }
-  
-  #user-management .filter-section label {
-    font-size: 12px !important;
-  }
-  
-  #user-management .filter-section select,
-  #user-management .filter-section input {
-    padding: 8px 10px !important;
-    font-size: 14px !important;
-    min-height: 40px !important;
-  }
-  
-  #user-management .filter-section select {
-    background-position: right 8px center !important;
-    padding-right: 32px !important;
-    background-size: 10px !important;
-  }
-  
-  #user-management .filter-section input[type="text"] {
-    background-position: left 8px center !important;
-    padding-left: 32px !important;
-    background-size: 16px !important;
-  }
-   #user-management .data-table {
-    font-size: 10px !important;
-  }
-  
-  #user-management .data-table th {
-    font-size: 9px !important;
-    padding: 6px 3px !important;
-  }
-  
-  #user-management .data-table td {
-    font-size: 9px !important;
-    padding: 5px 3px !important;
-  }
-  
-  #user-management .user-status-active,
-  #user-management .user-status-inactive {
-    font-size: 8px !important;
-    padding: 2px 4px !important;
-  }
-  
-  #user-management .pagination-buttons button {
-    padding: 4px 5px !important;
-    font-size: 9px !important;
-    min-height: 32px !important;
-  }
-  
-  #user-management .pagination-info {
-    font-size: 9px !important;
-  }
-  .calendar-headers {
+   .calendar-headers {
     gap: 1px;
   }
   
   .calendar {
-    gap: 1px;
+    gap: 1px; /* Consistent gap */
   }
   
   .cal-header {
@@ -2006,19 +1485,16 @@ input[type=text],input[type=date],select{
     padding: 3px 1px;
     font-size: 10px;
   }
-  
   /* Mobile menu button fixes */
   .sidebar.mobile-open + .main .mobile-menu-btn,
   .sidebar.mobile-open ~ .mobile-menu-btn {
     display: none !important;
   }
-  
-  .workday-btn-clear,
+    .workday-btn-clear,
   .workday-btn-save {
     min-height: 30px !important;
     font-size: 10px !important;
   }
-  
   .workday-action-buttons button {
     padding: 4px 5px;
     font-size: 9px;
@@ -2042,7 +1518,6 @@ input[type=text],input[type=date],select{
     font-size: 11px;
     padding: 0 2px;
   }
-  
   body:has(.sidebar.mobile-open) .mobile-menu-btn {
     display: none !important;
   }
@@ -2123,23 +1598,23 @@ input[type=text],input[type=date],select{
   
   /* ========== ATTENDANCE CARD LAYOUT ENHANCEMENTS FOR 400px ========== */
   .attendance-card {
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
   }
   
   .attendance-card-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
   }
   
   .attendance-card-name {
-    font-size: 15px;
+    font-size: 13px;
   }
   
   .attendance-card-status {
-    font-size: 11px;
-    padding: 5px 8px;
+    font-size: 10px;
+    padding: 3px 6px;
     align-self: flex-start;
   }
   
@@ -2148,27 +1623,28 @@ input[type=text],input[type=date],select{
     gap: 6px;
   }
   
-  .attendance-card-detail-row {
+  .attendance-card-detail-item {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
   
-  .attendance-card-detail-label {
-    font-size: 12px;
+  .attendance-card-label {
+    font-size: 10px;
     min-width: 80px;
   }
   
-  .attendance-card-detail-value {
-    font-size: 12px;
+  .attendance-card-value {
+    font-size: 11px;
     text-align: right;
   }
   
   .no-attendance-cards {
-    padding: 20px;
-    font-size: 14px;
+    padding: 15px;
+    font-size: 13px;
   }
 }
+
 </style>
 </head>
 <body>
@@ -2255,7 +1731,7 @@ input[type=text],input[type=date],select{
   <!-- Card Layout Container (for mobile users) -->
   <div class="mobile-attendance-cards" id="mobileAttendanceCards"></div>
 
-  <!-- Table Layout (for desktop users) -->
+  <!-- Table Layout (for admin users) -->
   <div class="scroll-container">
     <table class="data-table">
       <thead>
@@ -2279,14 +1755,13 @@ input[type=text],input[type=date],select{
     <div class="pagination-info" id="paginationInfo">Showing 0-0 of 0 records</div>
     <div class="pagination-buttons">
       <button id="firstPageBtn" onclick="goToPage(1)" disabled>⏮️ First</button>
-      <button id="prevPageBtn" onclick="goToPreviousPage()" disabled>◀️Previous</button>
+      <button id="prevPageBtn" onclick="goToPreviousPage()" disabled>◀️ Previous</button>
       <button id="nextPageBtn" onclick="goToNextPage()" disabled>Next ▶️</button>
       <button id="lastPageBtn" onclick="goToLastPage()" disabled>Last ⏭️</button>
     </div>
   </div>
 </div>
 
-<!-- Rest of your HTML sections remain the same -->
 <!-- Register (for regular users) -->
 <div id="register" class="card section" style="display:none">
   <div class="section-header">
@@ -2342,29 +1817,31 @@ input[type=text],input[type=date],select{
     </div>
   </div>
   
-    <div class="filter-section">
-      <div class="form-group">
-        <label for="userDepartmentFilter">Filter by Department</label>
-        <select id="userDepartmentFilter" onchange="filterUsers()">
-          <option value="">ALL</option>
-          <option>PENGARAH</option>
-          <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
-          <option>TIMBALAN PENGARAH AKADEMIK</option>
-          <option>KETUA JAMINAN KUALITI</option>
-          <option>JABATAN TEKNOLOGI AWAM</option>
-          <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
-          <option>JABATAN TEKNOLOGI MAKLUMAT</option>
-          <option>JABATAN PERNIAGAAN</option>
-          <option>JABATAN PENDIDIKAN UMUM</option>
-          <option>UNIT PSIKOLOGI DAN KERJAYA</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="searchUser">Search User</label>
-        <input type="text" id="searchUser" placeholder="Search User..." onkeyup="filterUsers()">
-      </div>
+  <div class="filter-section">
+    <div class="form-group">
+      <label for="userDepartmentFilter">Filter by Department</label>
+      <select id="userDepartmentFilter" onchange="filterUsers()">
+        <option value="">ALL</option>
+        <option>PENGARAH</option>
+        <option>TIMBALAN PENGARAH SOKONGAN AKADEMIK</option>
+        <option>TIMBALAN PENGARAH AKADEMIK</option>
+        <option>KETUA JAMINAN KUALITI</option>
+        <option>JABATAN TEKNOLOGI AWAM</option>
+        <option>JABATAN TEKNOLOGI ELEKTRIK DAN ELEKTRONIK</option>
+        <option>JABATAN TEKNOLOGI MAKLUMAT</option>
+        <option>JABATAN PERNIAGAAN</option>
+        <option>JABATAN PENDIDIKAN UMUM</option>
+        <option>UNIT PSIKOLOGI DAN KERJAYA</option>
+      </select>
     </div>
-    
+    <div class="form-group">
+      <label for="searchUser">Search User</label>
+      <input type="text" id="searchUser" placeholder="Search User..." onkeyup="filterUsers()">
+    </div>
+  </div>
+  
+  <div class="pagination-info" id="userPaginationInfo">Showing 1-25 of 0 users</div>
+  
   <div class="scroll-container">
     <table class="data-table">
       <thead>
@@ -2700,7 +2177,7 @@ input[type=text],input[type=date],select{
 const firebaseConfig = {
   apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
   authDomain: "drive-thru-smartattendance.firebaseapp.com",
-  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app", // FIXED URL
+  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "drive-thru-smartattendance",
   storageBucket: "drive-thru-smartattendance.appspot.com",
   messagingSenderId: "235048051665",
@@ -2724,8 +2201,7 @@ function setupMobileMenu() {
   const mobileOverlay = document.getElementById('mobileOverlay');
   
   if (mobileMenuBtn && sidebar && mobileOverlay) {
-    mobileMenuBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
+    mobileMenuBtn.addEventListener('click', function() {
       sidebar.classList.toggle('mobile-open');
       mobileOverlay.classList.toggle('active');
       document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
@@ -2737,131 +2213,18 @@ function setupMobileMenu() {
       document.body.style.overflow = '';
     });
     
-    // Close menu when clicking on a link - FIXED VERSION
+    // Close menu when clicking on a link
     document.querySelectorAll('.sidebar a').forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function() {
         sidebar.classList.remove('mobile-open');
         mobileOverlay.classList.remove('active');
         document.body.style.overflow = '';
-        
-        // Allow the click to proceed to section navigation
-        setTimeout(() => {
-          const sectionId = this.getAttribute('onclick')?.match(/showSection\('([^']+)'\)/)?.[1];
-          if (sectionId) {
-            showSection(sectionId);
-          }
-        }, 100);
       });
     });
-    
-    // Close menu when window is resized to desktop
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 900) {
-        sidebar.classList.remove('mobile-open');
-        mobileOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    });
   }
 }
 
-// ========== Mobile Menu Button Visibility Based on Section Header ==========
-let lastScrollTop = 0;
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-let isMobileMenuButtonVisible = true;
-
-function handleMobileMenuScroll() {
-  if (window.innerWidth > 900) return; // Only on mobile
-  
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const sectionHeader = getCurrentSectionHeader();
-  
-  if (!sectionHeader) {
-    // If no section header found, show the button
-    showMobileMenuButton();
-    return;
-  }
-  
-  const headerRect = sectionHeader.getBoundingClientRect();
-  const headerVisible = headerRect.top >= 0 && headerRect.bottom <= window.innerHeight;
-  
-  if (headerVisible) {
-    // Section header is fully visible - show button
-    showMobileMenuButton();
-  } else {
-    // Section header is not visible - hide button
-    hideMobileMenuButton();
-  }
-  
-  lastScrollTop = scrollTop;
-}
-
-function getCurrentSectionHeader() {
-  // Find the currently visible section
-  const sections = document.querySelectorAll('.section');
-  let currentSection = null;
-  
-  for (const section of sections) {
-    if (section.style.display === 'block') {
-      currentSection = section;
-      break;
-    }
-  }
-  
-  if (!currentSection) return null;
-  
-  // Find the section header within the current section
-  return currentSection.querySelector('.section-header');
-}
-
-function showMobileMenuButton() {
-  if (!isMobileMenuButtonVisible) {
-    mobileMenuBtn.style.transform = 'translateY(0)';
-    mobileMenuBtn.style.opacity = '1';
-    isMobileMenuButtonVisible = true;
-  }
-}
-
-function hideMobileMenuButton() {
-  if (isMobileMenuButtonVisible) {
-    mobileMenuBtn.style.transform = 'translateY(-100px)';
-    mobileMenuBtn.style.opacity = '0';
-    isMobileMenuButtonVisible = false;
-  }
-}
-
-// Add scroll event listener with throttling
-let scrollTimeout;
-window.addEventListener('scroll', function() {
-  if (scrollTimeout) {
-    clearTimeout(scrollTimeout);
-  }
-  
-  scrollTimeout = setTimeout(() => {
-    handleMobileMenuScroll();
-  }, 50); // Throttle to improve performance
-});
-
-// Reset on resize and initial load
-window.addEventListener('resize', function() {
-  if (window.innerWidth > 900) {
-    showMobileMenuButton();
-  } else {
-    // Re-check visibility on mobile resize
-    setTimeout(handleMobileMenuScroll, 100);
-  }
-});
-
-// Initial check
-setTimeout(handleMobileMenuScroll, 500);
-
-// Reset on resize
-window.addEventListener('resize', function() {
-  if (window.innerWidth > 900) {
-    mobileMenuBtn.style.transform = 'translateY(0)';
-    mobileMenuBtn.style.opacity = '1';
-  }
-});
+// ========== Helpers & state ==========
 function showSpinner() {
   document.getElementById('spinner').style.display = 'block';
 }
@@ -2906,7 +2269,7 @@ function parseTimeToMinutes(t) {
   return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
 }
 
-// FIXED: Simple todayISO()
+// ✅ FIXED: Simple todayISO()
 function todayISO() {
   const now = new Date();
   
@@ -3001,7 +2364,7 @@ function extractNameFromEmail(email) {
     .join(' ');
 }
 
-// IMPROVED: Better name matching function
+// ✅ IMPROVED: Better name matching function
 function matchByNameVariations(attendanceName, userName) {
   if (!attendanceName || !userName) return false;
   
@@ -3032,7 +2395,7 @@ function matchByNameVariations(attendanceName, userName) {
   return false;
 }
 
-// NEW HELPER FUNCTIONS untuk color coding
+// ✅ NEW HELPER FUNCTIONS untuk color coding
 function getStatusColor(status) {
   const lowerS = (status || "").toLowerCase();
   if (lowerS.includes("present") || lowerS.includes("complete")) {
@@ -3055,7 +2418,7 @@ function getPunctualityColor(punctuality) {
   return "color:#334155;font-weight:500;";
 }
 
-// NEW FUNCTION: Render attendance cards untuk mobile users
+// ✅ NEW FUNCTION: Render attendance cards untuk mobile users
 function renderAttendanceCards(records) {
   const container = document.getElementById('mobileAttendanceCards');
   
@@ -3090,34 +2453,26 @@ function renderAttendanceCards(records) {
           <div class="attendance-card-name">${record.name}</div>
           <div class="attendance-card-status ${statusClass}">${status}</div>
         </div>
-        <div class="attendance-card-department">
-          <span class="attendance-card-department-icon">🏢</span>
-          <span>${record.jabatan || '-'}</span>
-        </div>
         <div class="attendance-card-details">
-          <div class="attendance-card-detail-row">
-            <span class="attendance-card-detail-label">
-              <span>📥 IN</span>
-            </span>
-            <span class="attendance-card-detail-value">${checkin}</span>
+          <div class="attendance-card-detail-item">
+            <span class="attendance-card-label">Shift</span>
+            <span class="attendance-card-value">${shift}</span>
           </div>
-          <div class="attendance-card-detail-row">
-            <span class="attendance-card-detail-label">
-              <span>📤 OUT</span>
-            </span>
-            <span class="attendance-card-detail-value">${checkout}</span>
+          <div class="attendance-card-detail-item">
+            <span class="attendance-card-label">Check-in</span>
+            <span class="attendance-card-value">${checkin}</span>
           </div>
-          <div class="attendance-card-detail-row">
-            <span class="attendance-card-detail-label">
-              <span>⏰ HRS</span>
-            </span>
-            <span class="attendance-card-detail-value">${workedHours}</span>
+          <div class="attendance-card-detail-item">
+            <span class="attendance-card-label">Check-out</span>
+            <span class="attendance-card-value">${checkout}</span>
           </div>
-          <div class="attendance-card-detail-row">
-            <span class="attendance-card-detail-label">
-              <span>🎯 PUNCTUALITY</span>
-            </span>
-            <span class="attendance-card-detail-value">${punctuality || '-'}</span>
+          <div class="attendance-card-detail-item">
+            <span class="attendance-card-label">Worked Hours</span>
+            <span class="attendance-card-value">${workedHours}</span>
+          </div>
+          <div class="attendance-card-detail-item">
+            <span class="attendance-card-label">Punctuality</span>
+            <span class="attendance-card-value">${punctuality}</span>
           </div>
         </div>
       </div>
@@ -3127,7 +2482,7 @@ function renderAttendanceCards(records) {
   container.innerHTML = cardsHtml;
 }
 
-// IMPROVED: Find attendance record dengan better matching
+// ✅ IMPROVED: Find attendance record dengan better matching
 function findAttendanceRecord(attendanceData, staffName) {
   if (!attendanceData || !staffName) return null;
   
@@ -3156,7 +2511,7 @@ function findAttendanceRecord(attendanceData, staffName) {
   return null;
 }
 
-// NEW FUNCTION: Sync plates dengan nama baru
+// ✅ NEW FUNCTION: Sync plates dengan nama baru
 async function syncPlatesWithNewName(newName) {
   try {
     const platesSnapshot = await db.ref('plates').once('value');
@@ -3195,7 +2550,7 @@ async function syncPlatesWithNewName(newName) {
   }
 }
 
-// NEW FUNCTION: Check dan sync plates jika out of sync
+// ✅ NEW FUNCTION: Check dan sync plates jika out of sync
 async function checkAndSyncPlates(currentUserName) {
   try {
     const platesSnapshot = await db.ref('plates').once('value');
@@ -3241,7 +2596,7 @@ async function ensureUserProfile() {
       });
       userName = userNameFromEmail;
       
-      // Auto-sync existing plates dengan nama baru
+      // ✅ Auto-sync existing plates dengan nama baru
       await syncPlatesWithNewName(userNameFromEmail);
       
     } else {
@@ -3251,7 +2606,7 @@ async function ensureUserProfile() {
         lastLogin: new Date().toISOString()
       });
       
-      // Check dan sync plates jika perlu
+      // ✅ Check dan sync plates jika perlu
       await checkAndSyncPlates(userName);
     }
     
@@ -3296,7 +2651,7 @@ async function updateUserName() {
       updatedAt: new Date().toISOString()
     });
     
-    // AUTO-SYNC: Update semua plates yang belong kepada user ini
+    // ✅ AUTO-SYNC: Update semua plates yang belong kepada user ini
     const updatedPlatesCount = await syncPlatesWithNewName(newName);
     
     userName = newName;
@@ -3329,7 +2684,7 @@ async function ensureWorkdaysLoadedOnce() {
     
     console.log("✅ Fresh workday data loaded:", freshData);
     
-    // FIX: Completely reset cache
+    // ✅ FIX: Completely reset cache
     workdaysCache = {};
     
     // Rebuild cache from fresh data
@@ -3339,7 +2694,7 @@ async function ensureWorkdaysLoadedOnce() {
       workdaysCache[key][iso] = freshData[iso];
     });
     
-    // FIX: Mark months that exist in the date range but have no overrides
+    // ✅ FIX: Mark months that exist in the date range but have no overrides
     // This prevents empty cache entries from causing unnecessary reloads
     const allMonthsInData = new Set();
     Object.keys(freshData).forEach(iso => {
@@ -3365,7 +2720,7 @@ async function ensureWorkdaysLoadedOnce() {
 async function loadWorkdaysRange(startISO, endISO) {
   console.log("🔄 loadWorkdaysRange CALLED for:", startISO, "to", endISO);
   
-  // FIX: Always ensure workdaysCache is initialized
+  // ✅ FIX: Always ensure workdaysCache is initialized
   if (!workdaysCache) {
     workdaysCache = {};
   }
@@ -3381,7 +2736,7 @@ async function loadWorkdaysRange(startISO, endISO) {
     `${endMonth.getFullYear()}-${endMonth.getMonth() + 1}`
   );
 
-  // FIX: Improved cache checking - detect EMPTY cache entries
+  // ✅ FIX: Improved cache checking - detect EMPTY cache entries
   let needsRefresh = false;
   const cursor = new Date(startMonth);
   
@@ -3408,7 +2763,7 @@ async function loadWorkdaysRange(startISO, endISO) {
     console.log("✅ Using cached data - all months have data");
   }
 
-  // FIX: Build combined data from cache
+  // ✅ FIX: Build combined data from cache
   const combined = {};
   const combinedCursor = new Date(startMonth);
   
@@ -3480,11 +2835,7 @@ firebase.auth().onAuthStateChanged(async user => {
   
   currentUser = user;
   isAdmin = (user.email === ADMIN_EMAIL);
-    if (isAdmin) {
-    document.body.classList.add('admin-user');
-  } else {
-    document.body.classList.remove('admin-user');
-  }
+  
   document.getElementById('userEmail').textContent = user.email;
   
   await ensureUserProfile();
@@ -3576,7 +2927,7 @@ function calculateWorkedHours(record) {
   return "-";
 }
 
-// TAMBAH FUNCTION INI DI SINI
+// ========== ✅ TAMBAH FUNCTION INI DI SINI ==========
 function loadRegisteredVehicles() {
   console.log("Loading registered vehicles for:", currentUser?.email);
   
@@ -3675,7 +3026,7 @@ function showSection(id) {
   if (id === 'workday') {
     const now = new Date();
     
-    // FIX: Initialize calendar variables if undefined
+    // ✅ FIX: Initialize calendar variables if undefined
     if (typeof currentCalendarYear === 'undefined' || typeof currentCalendarMonth === 'undefined') {
       currentCalendarYear = now.getFullYear();
       currentCalendarMonth = now.getMonth();
@@ -3835,7 +3186,7 @@ function displayDailyRecords() {
   let html = '<table class="data-table"><tr><th>Name</th><th>Department</th><th>Status</th></tr>';
   
   recordsToShow.forEach(record => {
-    // FIX: Guna label "-" untuk holiday (bukan "Holiday")
+    // ✅ FIX: Guna label "-" untuk holiday (bukan "Holiday")
     let statusClass = '';
     let displayText = record.status;
     
@@ -3847,7 +3198,7 @@ function displayDailyRecords() {
       displayText = 'Absent';
     } else {
       statusClass = 'status-holiday';
-      displayText = '-'; // GUNA "-" UNTUK HOLIDAY
+      displayText = '-'; // ✅ GUNA "-" UNTUK HOLIDAY
     }
     
     html += `
@@ -3864,7 +3215,7 @@ function displayDailyRecords() {
 
 // ========== User Management Functions ==========
 
-// FIXED FUNCTION: Get user department from plates
+// ✅ FIXED FUNCTION: Get user department from plates
 function getUserDepartment(userEmail, userName) {
   if (!allPlatesData || Object.keys(allPlatesData).length === 0) return '-';
   
@@ -3891,14 +3242,14 @@ async function loadUsers() {
   
   showSpinner();
   try {
-    // FIX: Load plates data sekali untuk semua user
+    // ✅ FIX: Load plates data sekali untuk semua user
     const [usersSnapshot, platesSnapshot] = await Promise.all([
       db.ref('users').once('value'),
       db.ref('plates').once('value')
     ]);
     
     const users = usersSnapshot.val() || {};
-    allPlatesData = platesSnapshot.val() || {}; // STORE plates data globally
+    allPlatesData = platesSnapshot.val() || {}; // ✅ STORE plates data globally
     
     // Convert to array and add user ID
     allUsers = Object.keys(users).map(uid => {
@@ -3908,7 +3259,7 @@ async function loadUsers() {
       };
     });
     
-    // FIX: Filter out admin user from the list
+    // ✅ FIX: Filter out admin user from the list
     allUsers = allUsers.filter(user => user.email !== ADMIN_EMAIL);
     
     totalUsers = allUsers.length;
@@ -3942,7 +3293,7 @@ function displayUsers() {
     const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
     const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
     
-    // FIX: Get department from user's plates
+    // ✅ FIX: Get department from user's plates
     const userDepartment = getUserDepartment(user.email, user.name);
     
     html += `
@@ -3962,6 +3313,7 @@ function updateUserPaginationControls() {
   const prevPageBtn = document.getElementById('userPrevPageBtn');
   const nextPageBtn = document.getElementById('userNextPageBtn');
   const lastPageBtn = document.getElementById('userLastPageBtn');
+  const paginationInfo = document.getElementById('userPaginationInfo');
   const paginationInfoBottom = document.getElementById('userPaginationInfoBottom');
   
   // Update button states
@@ -3975,10 +3327,10 @@ function updateUserPaginationControls() {
   const endRecord = Math.min(currentUserPage * usersPerPage, totalUsers);
   
   if (totalUsers > 0) {
- 
+    paginationInfo.textContent = `Showing ${startRecord}-${endRecord} of ${totalUsers} users`;
     paginationInfoBottom.textContent = `Showing ${startRecord}-${endRecord} of ${totalUsers} users`;
   } else {
-
+    paginationInfo.textContent = 'No users found';
     paginationInfoBottom.textContent = 'No users found';
   }
 }
@@ -4053,7 +3405,7 @@ function filterUsers() {
     const statusIcon = user.status === 'inactive' ? '🔴' : '✅';
     const statusClass = user.status === 'inactive' ? 'user-status-inactive' : 'user-status-active';
     
-    // FIX: Get department from user's plates
+    // ✅ FIX: Get department from user's plates
     const userDepartment = getUserDepartment(user.email, user.name);
     
     html += `
@@ -4115,7 +3467,7 @@ async function showUserDetail(userId) {
       }
     });
     
-    // FIX: Get user's department from their plates
+    // ✅ FIX: Get user's department from their plates
     let userDepartment = '-';
     if (userVehicles.length > 0) {
       // Use the department from the first vehicle
@@ -4371,14 +3723,16 @@ function filterDailyTable() {
   const rows = document.querySelectorAll('#dailyStatusTable tr');
   
   rows.forEach(row => {
-    if (row.cells && row.cells.length > 0) {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    const text = row.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
     }
   });
 }
 
-// COMPLETE FIXED VERSION dengan card layout untuk mobile users
+// ✅ COMPLETE FIXED VERSION dengan card layout untuk mobile users
 async function loadAttendanceByDate(resetPage = true) {
   console.log("🔄 loadAttendanceByDate() called");
   
@@ -4389,7 +3743,7 @@ async function loadAttendanceByDate(resetPage = true) {
   const date = document.getElementById("datePicker").value;
   const jabatanFilter = document.getElementById("jabatanFilter").value;
   const table = document.getElementById("attendanceTable");
-  const cardsContainer = document.getElementById("mobileAttendanceCards");
+  const cardsContainer = document.getElementById("attendanceCardsContainer");
 
   if (!date) {
     table.innerHTML = "<tr><td colspan='8' style='text-align:center;padding:12px;'>Please select a date.</td></tr>";
@@ -4520,7 +3874,7 @@ async function loadAttendanceByDate(resetPage = true) {
       });
     });
 
-    // THIS IS THE MISSING PAGINATION CODE:
+    // ✅ THIS IS THE MISSING PAGINATION CODE:
     // Handle pagination and display data
     if (isAdmin) {
       totalAttendanceRecords = allRows.length;
@@ -4532,13 +3886,11 @@ async function loadAttendanceByDate(resetPage = true) {
       table.innerHTML = pageRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No staff found.</td></tr>";
       
       updatePaginationControls();
-      
+      // Render cards untuk mobile users
+      renderAttendanceCards(allCards);
     } else {
       table.innerHTML = allRows.join('') || "<tr><td colspan='8' style='text-align:center;padding:12px;'>No attendance records found.</td></tr>";
     }
-
-    // RENDER CARDS FOR MOBILE
-    renderAttendanceCards(allCards);
 
   } catch (err) {
     console.error("Firebase error:", err);
@@ -4549,24 +3901,18 @@ async function loadAttendanceByDate(resetPage = true) {
   }
 }
 
-// Filter attendance table - FIXED VERSION
+// Filter attendance table
 function filterAttendanceTable() {
   const searchTerm = document.getElementById('searchAttendance').value.toLowerCase();
-  
-  // Filter table rows (for desktop)
   const rows = document.querySelectorAll('#attendanceTable tr');
-  rows.forEach(row => {
-    if (row.cells.length > 0) { // Skip header row
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(searchTerm) ? '' : 'none';
-    }
-  });
   
-  // Filter cards (for mobile)
-  const cards = document.querySelectorAll('.attendance-card');
-  cards.forEach(card => {
-    const text = card.textContent.toLowerCase();
-    card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
   });
 }
 
@@ -4619,7 +3965,7 @@ async function calculateDailyStatus() {
     
     console.log('🔍 DAILY START - Date:', targetDate);
     
-    // LOAD DATA SAMA SEPERTI ATTENDANCE
+    // ✅ LOAD DATA SAMA SEPERTI ATTENDANCE
     const [platesSnap, attendanceSnap] = await Promise.all([
       db.ref('plates').once('value'),
       db.ref('attendance/' + targetDate).once('value')
@@ -4628,7 +3974,7 @@ async function calculateDailyStatus() {
     const allPlates = platesSnap.val() || {};
     const attendanceData = attendanceSnap.exists() ? attendanceSnap.val() : {};
     
-    // DIRECT CHECK WORKDAY - CARA MUDAH
+    // ✅ DIRECT CHECK WORKDAY - CARA MUDAH
     await ensureWorkdaysLoadedOnce();
     
     let isWorkday;
@@ -4952,7 +4298,7 @@ async function calculateWeeklySummary() {
       
       document.getElementById("weeklySummaryTable").innerHTML = tblHtml;
 
-      // FIXED CHART CODE - TAMBAH KURUNGAN TERTUTUP
+      // ✅ FIXED CHART CODE - TAMBAH KURUNGAN TERTUTUP
       const labels = dates.map(date => {
         const d = new Date(date);
         return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
@@ -4985,7 +4331,7 @@ async function calculateWeeklySummary() {
       const maxData = Math.max(...allData, 1); // Minimum 1
       const totalUsers = Object.keys(stats).length;
 
-      // FIXED: Kira maxY dengan cara yang lebih dinamik
+      // ✅ FIXED: Kira maxY dengan cara yang lebih dinamik
       let maxY;
       if (totalUsers <= 5) {
         maxY = Math.max(maxData + 1, 3); // Untuk user sedikit
@@ -4995,7 +4341,7 @@ async function calculateWeeklySummary() {
         maxY = Math.max(maxData + 3, Math.ceil(totalUsers * 0.3)); // Untuk user banyak
       }
 
-      // FIXED: PASTIKAN maxY adalah integer
+      // ✅ FIXED: PASTIKAN maxY adalah integer
       maxY = Math.ceil(maxY);
 
       weeklyChartInstance = new Chart(ctx, {
@@ -5044,7 +4390,7 @@ async function calculateWeeklySummary() {
             }
           }
         }
-      }); // INI KURUNGAN TERTUTUP YANG HILANG
+      }); // ✅ INI KURUNGAN TERTUTUP YANG HILANG
 
       console.log('📊 Weekly Chart Settings:', { 
         totalUsers, 
@@ -5054,7 +4400,7 @@ async function calculateWeeklySummary() {
         lateData, 
         absentData 
       });
-    } // TAMBAH INI - tutup if (isAdmin) untuk chart
+    } // ✅ TAMBAH INI - tutup if (isAdmin) untuk chart
 
     // Rest of the function for Staff Attendance Details...
     const rows = Object.entries(stats).map(([name, st]) => {
@@ -5108,7 +4454,7 @@ async function calculateWeeklySummary() {
         
         console.log(`   📅 ${dt}: Raw status='${s}', Today=${todayISO()}, IsFuture=${dtObj > today}`);
         
-        // FIX: Proper future date check
+        // ✅ FIX: Proper future date check
         if (dtObj > today) {
           statusClass = 'status-holiday';
           displayText = '-';
@@ -5181,7 +4527,11 @@ function filterWeeklyTable() {
   
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(searchTerm) ? '' : 'none';
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
   });
 }
 
@@ -5409,7 +4759,11 @@ function filterMonthlyTable() {
   
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(searchTerm) ? '' : 'none';
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
   });
 }
 
@@ -5423,7 +4777,7 @@ function trackModification(iso, currentState, originalState) {
   updateWorkdayStatus();
 }
 
-// Function to clear all modifications for current month
+// ✅ Function to clear all modifications for current month
 function clearAllModifications() {
   modifiedDates.clear();
   updateWorkdayStatus();
@@ -5433,7 +4787,7 @@ function clearAllModifications() {
   showSnackbar('All modifications cleared');
 }
 
-// Function to update workday status display
+// ✅ Function to update workday status display
 function updateWorkdayStatus() {
   const statusElement = document.getElementById('workdayStatus');
   const modifiedCount = Array.from(modifiedDates.values()).filter(m => m.isModified).length;
@@ -5492,7 +4846,7 @@ function onYearMonthChange() {
 }
 
 async function renderCalendar(year, month0) {
-  // FIX: Prevent multiple simultaneous renders
+  // ✅ FIX: Prevent multiple simultaneous renders
   if (isRenderingCalendar) {
     console.log('⏳ renderCalendar already in progress, skipping...');
     return;
@@ -5502,7 +4856,7 @@ async function renderCalendar(year, month0) {
   console.log('🎯 renderCalendar START with:', year, month0, '(month0 means:', month0 + 1, '= actual month)');
   
   try {
-    // FIX: Ensure global variables are synced with parameters
+    // ✅ FIX: Ensure global variables are synced with parameters
     currentCalendarYear = year;
     currentCalendarMonth = month0;
     
@@ -5518,7 +4872,7 @@ async function renderCalendar(year, month0) {
     const startDow = first.getDay();
     const daysInMonth = new Date(year, month0 + 1, 0).getDate();
     
-    // FIX: Use the CORRECT month calculation
+    // ✅ FIX: Use the CORRECT month calculation
     const actualMonth = month0 + 1; // month0 is 0-indexed, actual month is 1-indexed
     const startISO = `${year}-${pad(actualMonth)}-01`;
     const endISO = `${year}-${pad(actualMonth)}-${pad(daysInMonth)}`;
@@ -5629,7 +4983,7 @@ async function renderCalendar(year, month0) {
     console.error('❌ renderCalendar ERROR:', error);
     showSnackbar('❌ Error loading calendar: ' + error.message);
   } finally {
-    // FIX: Always reset the flag, even if there's an error
+    // ✅ FIX: Always reset the flag, even if there's an error
     isRenderingCalendar = false;
   }
 }
@@ -5663,7 +5017,7 @@ function showSection(id) {
   if (id === 'workday') {
     const now = new Date();
     
-    // FIX: Initialize calendar variables if undefined
+    // ✅ FIX: Initialize calendar variables if undefined
     if (typeof currentCalendarYear === 'undefined' || typeof currentCalendarMonth === 'undefined') {
       currentCalendarYear = now.getFullYear();
       currentCalendarMonth = now.getMonth();
@@ -5681,7 +5035,7 @@ function showSection(id) {
   if (id === 'user-management') loadUsers();
 }
 
-// UPDATED: clearSelection function (sekarang clear semua modification)
+// ✅ UPDATED: clearSelection function (sekarang clear semua modification)
 function clearSelection() {
   if (modifiedDates.size === 0) {
     showSnackbar('No modifications to clear.');
@@ -5693,7 +5047,7 @@ function clearSelection() {
   }
 }
 
-// UPDATED: saveVisibleWorkdays function
+// ✅ UPDATED: saveVisibleWorkdays function
 async function saveVisibleWorkdays() {
   if (modifiedDates.size === 0) {
     showSnackbar('No changes to save.');
@@ -5771,7 +5125,7 @@ function initPickers() {
   const dp = document.getElementById('datePicker');
   if (dp) dp.value = now.toISOString().split('T')[0];
   
-  // TAMBAH: Set daily date picker kepada hari ini
+  // ✅ TAMBAH: Set daily date picker kepada hari ini
   const dailyDatePicker = document.getElementById('dailyDatePicker');
   if (dailyDatePicker) {
     dailyDatePicker.value = new Date().toISOString().split('T')[0];
@@ -5785,12 +5139,6 @@ function initPickers() {
 document.addEventListener('DOMContentLoaded', () => {
   initPickers();
   setupMobileMenu();
-    // Initialize with current user role
-  const user = firebase.auth().currentUser;
-  if (user && user.email === ADMIN_EMAIL) {
-    document.body.classList.add('admin-user');
-  }
-  
   loadAttendanceByDate();
 });
 function debugSettingsStructure() {
@@ -5825,3 +5173,4 @@ document.getElementById('weekPicker').valueAsDate = new Date();
 </script>
 </body>
 </html>
+
