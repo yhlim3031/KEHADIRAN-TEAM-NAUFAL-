@@ -1,0 +1,5 @@
+cd "C:\Users\Edwin Lim\Downloads\New folder"
+git remote -v
+git add .
+git commit -m "Updated website version with latest design and features"
+git push -u origin main
