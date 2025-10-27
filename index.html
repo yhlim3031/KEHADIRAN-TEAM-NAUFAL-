@@ -238,63 +238,106 @@
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
-      authDomain: "drive-thru-smartattendance.firebaseapp.com",
-      databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "drive-thru-smartattendance",
-      storageBucket: "drive-thru-smartattendance.appspot.com",
-      messagingSenderId: "235048051665",
-      appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
-    };
 
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+  const firebaseConfig = {
+    apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+    authDomain: "drive-thru-smartattendance.firebaseapp.com",
+    databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "drive-thru-smartattendance",
+    storageBucket: "drive-thru-smartattendance.appspot.com",
+    messagingSenderId: "235048051665",
+    appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+  };
 
-    // Redirect if logged in
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) window.location.href = "dashboard.html";
-    });
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-    function togglePassword() {
-      const input = document.getElementById("password");
-      input.type = input.type === "password" ? "text" : "password";
+  // Redirect if logged in
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) window.location.href = "dashboard.html";
+  });
+
+  function togglePassword() {
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  function signIn() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msg = document.getElementById("authMessage");
+
+    if (!email || !password) {
+      msg.style.color = "red";
+      msg.textContent = "⚠️ Please fill in all fields.";
+      return;
     }
 
-    function signIn() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const msg = document.getElementById("authMessage");
-
-      if (!email || !password) {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => window.location.href = "dashboard.html")
+      .catch(err => {
         msg.style.color = "red";
-        msg.textContent = "⚠️ Please fill in all fields.";
-        return;
-      }
+        msg.textContent = "❌ " + err.message;
+      });
+  }
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => window.location.href = "dashboard.html")
-        .catch(err => {
+  // ✅ GOOGLE LOGIN WITH LINKING SUPPORT
+  const provider = new firebase.auth.GoogleAuthProvider();
+  document.getElementById("googleLoginBtn").addEventListener("click", () => {
+    firebase.auth().signInWithPopup(provider)
+      .then(result => {
+        const user = result.user;
+        document.getElementById("authMessage").style.color = "green";
+        document.getElementById("authMessage").textContent =
+          "✅ Welcome " + (user.displayName || user.email) + "!";
+        setTimeout(() => window.location.href = "dashboard.html", 1000);
+      })
+      .catch(async (error) => {
+        const msg = document.getElementById("authMessage");
+
+        // Handle existing email with different sign-in method
+        if (error.code === "auth/account-exists-with-different-credential") {
+          const pendingCred = error.credential;
+          const email = error.customData.email;
+
+          // Get sign-in methods for the existing email
+          const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
+
+          if (methods[0] === "password") {
+            msg.style.color = "orange";
+            msg.textContent = "⚠️ This email already has a password account. Please enter your password to link.";
+
+            const password = prompt("Enter your password for " + email);
+
+            if (!password) {
+              msg.style.color = "red";
+              msg.textContent = "❌ Linking cancelled.";
+              return;
+            }
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+              .then(userCred => userCred.user.linkWithCredential(pendingCred))
+              .then(() => {
+                msg.style.color = "green";
+                msg.textContent = "✅ Your Google account has been linked!";
+                setTimeout(() => window.location.href = "dashboard.html", 1000);
+              })
+              .catch(err2 => {
+                msg.style.color = "red";
+                msg.textContent = "❌ " + err2.message;
+              });
+          } else {
+            msg.style.color = "red";
+            msg.textContent = "❌ Please sign in using your existing method: " + methods.join(", ");
+          }
+        } else {
           msg.style.color = "red";
-          msg.textContent = "❌ " + err.message;
-        });
-    }
+          msg.textContent = "❌ " + error.message;
+        }
+      });
+  });
+</script>
 
-    const provider = new firebase.auth.GoogleAuthProvider();
-    document.getElementById("googleLoginBtn").addEventListener("click", () => {
-      firebase.auth().signInWithPopup(provider)
-        .then(result => {
-          const user = result.user;
-          document.getElementById("authMessage").style.color = "green";
-          document.getElementById("authMessage").textContent = "✅ Welcome " + user.displayName + "!";
-          setTimeout(() => window.location.href = "dashboard.html", 1000);
-        })
-        .catch(err => {
-          document.getElementById("authMessage").style.color = "red";
-          document.getElementById("authMessage").textContent = "❌ " + err.message;
-        });
-    });
-  </script>
 </body>
 
 </html>
