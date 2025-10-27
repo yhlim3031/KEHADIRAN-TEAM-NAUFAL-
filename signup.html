@@ -336,48 +336,55 @@
     /* --- Tablet / Small Laptop (max 900px) --- */
     @media (max-width: 900px) {
 
-          .card p.lead {
-      color: var(--muted);
-      margin-bottom: 16px;
-      text-align: left;
-      font-size: 12px;
-    }
+      .card p.lead {
+        color: var(--muted);
+        margin-bottom: 16px;
+        text-align: left;
+        font-size: 12px;
+      }
 
 
       .feature-list {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column; /* susun menegak */
-  align-items: flex-start; /* semua mula dari kiri */
-  gap: 10px;
-  text-align: left;
-  font-size: 13px;
-}
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        /* susun menegak */
+        align-items: flex-start;
+        /* semua mula dari kiri */
+        gap: 10px;
+        text-align: left;
+        font-size: 13px;
+      }
 
-.feature {
-  display: flex;
-  align-items: center;       /* sejajarkan tengah */
-  justify-content: flex-start;
-  gap: 10px;
-  color: var(--muted);
-  width: 100%;
-  text-align: left;
-  font-size: 13px;
-}
+      .feature {
+        display: flex;
+        align-items: center;
+        /* sejajarkan tengah */
+        justify-content: flex-start;
+        gap: 10px;
+        color: var(--muted);
+        width: 100%;
+        text-align: left;
+        font-size: 13px;
+      }
 
-.feature .icon {
-  width: 28px;               /* lebih kecil daripada 36px */
-  height: 28px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.986); /* lebih lembut */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;           /* saiz emoji tetap */
-  color: var(--blue);
-  flex-shrink: 0;
-  padding: 0;                /* buang padding lebihan */
-}
+      .feature .icon {
+        width: 28px;
+        /* lebih kecil daripada 36px */
+        height: 28px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.986);
+        /* lebih lembut */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        /* saiz emoji tetap */
+        color: var(--blue);
+        flex-shrink: 0;
+        padding: 0;
+        /* buang padding lebihan */
+      }
 
       .container {
         grid-template-columns: 1fr;
@@ -392,18 +399,19 @@
 
       .brand .logo {
         height: 100px;
-         width: 100%;
+        width: 100%;
 
       }
-          .brand .logo img {
-      width: 80%;
-      height: 80%;
-      object-fit: contain;
-    }
+
+      .brand .logo img {
+        width: 80%;
+        height: 80%;
+        object-fit: contain;
+      }
 
       .brand h1 {
         font-size: 15px;
-        font-weight: 900; 
+        font-weight: 900;
       }
 
       .brand p {
@@ -449,7 +457,7 @@
       .brand h1 {
         font-size: 15px;
         margin-bottom: 8px;
-         font-weight: 900; 
+        font-weight: 900;
       }
 
       .brand p {
@@ -489,13 +497,13 @@
 
     /* --- Small Phone (max 400px) --- */
     @media (max-width: 400px) {
-    .container {
-      display: flex;
-      flex-direction: column;
-      max-width: 360px;
-      margin: 0 auto;
-      text-align: center;
-    }
+      .container {
+        display: flex;
+        flex-direction: column;
+        max-width: 360px;
+        margin: 0 auto;
+        text-align: center;
+      }
 
       body {
         padding: 12px;
@@ -651,10 +659,10 @@
       document.getElementById('error').style.display = 'none';
     }
 
-// Benarkan @gmail.com dan @moe.edu.my
-function isGmail(email) {
-  return /\b[A-Za-z0-9._%+-]+@(gmail\.com|moe\.edu\.my)$/i.test(email);
-}
+    // Benarkan @gmail.com dan @moe.edu.my
+    function isGmail(email) {
+  return /\b[A-Za-z0-9._%+-]+@(gmail\.com|moe\.edu\.my|moe-dl\.edu\.my)$/i.test(email);
+    }
 
     function setupToggle(idInput, idIcon) {
       const input = document.getElementById(idInput);
@@ -735,8 +743,7 @@ function isGmail(email) {
       const conf = document.getElementById('confirm').value;
 
       if (!email) return showError('Please enter your Gmail address.');
-     if (!isGmail(email)) return showError('Please use a valid Gmail or MOE email address (example@gmail.com / name@moe.edu.my).');
-
+      if (!isGmail(email)) return showError('Please use a valid email (example@gmail.com / name@moe.edu.my / name@moe-dl.edu.my).');
       if (!pw || pw.length < 6) return showError('Password must be at least 6 characters.');
       if (pw !== conf) return showError('Passwords do not match.');
 
