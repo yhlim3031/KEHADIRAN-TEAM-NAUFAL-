@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
+* {
       box-sizing: border-box;
     }
 
@@ -176,27 +176,128 @@
       }
     }
 
-    @media (max-width: 480px) {
+    /* Responsive Design */
+    
+    /* For screens up to 900px */
+    @media (max-width: 900px) {
       .login-container {
-        padding: 35px 25px;
+        max-width: 400px;
+        padding: 25px 20px;
+        height: 550px; /* adjust this value */
+      }
+      
+      .login-logo {
+        width: 280px;
+      }
+      
+      .portal-title {
+        font-size: 18px;
+      }
+      
+      .portal-subtitle {
+        font-size: 14px;
+      }
+      
+      input {
+        padding: 12px;
+        font-size: 15px;
+      }
+      
+      .btn, .google-btn {
+        padding: 12px;
+        font-size: 16px;
+      }
+    }
+    
+    /* For screens up to 600px */
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+      
+      .login-container {
+        max-width: 350px;
+        padding: 20px 15px;
         border-radius: 15px;
       }
-
+      
       .login-logo {
-        width: 250px;
+        width: 240px;
       }
-
+      
       .portal-title {
-        font-size: 19px;
+        font-size: 17px;
       }
-
+      
+      .portal-subtitle {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+      
       input {
+        padding: 11px;
+        font-size: 14px;
+      }
+      
+      .btn, .google-btn {
+        padding: 11px;
         font-size: 15px;
       }
-
-      .btn,
-      .google-btn {
-        font-size: 15px;
+      
+      .link-row {
+        font-size: 13px;
+      }
+      
+      footer {
+        font-size: 11px;
+      }
+    }
+    
+    /* For screens up to 400px */
+    @media (max-width: 400px) {
+      body {
+        padding: 10px;
+      }
+      
+      .login-container {
+        max-width: 100%;
+        padding: 18px 12px;
+        border-radius: 12px;
+      }
+      
+      .login-logo {
+        width: 200px;
+      }
+      
+      .portal-title {
+        font-size: 16px;
+      }
+      
+      .portal-subtitle {
+        font-size: 12px;
+        margin-bottom: 18px;
+      }
+      
+      input {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .btn, .google-btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .show-password-container {
+        font-size: 13px;
+      }
+      
+      .link-row {
+        font-size: 12px;
+      }
+      
+      footer {
+        font-size: 10px;
       }
     }
   </style>
@@ -237,105 +338,120 @@
     </footer>
   </div>
 
-  <script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
+  authDomain: "drive-thru-smartattendance.firebaseapp.com",
+  databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "drive-thru-smartattendance",
+  storageBucket: "drive-thru-smartattendance.appspot.com",
+  messagingSenderId: "235048051665",
+  appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
+};
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDXM92nMwpSqPVWifILYeDMTMEh_fuhN5M",
-    authDomain: "drive-thru-smartattendance.firebaseapp.com",
-    databaseURL: "https://drive-thru-smartattendance-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "drive-thru-smartattendance",
-    storageBucket: "drive-thru-smartattendance.appspot.com",
-    messagingSenderId: "235048051665",
-    appId: "1:235048051665:web:a8c68cc40eb83946e9f6f0"
-  };
+firebase.initializeApp(firebaseConfig);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-  firebase.initializeApp(firebaseConfig);
-  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+// Redirect if already logged in
+firebase.auth().onAuthStateChanged(user => {
+  if (user) window.location.href = "dashboard.html";
+});
 
-  // Redirect if logged in
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) window.location.href = "dashboard.html";
-  });
+function togglePassword() {
+  const input = document.getElementById("password");
+  input.type = input.type === "password" ? "text" : "password";
+}
 
-  function togglePassword() {
-    const input = document.getElementById("password");
-    input.type = input.type === "password" ? "text" : "password";
+// ✅ Improved message display with fade effect
+function showMessage(text, color) {
+  const msg = document.getElementById("authMessage");
+  msg.style.color = color;
+  msg.textContent = text;
+  msg.style.opacity = "1";
+  msg.style.transition = "opacity 0.6s ease";
+  setTimeout(() => (msg.style.opacity = "0"), 3500);
+}
+
+// ✅ Email/Password login with cleaner messages
+function signIn() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    showMessage("⚠️ Please fill in all fields.", "red");
+    return;
   }
 
-  function signIn() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const msg = document.getElementById("authMessage");
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => {
+      showMessage("✅ Login successful! Redirecting...", "green");
+      setTimeout(() => (window.location.href = "dashboard.html"), 1000);
+    })
+    .catch(err => {
+      let message = "❌ Something went wrong. Please try again.";
 
-    if (!email || !password) {
-      msg.style.color = "red";
-      msg.textContent = "⚠️ Please fill in all fields.";
-      return;
-    }
+      switch (err.code) {
+        case "auth/invalid-email":
+          message = "⚠️ Please enter a valid email address.";
+          break;
+        case "auth/user-not-found":
+          message = "❌ No account found with this email.";
+          break;
+        case "auth/wrong-password":
+        case "auth/invalid-login-credentials":
+          message = "❌ Incorrect email or password.";
+          break;
+        case "auth/network-request-failed":
+          message = "🌐 Network error. Please check your connection.";
+          break;
+      }
+      showMessage(message, "red");
+    });
+}
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => window.location.href = "dashboard.html")
-      .catch(err => {
-        msg.style.color = "red";
-        msg.textContent = "❌ " + err.message;
-      });
-  }
+// ✅ Google Login (with linking & friendly messages)
+const provider = new firebase.auth.GoogleAuthProvider();
+document.getElementById("googleLoginBtn").addEventListener("click", () => {
+  firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      const user = result.user;
+      showMessage(`✅ Welcome ${user.displayName || user.email}!`, "green");
+      setTimeout(() => (window.location.href = "dashboard.html"), 1000);
+    })
+    .catch(async (error) => {
+      if (error.code === "auth/account-exists-with-different-credential") {
+        const pendingCred = error.credential;
+        const email = error.customData.email;
+        const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
 
-  // ✅ GOOGLE LOGIN WITH LINKING SUPPORT
-  const provider = new firebase.auth.GoogleAuthProvider();
-  document.getElementById("googleLoginBtn").addEventListener("click", () => {
-    firebase.auth().signInWithPopup(provider)
-      .then(result => {
-        const user = result.user;
-        document.getElementById("authMessage").style.color = "green";
-        document.getElementById("authMessage").textContent =
-          "✅ Welcome " + (user.displayName || user.email) + "!";
-        setTimeout(() => window.location.href = "dashboard.html", 1000);
-      })
-      .catch(async (error) => {
-        const msg = document.getElementById("authMessage");
+        if (methods[0] === "password") {
+          showMessage("⚠️ This email already has a password account. Enter your password to link.", "orange");
+          const password = prompt("Enter your password for " + email);
 
-        // Handle existing email with different sign-in method
-        if (error.code === "auth/account-exists-with-different-credential") {
-          const pendingCred = error.credential;
-          const email = error.customData.email;
-
-          // Get sign-in methods for the existing email
-          const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
-
-          if (methods[0] === "password") {
-            msg.style.color = "orange";
-            msg.textContent = "⚠️ This email already has a password account. Please enter your password to link.";
-
-            const password = prompt("Enter your password for " + email);
-
-            if (!password) {
-              msg.style.color = "red";
-              msg.textContent = "❌ Linking cancelled.";
-              return;
-            }
-
-            firebase.auth().signInWithEmailAndPassword(email, password)
-              .then(userCred => userCred.user.linkWithCredential(pendingCred))
-              .then(() => {
-                msg.style.color = "green";
-                msg.textContent = "✅ Your Google account has been linked!";
-                setTimeout(() => window.location.href = "dashboard.html", 1000);
-              })
-              .catch(err2 => {
-                msg.style.color = "red";
-                msg.textContent = "❌ " + err2.message;
-              });
-          } else {
-            msg.style.color = "red";
-            msg.textContent = "❌ Please sign in using your existing method: " + methods.join(", ");
+          if (!password) {
+            showMessage("❌ Linking cancelled.", "red");
+            return;
           }
+
+          firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(userCred => userCred.user.linkWithCredential(pendingCred))
+            .then(() => {
+              showMessage("✅ Your Google account has been linked!", "green");
+              setTimeout(() => (window.location.href = "dashboard.html"), 1000);
+            })
+            .catch(err2 => showMessage("❌ " + err2.message, "red"));
         } else {
-          msg.style.color = "red";
-          msg.textContent = "❌ " + error.message;
+          showMessage("❌ Please sign in using your existing method: " + methods.join(", "), "red");
         }
-      });
-  });
+      } else if (error.code === "auth/popup-closed-by-user") {
+        showMessage("⚠️ Google sign-in was cancelled.", "orange");
+      } else if (error.code === "auth/network-request-failed") {
+        showMessage("🌐 Network error. Please check your connection.", "red");
+      } else {
+        showMessage("❌ Unable to sign in. Please try again.", "red");
+      }
+    });
+});
 </script>
 
 </body>
