@@ -651,9 +651,10 @@
       document.getElementById('error').style.display = 'none';
     }
 
-    function isGmail(email) {
-      return /\b[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email);
-    }
+// Benarkan @gmail.com dan @moe.edu.my
+function isGmail(email) {
+  return /\b[A-Za-z0-9._%+-]+@(gmail\.com|moe\.edu\.my)$/i.test(email);
+}
 
     function setupToggle(idInput, idIcon) {
       const input = document.getElementById(idInput);
@@ -734,7 +735,8 @@
       const conf = document.getElementById('confirm').value;
 
       if (!email) return showError('Please enter your Gmail address.');
-      if (!isGmail(email)) return showError('Please use a valid Gmail address (example@gmail.com).');
+     if (!isGmail(email)) return showError('Please use a valid Gmail or MOE email address (example@gmail.com / name@moe.edu.my).');
+
       if (!pw || pw.length < 6) return showError('Password must be at least 6 characters.');
       if (pw !== conf) return showError('Passwords do not match.');
 
