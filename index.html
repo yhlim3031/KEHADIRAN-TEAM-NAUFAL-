@@ -55,7 +55,7 @@
     }
 
     .portal-title {
-      font-size: 20px;
+      font-size: 25px;
       font-weight: 600;
       color: #1a1a1a;
       margin-top: 8px;
@@ -64,7 +64,7 @@
     .portal-subtitle {
       font-size: 15px;
       color: #555;
-      margin-bottom: 25px;
+      margin-bottom: 10px;
     }
 
     input {
@@ -191,11 +191,11 @@
       }
       
       .portal-title {
-        font-size: 18px;
+        font-size: 21px;
       }
       
       .portal-subtitle {
-        font-size: 14px;
+        font-size: 16px;
       }
       
       input {
@@ -226,11 +226,11 @@
       }
       
       .portal-title {
-        font-size: 17px;
+        font-size: 20px;
       }
       
       .portal-subtitle {
-        font-size: 13px;
+        font-size: 15px;
         margin-bottom: 20px;
       }
       
@@ -270,11 +270,11 @@
       }
       
       .portal-title {
-        font-size: 16px;
+        font-size: 21px;
       }
       
       .portal-subtitle {
-        font-size: 12px;
+        font-size: 14px;
         margin-bottom: 18px;
       }
       
@@ -308,8 +308,8 @@
     <img src="https://kvseberangperai.weebly.com/uploads/1/1/2/2/112256679/logo-kv-baharu_orig.png"
       class="login-logo" alt="KV Seberang Perai Logo" />
 
-    <div class="portal-title">Kolej Vokasional Seberang Perai</div>
-    <div class="portal-subtitle">Smart Attendance Login Portal</div>
+    <div class="portal-title">Sistem Attendance</div>
+    <div class="portal-subtitle">TEAM NAUFAL</div>
 
     <input type="email" id="email" placeholder="Enter your email" />
     <input type="password" id="password" placeholder="Enter your password" />
@@ -352,7 +352,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-// Redirect if already logged in
+// ✅ Redirect if already logged in
 firebase.auth().onAuthStateChanged(user => {
   if (user) window.location.href = "dashboard.html";
 });
@@ -362,7 +362,7 @@ function togglePassword() {
   input.type = input.type === "password" ? "text" : "password";
 }
 
-// ✅ Improved message display with fade effect
+// ✅ Show fade message
 function showMessage(text, color) {
   const msg = document.getElementById("authMessage");
   msg.style.color = color;
@@ -372,7 +372,7 @@ function showMessage(text, color) {
   setTimeout(() => (msg.style.opacity = "0"), 3500);
 }
 
-// ✅ Email/Password login with cleaner messages
+// ✅ Email & password sign in
 function signIn() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -389,7 +389,6 @@ function signIn() {
     })
     .catch(err => {
       let message = "❌ Something went wrong. Please try again.";
-
       switch (err.code) {
         case "auth/invalid-email":
           message = "⚠️ Please enter a valid email address.";
@@ -409,51 +408,45 @@ function signIn() {
     });
 }
 
-// ✅ Google Login (with linking & friendly messages)
+// ✅ Google login (existing users only)
 const provider = new firebase.auth.GoogleAuthProvider();
-document.getElementById("googleLoginBtn").addEventListener("click", () => {
-  firebase.auth().signInWithPopup(provider)
-    .then(result => {
-      const user = result.user;
-      showMessage(`✅ Welcome ${user.displayName || user.email}!`, "green");
-      setTimeout(() => (window.location.href = "dashboard.html"), 1000);
-    })
-    .catch(async (error) => {
-      if (error.code === "auth/account-exists-with-different-credential") {
-        const pendingCred = error.credential;
-        const email = error.customData.email;
-        const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
 
-        if (methods[0] === "password") {
-          showMessage("⚠️ This email already has a password account. Enter your password to link.", "orange");
-          const password = prompt("Enter your password for " + email);
+async function signInWithGoogle() {
+  const msg = document.getElementById("authMessage");
+  showMessage("⏳ Checking your account...", "#555");
 
-          if (!password) {
-            showMessage("❌ Linking cancelled.", "red");
-            return;
-          }
+  try {
+    // Step 1: Use popup to get Google account info
+    const result = await firebase.auth().signInWithPopup(provider);
+    const email = result.user.email;
 
-          firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(userCred => userCred.user.linkWithCredential(pendingCred))
-            .then(() => {
-              showMessage("✅ Your Google account has been linked!", "green");
-              setTimeout(() => (window.location.href = "dashboard.html"), 1000);
-            })
-            .catch(err2 => showMessage("❌ " + err2.message, "red"));
-        } else {
-          showMessage("❌ Please sign in using your existing method: " + methods.join(", "), "red");
-        }
-      } else if (error.code === "auth/popup-closed-by-user") {
-        showMessage("⚠️ Google sign-in was cancelled.", "orange");
-      } else if (error.code === "auth/network-request-failed") {
-        showMessage("🌐 Network error. Please check your connection.", "red");
-      } else {
-        showMessage("❌ Unable to sign in. Please try again.", "red");
-      }
-    });
-});
+    // Step 2: Check if this email already exists
+    const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
+
+    if (methods.length === 0) {
+      // ❌ New account — block creation
+      await firebase.auth().signOut();
+      showMessage("⚠️ This Google account is not registered. Please sign up first.", "orange");
+      return;
+    }
+
+    // ✅ Existing user — allow access
+    showMessage(`✅ Welcome back ${result.user.displayName || result.user.email}!`, "green");
+    setTimeout(() => (window.location.href = "dashboard.html"), 1000);
+
+  } catch (error) {
+    // If popup closed or network failed
+    if (error.code === "auth/popup-closed-by-user") {
+      showMessage("⚠️ Google sign-in was cancelled.", "orange");
+    } else if (error.code === "auth/network-request-failed") {
+      showMessage("🌐 Network error. Please check your connection.", "red");
+    } else {
+      showMessage("❌ Unable to sign in. Please try again.", "red");
+    }
+  }
+}
+
+document.getElementById("googleLoginBtn").addEventListener("click", signInWithGoogle);
 </script>
-
 </body>
-
 </html>
