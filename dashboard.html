@@ -23,11 +23,12 @@
     #user-monthly-detail {
       display: none;
     }
+
     .monthly-header {
-  margin: 0 0 12px 0;
-  color: #1e293b;
-  font-size: 16px;
-}
+      margin: 0 0 12px 0;
+      color: #1e293b;
+      font-size: 16px;
+    }
 
     .user-monthly-header {
       display: flex;
@@ -1429,215 +1430,230 @@
 
     /* ========== MOBILE RESPONySIVE IMPROVEMENTS ========== */
     @media(max-width:900px) {
-  .monthly-header {
-    font-size: 13px !important;
-    margin-bottom: 10px !important;
-  }
-        /* Monthly Section Mobile Styles */
-          /* Monthly Filter Section - Mobile HORIZONTAL 2 baris */
-  #monthly .filter-section.compact-filter-section > div {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-  }
+      .monthly-header {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+      }
 
-  /* Baris pertama - Month & Year */
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(1),
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(2) {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8 px;
-    width: 100%;
-  }
+      /* Monthly Section Mobile Styles */
+      /* Monthly Filter Section - Mobile HORIZONTAL 2 baris */
+      #monthly .filter-section.compact-filter-section>div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
 
-  /* Baris kedua - Department & Search */
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(3),
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(4) {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-  }
+      /* Baris pertama - Month & Year */
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(1),
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(2) {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8 px;
+        width: 100%;
+      }
 
-  /* Styling untuk semua items */
-  #monthly .filter-section.compact-filter-section > div > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
-  }
+      /* Baris kedua - Department & Search */
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(3),
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(4) {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+      }
 
-  #monthly .filter-section.compact-filter-section > div > div label {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    margin: 0 !important;
-    min-width: 85px;
-    white-space: nowrap;
-  }
+      /* Styling untuk semua items */
+      #monthly .filter-section.compact-filter-section>div>div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+      }
 
-  #monthly .filter-section.compact-filter-section > div > div select,
-  #monthly .filter-section.compact-filter-section > div > div input {
-    padding: 6px 8px !important;
-    font-size: 13px !important;
-    min-height: 30px;
-    border: 1px solid #d1d5db !important;
-    border-radius: 6px;
-  }
+      #monthly .filter-section.compact-filter-section>div>div label {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        margin: 0 !important;
+        min-width: 85px;
+        white-space: nowrap;
+      }
 
-  /* Box kecil untuk Month & Year */
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(1) select,
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(2) select {
-    width: 100px !important;
-  }
+      #monthly .filter-section.compact-filter-section>div>div select,
+      #monthly .filter-section.compact-filter-section>div>div input {
+        padding: 6px 8px !important;
+        font-size: 13px !important;
+        min-height: 30px;
+        border: 1px solid #d1d5db !important;
+        border-radius: 6px;
+      }
 
-  /* Box sederhana untuk Department & Search */
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(3) select,
-  #monthly .filter-section.compact-filter-section > div > div:nth-child(4) input {
-    width: 250px !important;
-  }
-  #monthly .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding-bottom: 12px;
-  }
+      /* Box kecil untuk Month & Year */
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(1) select,
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(2) select {
+        width: 100px !important;
+      }
 
-  #monthly .section-header h3 {
-    font-size: 18px;
-    margin: 0;
-  }
+      /* Box sederhana untuk Department & Search */
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(3) select,
+      #monthly .filter-section.compact-filter-section>div>div:nth-child(4) input {
+        width: 250px !important;
+      }
 
-  #monthly .action-buttons {
-    align-self: stretch;
-    justify-content: flex-start;
-  }
+      #monthly .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 12px;
+      }
 
-  #monthly .action-buttons button {
-    flex: 1;
-    min-width: auto;
-    padding: 8px 12px;
-    font-size: 13px;
-  }
+      #monthly .section-header h3 {
+        font-size: 18px;
+        margin: 0;
+      }
 
-  /* Compact Filter Section - Mobile */
-  #monthly .filter-section.compact-filter-section {
-    padding: 12px !important;
-    margin-bottom: 12px !important;
-  }
+      #monthly .action-buttons {
+        align-self: stretch;
+        justify-content: flex-start;
+      }
 
-  #monthly .filter-section.compact-filter-section > div {
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-  }
+      #monthly .action-buttons button {
+        flex: 1;
+        min-width: auto;
+        padding: 8px 12px;
+        font-size: 13px;
+      }
 
-  #monthly .filter-section.compact-filter-section > div > div {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+      /* Compact Filter Section - Mobile */
+      #monthly .filter-section.compact-filter-section {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
+      }
 
-  #monthly .filter-section.compact-filter-section label {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    margin: 0 !important;
-  }
+      #monthly .filter-section.compact-filter-section>div {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
 
-  #monthly .filter-section.compact-filter-section select,
-  #monthly .filter-section.compact-filter-section input {
-    width: 100% !important;
-    padding: 10px !important;
-    font-size: 14px !important;
-    min-height: 44px;
-    border: 1px solid #d1d5db !important;
-    border-radius: 6px;
-  }
+      #monthly .filter-section.compact-filter-section>div>div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
 
-  /* Chart Container - Mobile */
-  #monthly .card.admin-only {
-    margin-bottom: 12px;
-    padding: 12px;
-  }
+      #monthly .filter-section.compact-filter-section label {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        margin: 0 !important;
+      }
 
-  #monthly .card.admin-only h4 {
-    font-size: 15px;
-    margin-bottom: 10px;
-  }
+      #monthly .filter-section.compact-filter-section select,
+      #monthly .filter-section.compact-filter-section input {
+        width: 100% !important;
+        padding: 10px !important;
+        font-size: 14px !important;
+        min-height: 44px;
+        border: 1px solid #d1d5db !important;
+        border-radius: 6px;
+      }
 
-  #monthlyChart {
-    height: 200px !important;
-  }
+      #monthlyChart {
+        height: 300px !important;
+        /* More height for vertical labels */
+        min-height: 300px !important;
+      }
 
-  /* Summary Table - Mobile */
-  #monthly .card:last-child {
-    padding: 12px;
-  }
+      /* Force chart container to have enough space */
+      #monthly .card.admin-only {
+        padding-bottom: 30px;
+        overflow: visible !important;
+      }
 
-  #monthly .card:last-child h4 {
-    font-size: 15px;
-    margin-bottom: 10px;
-  }
+      /* Ensure chart canvas has enough space */
+      #monthlyChart+div {
+        min-height: 320px !important;
+      }
 
-  #monthlySummaryTable {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+      #monthly .card.admin-only h4 {
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
 
-  #monthlySummaryTable table {
-    min-width: 400px;
-    font-size: 12px;
-  }
+      /* Force Chart.js to show ALL labels vertically */
+      #monthlyChart~div canvas {
+        max-height: 300px !important;
+      }
 
-  #monthlySummaryTable th {
-    font-size: 11px;
-    padding: 10px 6px;
-    white-space: nowrap;
-  }
+      /* Summary Table - Mobile */
+      #monthly .card:last-child {
+        padding: 12px;
+      }
 
-  #monthlySummaryTable td {
-    font-size: 11px;
-    padding: 8px 6px;
-  }
+      #monthly .card:last-child h4 {
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
 
-  /* Pagination - Mobile */
-  #monthlyPaginationBottom {
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 12px;
-    padding: 10px 0;
-  }
+      #monthlySummaryTable {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-  #monthlyPaginationInfoBottom {
-    font-size: 12px;
-    text-align: center;
-  }
+      #monthlySummaryTable table {
+        min-width: 400px;
+        font-size: 12px;
+      }
 
-  #monthlyPaginationBottom .pagination-buttons {
-    display: flex;
-    gap: 4px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+      #monthlySummaryTable th {
+        font-size: 11px;
+        padding: 10px 6px;
+        white-space: nowrap;
+      }
 
-  #monthlyPaginationBottom .pagination-buttons button {
-    padding: 6px 8px;
-    font-size: 11px;
-    min-height: 36px;
-    flex: 1;
-    min-width: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+      #monthlySummaryTable td {
+        font-size: 11px;
+        padding: 8px 6px;
+      }
 
-  /* Hide some text in buttons for very small screens */
-  #monthlyPaginationBottom .pagination-buttons button .full-text {
-    display: none;
-  }
+      /* Pagination - Mobile */
+      #monthlyPaginationBottom {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+        padding: 10px 0;
+      }
+
+      #monthlyPaginationInfoBottom {
+        font-size: 12px;
+        text-align: center;
+      }
+
+      #monthlyPaginationBottom .pagination-buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      #monthlyPaginationBottom .pagination-buttons button {
+        padding: 6px 8px;
+        font-size: 11px;
+        min-height: 36px;
+        flex: 1;
+        min-width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Hide some text in buttons for very small screens */
+      #monthlyPaginationBottom .pagination-buttons button .full-text {
+        display: none;
+      }
+
       body:has(#user-monthly-detail[style*="display: block"]) .mobile-menu-btn {
         display: none !important;
       }
@@ -3623,13 +3639,13 @@
 
       <!-- Larger Chart -->
       <div class="card admin-only" style="margin-bottom: 16px;">
-<h4 class="monthly-header">📊 Monthly Attendance Overview</h4>
+        <h4 class="monthly-header">📊 Monthly Attendance Overview</h4>
         <canvas id="monthlyChart" height="250"></canvas>
       </div>
 
       <!-- Summary Table with Pagination -->
       <div class="card">
-<h4 class="monthly-header">📋Summary Details</h4>
+        <h4 class="monthly-header">📋Summary Details</h4>
         <div id="monthlySummaryTable"></div>
 
         <!-- Monthly Summary Pagination Controls -->
@@ -3858,6 +3874,81 @@
         });
       }
     }
+    // AGGRESSIVE mobile chart fix - GUARANTEED no skipping
+    function setupMobileChartAggressive() {
+      if (window.innerWidth > 900) return;
+
+      if (window.monthlyChart) {
+        // COMPLETELY override Chart.js auto behavior
+        monthlyChart.options.scales.x = {
+          type: 'category',
+          offset: true,
+          ticks: {
+            autoSkip: false,
+            maxRotation: 90,
+            minRotation: 90,
+            padding: 12,
+            font: {
+              size: 10,
+              family: "'Poppins', sans-serif"
+            },
+            callback: function (value, index) {
+              // Force display of all labels
+              return (index + 1).toString().padStart(2, '0');
+            }
+          },
+          grid: {
+            display: true,
+            drawBorder: true
+          }
+        };
+
+        monthlyChart.options.layout = {
+          padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 70
+          }
+        };
+
+        monthlyChart.update();
+        console.log('📱 AGGRESSIVE: Mobile chart with forced vertical labels');
+      }
+    }
+    // Add this to your calculateMonthlySummary() function
+    // RIGHT AFTER creating the monthlyChart:
+
+    // FIXED: Mobile chart configuration
+    function configureChartForMobile() {
+      if (window.innerWidth <= 900 && monthlyChart) {
+        console.log('📱 Configuring chart for mobile...');
+
+        monthlyChart.options.scales.x.ticks.autoSkip = false;
+        monthlyChart.options.scales.x.ticks.maxTicksLimit = null;
+        monthlyChart.options.scales.x.ticks.minRotation = 90;
+        monthlyChart.options.scales.x.ticks.maxRotation = 90;
+        monthlyChart.options.scales.x.ticks.padding = 15;
+
+        // Add more bottom padding for vertical labels
+        if (!monthlyChart.options.layout) monthlyChart.options.layout = {};
+        monthlyChart.options.layout.padding = {
+          bottom: 60,
+          left: 10,
+          right: 10,
+          top: 10
+        };
+
+        monthlyChart.update();
+        console.log('✅ Mobile chart configured with vertical labels');
+      }
+    }
+
+    // Call it after chart creation
+    setTimeout(configureChartForMobile, 150);
+
+    // Also call on resize
+    window.addEventListener('resize', configureChartForMobile);
 
     // ========== Mobile Menu Button Visibility Based on Section Header ==========
     let lastScrollTop = 0;
@@ -7115,6 +7206,7 @@
         });
 
         // Chart code (same as before)
+        // Chart code - FIXED VERSION
         if (isAdmin) {
           const labels = dates.map(d => d.split('-')[2]);
           const dataPresents = perDayTotals.map(x => x.present);
@@ -7122,6 +7214,10 @@
           const dataAbsents = perDayTotals.map(x => x.absent);
           const ctx = document.getElementById('monthlyChart').getContext('2d');
           if (monthlyChart) monthlyChart.destroy();
+
+          // DETECT MOBILE
+          const isMobile = window.innerWidth <= 900;
+
           monthlyChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -7139,14 +7235,31 @@
                 x: {
                   stacked: true,
                   ticks: {
-                    font: { size: 12 }
+                    font: {
+                      size: isMobile ? 10 : 12
+                    },
+                    // MOBILE FIX: These are the key settings
+                    autoSkip: false, // CRITICAL: Prevents skipping
+                    maxTicksLimit: isMobile ? 31 : 12, // Show ALL days on mobile
+                    minRotation: isMobile ? 90 : 0, // Vertical on mobile
+                    maxRotation: isMobile ? 90 : 45,
+                    callback: function (value, index, values) {
+                      // Always show the day number
+                      return String(index + 1).padStart(2, '0');
+                    }
+                  },
+                  // Extra mobile configuration
+                  afterFit: function (scale) {
+                    if (isMobile) {
+                      scale.height = 80; // More height for vertical labels
+                    }
                   }
                 },
                 y: {
                   stacked: true,
                   beginAtZero: true,
                   ticks: {
-                    font: { size: 12 },
+                    font: { size: isMobile ? 10 : 12 },
                     stepSize: 1,
                     callback: function (value) {
                       return Number.isInteger(value) ? value : '';
@@ -7160,13 +7273,29 @@
                   position: 'top',
                   labels: {
                     font: {
-                      size: 13
+                      size: isMobile ? 11 : 13
                     }
                   }
+                }
+              },
+              // MOBILE: Add extra padding for vertical labels
+              layout: {
+                padding: isMobile ? {
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 60
+                } : {
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 10
                 }
               }
             }
           });
+
+          console.log('📊 Chart created - Mobile:', isMobile, 'Labels:', labels.length);
         }
 
         // Prepare records for pagination
