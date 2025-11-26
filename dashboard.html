@@ -5660,7 +5660,7 @@
         jabatan: jabatan,
         registeredBy: currentUser.email,
         registeredAt: new Date().toISOString(),
-        uid: currentUser.uid
+        user_id: currentUser.uid
       };
 
       db.ref('plates/' + plate).set(plateData)
