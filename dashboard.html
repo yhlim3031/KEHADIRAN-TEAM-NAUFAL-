@@ -5659,7 +5659,8 @@
         name: userName,
         jabatan: jabatan,
         registeredBy: currentUser.email,
-        registeredAt: new Date().toISOString()
+        registeredAt: new Date().toISOString(),
+        uid: currentUser.uid
       };
 
       db.ref('plates/' + plate).set(plateData)
